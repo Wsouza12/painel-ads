@@ -34,11 +34,11 @@ export async function GET(request: NextRequest) {
       messages: [
         {
           role: "system",
-          content: "Você é um diretor de arte de varejo (estilo Casas Bahia / Havan). Gere textos de ALTO IMPACTO para um 'Card de Oferta'. Retorne ESTRITAMENTE um JSON com: 'headline' (NOME DO PRODUTO, máx 4 palavras, caixa alta), 'urgency' (Ex: PROMOÇÃO DA SEMANA, OFERTA RELÂMPAGO, máx 3 palavras), 'benefits' (Array com exatas 3 strings muito curtas destacando recursos, máx 4 palavras cada), 'themeColor' (COR VIBRANTE DE VAREJO em HEX, ex: '#00d2ff', vermelho, amarelo, cyan)."
+          content: "Você é um mestre em copywriting de resposta direta. Gere textos CURTOS para um infográfico de produto de ALTA CONVERSÃO. O formato de resposta deve ser ESTRITAMENTE um JSON com as seguintes chaves: 'headline' (TÍTULO DE IMPACTO, máx 5 palavras, caixa alta), 'subheadline' (ARGUMENTO PRINCIPAL, máx 8 palavras), 'benefits' (Array com exatas 4 strings curtas de benefícios, cada uma com máx 6 palavras), 'urgency' (ESCASSEZ/PROMOÇÃO, máx 4 palavras). Não inclua NENHUM texto extra fora do JSON."
         },
         {
           role: "user",
-          content: `Crie a copy de varejo para o produto: ${productTitle}. Preço original: ${productPrice}.`
+          content: `Crie a copy para o produto: ${productTitle}. Preço original: ${productPrice}.`
         }
       ],
       model: "llama-3.1-8b-instant",
@@ -48,22 +48,23 @@ export async function GET(request: NextRequest) {
 
     let copy = {
       headline: productTitle.substring(0, 20).toUpperCase(),
-      urgency: "PROMOÇÃO DA SEMANA",
+      subheadline: "Potência e Praticidade garantidas",
+      urgency: "OFERTA ESPECIAL",
       benefits: [
-        "ALTA QUALIDADE",
-        "ENVIO IMEDIATO",
-        "PREÇO IMBATÍVEL"
-      ],
-      themeColor: "#00d2ff" // vibrant cyan default
+        "Produto de Alta Qualidade",
+        "Design Inovador e Prático",
+        "Garantia de Satisfação",
+        "Envio Rápido para Você"
+      ]
     };
 
     try {
       const result = JSON.parse(chatCompletion.choices[0]?.message?.content || "{}");
       if (result.headline) copy.headline = result.headline;
+      if (result.subheadline) copy.subheadline = result.subheadline;
       if (result.urgency) copy.urgency = result.urgency;
-      if (result.themeColor) copy.themeColor = result.themeColor;
       if (result.benefits && Array.isArray(result.benefits)) {
-        copy.benefits = result.benefits.slice(0, 3);
+        copy.benefits = result.benefits.slice(0, 4);
       }
     } catch (e) {
       console.error("Failed to parse Groq response", e);
@@ -77,7 +78,7 @@ export async function GET(request: NextRequest) {
       imageUrl = imageUrl.replace("http://", "https://");
     }
 
-    // Use Satori (via ImageResponse) to compose the Retail Offer Card ad
+    // Use Satori (via ImageResponse) to compose the clean infographic ad
     return new ImageResponse(
       (
         <div
@@ -85,191 +86,154 @@ export async function GET(request: NextRequest) {
             display: 'flex',
             width: '1080px',
             height: '1080px',
-            background: copy.themeColor,
-            flexDirection: 'column',
+            background: 'linear-gradient(to bottom right, #ffffff, #f1f5f9)',
+            flexDirection: 'row',
             position: 'relative',
             overflow: 'hidden',
             fontFamily: 'sans-serif',
           }}
         >
-          {/* Fundo Vibrante de Varejo com Textura/Luzes (Simuladas por Gradiente) */}
+          {/* Esquerda: Copy e Benefícios */}
           <div
             style={{
-              position: 'absolute',
-              top: '0',
-              left: '0',
-              right: '0',
-              bottom: '0',
-              background: `radial-gradient(circle at center, rgba(255,255,255,0.4) 0%, transparent 70%)`,
-              display: 'flex',
-            }}
-          />
-
-          {/* Top Banner (Promoção) */}
-          <div
-            style={{
-              position: 'absolute',
-              top: '40px',
-              left: '0',
-              width: '1080px',
-              display: 'flex',
-              justifyContent: 'center',
-              zIndex: 30,
-            }}
-          >
-            <div
-              style={{
-                background: '#000000',
-                color: '#ffffff',
-                padding: '20px 50px',
-                fontSize: '52px',
-                fontWeight: '900',
-                textTransform: 'uppercase',
-                letterSpacing: '2px',
-                textAlign: 'center',
-                boxShadow: '0 10px 20px rgba(0,0,0,0.3)',
-              }}
-            >
-              {copy.urgency}
-            </div>
-          </div>
-
-          {/* Imagem do Produto no Centro/Esquerda */}
-          <div
-            style={{
-              position: 'absolute',
-              top: '200px',
-              left: '50px',
-              width: '750px',
-              height: '750px',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              zIndex: 10,
-            }}
-          >
-            {/* Como muitas imagens do ML tem fundo branco, colocamos em um círculo ou deixamos mesclar. 
-                Neste estilo, a imagem fica "solta". */}
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={imageUrl}
-              alt="Product"
-              style={{
-                maxWidth: '100%',
-                maxHeight: '100%',
-              }}
-            />
-          </div>
-
-          {/* Floating Badges (Benefícios) */}
-          {/* Benefit 1: Top Left */}
-          {copy.benefits[0] && (
-            <div
-              style={{
-                position: 'absolute',
-                top: '250px',
-                left: '80px',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-start',
-                zIndex: 20,
-              }}
-            >
-              <div style={{ color: '#000', fontSize: '32px', fontWeight: '900', textTransform: 'uppercase', background: 'rgba(255,255,255,0.9)', padding: '10px 20px', borderRadius: '15px' }}>
-                {copy.benefits[0]}
-              </div>
-            </div>
-          )}
-
-          {/* Benefit 2: Top Right */}
-          {copy.benefits[1] && (
-            <div
-              style={{
-                position: 'absolute',
-                top: '320px',
-                right: '80px',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-end',
-                zIndex: 20,
-              }}
-            >
-              <div style={{ color: '#000', fontSize: '32px', fontWeight: '900', textTransform: 'uppercase', background: 'rgba(255,255,255,0.9)', padding: '10px 20px', borderRadius: '15px' }}>
-                {copy.benefits[1]}
-              </div>
-            </div>
-          )}
-
-          {/* Benefit 3: Middle Right */}
-          {copy.benefits[2] && (
-            <div
-              style={{
-                position: 'absolute',
-                top: '550px',
-                right: '80px',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-end',
-                zIndex: 20,
-              }}
-            >
-              <div style={{ color: '#000', fontSize: '32px', fontWeight: '900', textTransform: 'uppercase', background: 'rgba(255,255,255,0.9)', padding: '10px 20px', borderRadius: '15px' }}>
-                {copy.benefits[2]}
-              </div>
-            </div>
-          )}
-
-          {/* Bloco de Preço Gigante (Bottom Right) */}
-          <div
-            style={{
-              position: 'absolute',
-              bottom: '0',
-              right: '0',
-              background: '#000000',
-              color: 'white',
               display: 'flex',
               flexDirection: 'column',
-              padding: '40px 60px',
-              borderTopLeftRadius: '40px',
-              zIndex: 30,
-              minWidth: '500px',
+              padding: '60px',
+              width: '50%',
+              zIndex: 10,
+              justifyContent: 'space-between',
             }}
           >
-            {/* Nome do Produto */}
-            <div
-              style={{
-                fontSize: '32px',
-                fontWeight: '600',
-                textTransform: 'uppercase',
-                marginBottom: '10px',
-                color: '#e2e8f0',
-                maxWidth: '450px',
-              }}
-            >
-              {copy.headline}
+            <div style={{ display: 'flex', flexDirection: 'column' }}>
+              <h1
+                style={{
+                  fontSize: '64px',
+                  fontWeight: '900',
+                  color: '#0f172a',
+                  lineHeight: 1.1,
+                  margin: 0,
+                  textTransform: 'uppercase',
+                }}
+              >
+                {copy.headline}
+              </h1>
+              
+              <p
+                style={{
+                  fontSize: '36px',
+                  color: '#475569',
+                  marginTop: '20px',
+                  lineHeight: 1.2,
+                  fontWeight: '500',
+                }}
+              >
+                {copy.subheadline}
+              </p>
             </div>
-            
-            <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end' }}>
-              <span style={{ fontSize: '36px', fontWeight: 'bold', marginRight: '15px', paddingBottom: '15px' }}>
-                POR<br/>APENAS
-              </span>
-              <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'flex-start' }}>
-                <span style={{ fontSize: '50px', fontWeight: '900', marginTop: '10px' }}>R$</span>
-                <span style={{ fontSize: '130px', fontWeight: '900', lineHeight: 0.8 }}>
-                  {Math.floor(productPrice)}
-                </span>
-                <span style={{ fontSize: '50px', fontWeight: '900', marginTop: '10px' }}>
-                  ,{((productPrice % 1) * 100).toFixed(0).padStart(2, '0')}
-                </span>
+
+            {/* Lista de Benefícios */}
+            <div style={{ display: 'flex', flexDirection: 'column', marginTop: '40px', gap: '30px' }}>
+              {copy.benefits.map((benefit, i) => (
+                <div key={i} style={{ display: 'flex', alignItems: 'center' }}>
+                  {/* Ícone de check moderno */}
+                  <div
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      width: '48px',
+                      height: '48px',
+                      borderRadius: '24px',
+                      background: '#10b981',
+                      marginRight: '20px',
+                    }}
+                  >
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+                      <path d="M20 6L9 17L4 12" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </div>
+                  <span style={{ fontSize: '28px', color: '#1e293b', fontWeight: 'bold' }}>
+                    {benefit}
+                  </span>
+                </div>
+              ))}
+            </div>
+
+            {/* Tags de Confiança Rodapé Esquerdo */}
+            <div style={{ display: 'flex', flexDirection: 'row', marginTop: '60px', gap: '20px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', background: '#e2e8f0', padding: '12px 20px', borderRadius: '12px' }}>
+                <span style={{ fontSize: '20px', color: '#0f172a', fontWeight: 'bold' }}>✅ GARANTIA DE QUALIDADE</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', background: '#e2e8f0', padding: '12px 20px', borderRadius: '12px' }}>
+                <span style={{ fontSize: '20px', color: '#0f172a', fontWeight: 'bold' }}>🚚 ENVIO RÁPIDO</span>
               </div>
             </div>
           </div>
 
+          {/* Direita: Imagem do Produto e Preço */}
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'column',
+              width: '50%',
+              position: 'relative',
+              justifyContent: 'center',
+              alignItems: 'center',
+              padding: '40px',
+            }}
+          >
+            {/* Produto */}
+            <div
+              style={{
+                display: 'flex',
+                width: '100%',
+                height: '80%',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={imageUrl}
+                alt="Product"
+                style={{
+                  maxWidth: '100%',
+                  maxHeight: '100%',
+                }}
+              />
+            </div>
+
+            {/* Selo de Preço / Urgência */}
+            <div
+              style={{
+                position: 'absolute',
+                bottom: '60px',
+                right: '60px',
+                display: 'flex',
+                flexDirection: 'column',
+                background: '#0f172a',
+                padding: '30px 40px',
+                borderRadius: '24px',
+                boxShadow: '0 20px 40px rgba(0,0,0,0.2)',
+                alignItems: 'flex-end',
+              }}
+            >
+              <span style={{ color: '#10b981', fontSize: '24px', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '10px', fontWeight: 'bold' }}>
+                {copy.urgency}
+              </span>
+              <span style={{ color: 'white', fontSize: '64px', fontWeight: '900' }}>
+                R$ {productPrice.toFixed(2)}
+              </span>
+            </div>
+          </div>
         </div>
       ),
       {
         width: 1080,
         height: 1080,
+        headers: {
+          'Cache-Control': 'no-cache, no-store, must-revalidate',
+        }
       }
     );
   } catch (e: any) {
