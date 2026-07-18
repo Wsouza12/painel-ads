@@ -230,14 +230,7 @@ function ProductCard({ product, allProducts, abTests }: { product: any; allProdu
             <p className="text-sm text-emerald-400 animate-pulse font-medium">A IA está pensando (Groq + DALL-E)...</p>
           </div>
         )}
-        {isGeneratingArt && (
-          <div className="absolute inset-0 bg-neutral-900/80 backdrop-blur-sm z-30 flex flex-col items-center justify-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500 mb-2"></div>
-            <p className="text-sm text-amber-400 animate-pulse font-medium text-center px-4">
-              A IA está compondo a Arte Premium...<br/>Isso leva cerca de 5 segundos.
-            </p>
-          </div>
-        )}
+
         {isGeneratingAB && (
           <div className="absolute inset-0 bg-neutral-900/80 backdrop-blur-sm z-20 flex flex-col items-center justify-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-purple-500 mb-2"></div>
