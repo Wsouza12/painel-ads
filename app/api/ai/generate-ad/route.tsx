@@ -86,7 +86,7 @@ export async function GET(request: NextRequest) {
             display: 'flex',
             width: '1080px',
             height: '1080px',
-            background: '#ffffff',
+            background: 'linear-gradient(to bottom right, #020617, #1e3a8a)', // Premium dark blue
             flexDirection: 'row',
             position: 'relative',
             overflow: 'hidden',
@@ -99,7 +99,7 @@ export async function GET(request: NextRequest) {
               display: 'flex',
               flexDirection: 'column',
               padding: '60px',
-              width: '55%',
+              width: '50%',
               position: 'relative',
               zIndex: 10,
               justifyContent: 'space-between',
@@ -110,7 +110,7 @@ export async function GET(request: NextRequest) {
                 style={{
                   fontSize: '64px',
                   fontWeight: '900',
-                  color: '#0f172a',
+                  color: '#ffffff',
                   lineHeight: 1.1,
                   margin: 0,
                   textTransform: 'uppercase',
@@ -122,7 +122,7 @@ export async function GET(request: NextRequest) {
               <p
                 style={{
                   fontSize: '36px',
-                  color: '#475569',
+                  color: '#94a3b8',
                   marginTop: '20px',
                   lineHeight: 1.2,
                   fontWeight: '500',
@@ -145,7 +145,7 @@ export async function GET(request: NextRequest) {
                       width: '48px',
                       height: '48px',
                       borderRadius: '24px',
-                      background: '#10b981',
+                      background: '#3b82f6',
                       marginRight: '20px',
                     }}
                   >
@@ -153,7 +153,7 @@ export async function GET(request: NextRequest) {
                       <path d="M20 6L9 17L4 12" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"/>
                     </svg>
                   </div>
-                  <span style={{ fontSize: '28px', color: '#1e293b', fontWeight: 'bold' }}>
+                  <span style={{ fontSize: '28px', color: '#f8fafc', fontWeight: 'bold' }}>
                     {benefit}
                   </span>
                 </div>
@@ -162,38 +162,51 @@ export async function GET(request: NextRequest) {
 
             {/* Tags de Confiança Rodapé Esquerdo */}
             <div style={{ display: 'flex', flexDirection: 'row', marginTop: '60px', gap: '20px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', background: '#f8fafc', padding: '12px 20px', borderRadius: '12px' }}>
-                <span style={{ fontSize: '20px', color: '#0f172a', fontWeight: 'bold' }}>✅ GARANTIA DE QUALIDADE</span>
+              <div style={{ display: 'flex', alignItems: 'center', background: 'rgba(255,255,255,0.1)', padding: '12px 20px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.2)' }}>
+                <span style={{ fontSize: '20px', color: '#ffffff', fontWeight: 'bold' }}>✅ GARANTIA DE QUALIDADE</span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', background: '#f8fafc', padding: '12px 20px', borderRadius: '12px' }}>
-                <span style={{ fontSize: '20px', color: '#0f172a', fontWeight: 'bold' }}>🚚 ENVIO RÁPIDO</span>
+              <div style={{ display: 'flex', alignItems: 'center', background: 'rgba(255,255,255,0.1)', padding: '12px 20px', borderRadius: '12px', border: '1px solid rgba(255,255,255,0.2)' }}>
+                <span style={{ fontSize: '20px', color: '#ffffff', fontWeight: 'bold' }}>🚚 ENVIO RÁPIDO</span>
               </div>
             </div>
           </div>
 
-          {/* Imagem do Produto Gigante (Ocupa todo o topo direito) */}
+          {/* Imagem do Produto Card Branco */}
           <div
             style={{
               position: 'absolute',
-              top: '40px',
-              right: '-20px',
-              width: '550px',
-              height: '550px',
+              top: '60px',
+              right: '40px',
+              width: '480px',
+              height: '650px',
               display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
+              flexDirection: 'column',
+              background: '#ffffff',
+              borderRadius: '40px',
+              padding: '20px',
+              boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.5)',
               zIndex: 5,
             }}
           >
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img
-              src={imageUrl}
-              alt="Product"
+            <div
               style={{
+                display: 'flex',
                 width: '100%',
                 height: '100%',
+                justifyContent: 'center',
+                alignItems: 'center',
               }}
-            />
+            >
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={imageUrl}
+                alt="Product"
+                style={{
+                  maxWidth: '100%',
+                  maxHeight: '100%',
+                }}
+              />
+            </div>
           </div>
 
           {/* Selo de Preço / Urgência */}
@@ -207,7 +220,7 @@ export async function GET(request: NextRequest) {
               background: '#ef4444',
               padding: '30px 40px',
               borderRadius: '24px',
-              boxShadow: '0 20px 40px rgba(239,68,68,0.4)',
+              boxShadow: '0 20px 40px rgba(239,68,68,0.6)',
               alignItems: 'flex-end',
               zIndex: 20,
             }}
