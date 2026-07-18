@@ -216,29 +216,6 @@ function ProductCard({ product, allProducts, abTests }: { product: any; allProdu
     setIsLoadingImages(false);
   }
 
-  const [isGeneratingArt, setIsGeneratingArt] = useState(false);
-
-  async function handleGeneratePremiumArt() {
-    setIsGeneratingArt(true);
-    try {
-      const res = await fetch(`/api/ai/generate-ad?productId=${product.id}&t=${Date.now()}`);
-      if (!res.ok) throw new Error("Falha ao gerar a arte na Vercel Edge");
-      
-      const blob = await res.blob();
-      const file = new File([blob], `premium_ad_${product.id}.png`, { type: "image/png" });
-      
-      const formData = new FormData();
-      formData.append("image", file);
-      
-      const publicUrl = await uploadImage(formData);
-      setFormValues(prev => ({ ...prev, image_url: publicUrl }));
-      alert("Arte Premium Gerada e salva na nuvem com sucesso! 🎨✨");
-    } catch (err: any) {
-      alert("Erro ao gerar arte: " + err.message);
-    }
-    setIsGeneratingArt(false);
-  }
-
   if (isEditing) {
     // Load the test once if we haven't checked yet
     if (!abTest && !showLab) {
@@ -412,13 +389,6 @@ function ProductCard({ product, allProducts, abTests }: { product: any; allProdu
                       >
                         📥 Original (ML)
                       </button>
-                      <button
-                        type="button"
-                        onClick={handleGeneratePremiumArt}
-                        className="text-xs bg-amber-600 hover:bg-amber-500 px-2 py-0.5 rounded flex items-center gap-1 transition-colors text-white border border-amber-500 shadow-[0_0_10px_rgba(217,119,6,0.5)] font-bold"
-                      >
-                        🎨 Gerar Arte Premium (IA)
-                      </button>
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
@@ -439,7 +409,7 @@ function ProductCard({ product, allProducts, abTests }: { product: any; allProdu
                   name="custom_image_url"
                   value={formValues.image_url}
                   onChange={e => setFormValues({...formValues, image_url: e.target.value})}
-                  placeholder="Deixe em branco para gerar o Encarte Automático"
+                  placeholder="Insira a URL da imagem ou faça upload"
                   className="w-full bg-neutral-900 border border-neutral-700 rounded px-2 py-1 text-sm text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
                 />
               </div>

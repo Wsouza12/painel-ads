@@ -59,7 +59,6 @@ export async function GET(request: Request, { params }: { params: { id: string }
         .eq("status", "running")
         .maybeSingle();
 
-      const ogImageUrl = `${appUrl}/api/og/product?id=${product.ml_item_id}`;
       const description = product.original_title; 
 
       if (abTest) {
@@ -69,7 +68,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
           id: `${product.ml_item_id}-A`,
         }, description, {
           title: abTest.variant_a_title,
-          image_url: abTest.variant_a_image || product.custom_image_url || `${ogImageUrl}&ab=A`
+          image_url: abTest.variant_a_image || product.custom_image_url || product.original_image_url
         }));
 
         // Variante B
@@ -78,14 +77,14 @@ export async function GET(request: Request, { params }: { params: { id: string }
           id: `${product.ml_item_id}-B`,
         }, description, {
           title: abTest.variant_b_title,
-          image_url: abTest.variant_b_image || `${ogImageUrl}&ab=B&parent_id=${product.ml_item_id}`
+          image_url: abTest.variant_b_image || product.original_image_url
         }));
       } else {
         // Produto normal
         const overrides = {
           title: product.custom_title,
           price: product.custom_price,
-          image_url: product.custom_image_url || ogImageUrl,
+          image_url: product.custom_image_url || product.original_image_url,
         };
         rows.push(toMetaRow(fakeItem, description, overrides));
       }
