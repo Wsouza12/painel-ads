@@ -27,6 +27,9 @@ export async function GET(request: NextRequest) {
 
     // Initialize Groq to generate copy
     const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
+    const productTitle = product.custom_title || product.original_title || "Produto";
+    const productPrice = Number(product.custom_price || product.original_price || 0);
+
     const chatCompletion = await groq.chat.completions.create({
       messages: [
         {
@@ -35,7 +38,7 @@ export async function GET(request: NextRequest) {
         },
         {
           role: "user",
-          content: `Crie a copy para o produto: ${product.title}. Preço original: ${product.price}.`
+          content: `Crie a copy para o produto: ${productTitle}. Preço original: ${productPrice}.`
         }
       ],
       model: "llama-3.1-8b-instant",
@@ -44,7 +47,7 @@ export async function GET(request: NextRequest) {
     });
 
     let copy = {
-      headline: product.title.substring(0, 20),
+      headline: productTitle.substring(0, 20),
       subheadline: "Aproveite esta oferta exclusiva",
       urgency: "Compre agora",
       themeColor: "#8b5cf6" // default purple
@@ -60,7 +63,7 @@ export async function GET(request: NextRequest) {
       console.error("Failed to parse Groq response", e);
     }
 
-    const imageUrl = product.pictures?.[0] || product.thumbnail;
+    const imageUrl = product.custom_image_url || product.pictures?.[0] || product.thumbnail;
 
     // Use Satori (via ImageResponse) to compose the ad
     return new ImageResponse(
@@ -202,7 +205,7 @@ export async function GET(request: NextRequest) {
               Apenas hoje
             </span>
             <span style={{ color: 'white', fontSize: '64px', fontWeight: 'bold' }}>
-              R$ {product.price.toFixed(2)}
+              R$ {productPrice.toFixed(2)}
             </span>
           </div>
 
