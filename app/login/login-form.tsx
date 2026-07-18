@@ -120,8 +120,16 @@ export default function LoginForm({ searchParams }: { searchParams: { error?: st
       <SubmitButtons />
       
       <p className="text-xs text-neutral-500 text-center mt-2">
-        Ao criar uma conta por e-mail, enviaremos um link de confirmação. (Desative a Confirmação no Supabase para acesso direto).
+        Ao criar uma conta por e-mail, enviaremos um link de confirmação obrigatório.
       </p>
+
+      <div className="flex items-center gap-4 my-6">
+        <div className="h-px bg-neutral-800 flex-1"></div>
+        <span className="text-neutral-500 text-sm">ou</span>
+        <div className="h-px bg-neutral-800 flex-1"></div>
+      </div>
+
+      <GoogleButton />
     </form>
   );
 }

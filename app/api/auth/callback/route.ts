@@ -6,14 +6,18 @@ export async function GET(request: Request) {
   const code = searchParams.get("code");
   const next = searchParams.get("next") ?? "/dashboard";
 
+  let baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL;
+  if (!baseUrl && process.env.VERCEL_URL) baseUrl = `https://${process.env.VERCEL_URL}`;
+  if (!baseUrl) baseUrl = 'http://localhost:3000';
+
   if (code) {
     const supabase = createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
-      return NextResponse.redirect(`${process.env.APP_URL || 'http://localhost:3000'}${next}`);
+      return NextResponse.redirect(`${baseUrl}${next}`);
     }
   }
 
   // URL to redirect to after sign in process completes
-  return NextResponse.redirect(`${process.env.APP_URL || 'http://localhost:3000'}/login?error=Nao_foi_possivel_autenticar`);
+  return NextResponse.redirect(`${baseUrl}/login?error=Nao_foi_possivel_autenticar`);
 }
