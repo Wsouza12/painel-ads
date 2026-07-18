@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
           content: `Crie a copy para o produto: ${product.title}. Preço original: ${product.price}.`
         }
       ],
-      model: "llama3-8b-8192",
+      model: "llama-3.1-8b-instant",
       temperature: 0.7,
       response_format: { type: "json_object" }
     });
