@@ -70,7 +70,7 @@ export async function GET(request: NextRequest) {
       console.error("Failed to parse Groq response", e);
     }
 
-    let imageUrl = product.custom_image_url || product.original_image_url || "https://placehold.co/600x600.png";
+    let imageUrl = product.original_image_url || "https://placehold.co/600x600.png";
     if (typeof imageUrl !== 'string') {
       imageUrl = "https://placehold.co/600x600.png";
     }
