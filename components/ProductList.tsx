@@ -221,7 +221,7 @@ function ProductCard({ product, allProducts, abTests }: { product: any; allProdu
   async function handleGeneratePremiumArt() {
     setIsGeneratingArt(true);
     try {
-      const res = await fetch(`/api/ai/generate-ad?productId=${product.id}`);
+      const res = await fetch(`/api/ai/generate-ad?productId=${product.id}&t=${Date.now()}`);
       if (!res.ok) throw new Error("Falha ao gerar a arte na Vercel Edge");
       
       const blob = await res.blob();
