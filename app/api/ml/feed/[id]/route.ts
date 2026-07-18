@@ -69,7 +69,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
           id: `${product.ml_item_id}-A`,
         }, description, {
           title: abTest.variant_a_title,
-          image_url: abTest.variant_a_image || ogImageUrl
+          image_url: abTest.variant_a_image || product.custom_image_url || `${ogImageUrl}&ab=A`
         }));
 
         // Variante B
@@ -78,7 +78,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
           id: `${product.ml_item_id}-B`,
         }, description, {
           title: abTest.variant_b_title,
-          image_url: abTest.variant_b_image || ogImageUrl
+          image_url: abTest.variant_b_image || `${ogImageUrl}&ab=B&parent_id=${product.ml_item_id}`
         }));
       } else {
         // Produto normal
