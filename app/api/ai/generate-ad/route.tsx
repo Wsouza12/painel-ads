@@ -63,7 +63,10 @@ export async function GET(request: NextRequest) {
       console.error("Failed to parse Groq response", e);
     }
 
-    const imageUrl = product.custom_image_url || product.pictures?.[0] || product.thumbnail;
+    let imageUrl = product.custom_image_url || product.pictures?.[0] || product.thumbnail || "https://placehold.co/600x600.png";
+    if (imageUrl.startsWith("http://")) {
+      imageUrl = imageUrl.replace("http://", "https://");
+    }
 
     // Use Satori (via ImageResponse) to compose the ad
     return new ImageResponse(
