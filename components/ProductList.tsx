@@ -216,6 +216,29 @@ function ProductCard({ product, allProducts, abTests }: { product: any; allProdu
     setIsLoadingImages(false);
   }
 
+  const [isGeneratingArt, setIsGeneratingArt] = useState(false);
+
+  async function handleGeneratePremiumArt() {
+    setIsGeneratingArt(true);
+    try {
+      const res = await fetch(`/api/ai/generate-ad?productId=${product.id}`);
+      if (!res.ok) throw new Error("Falha ao gerar a arte na Vercel Edge");
+      
+      const blob = await res.blob();
+      const file = new File([blob], `premium_ad_${product.id}.png`, { type: "image/png" });
+      
+      const formData = new FormData();
+      formData.append("image", file);
+      
+      const publicUrl = await uploadImage(formData);
+      setFormValues(prev => ({ ...prev, image_url: publicUrl }));
+      alert("Arte Premium Gerada e salva na nuvem com sucesso! 🎨✨");
+    } catch (err: any) {
+      alert("Erro ao gerar arte: " + err.message);
+    }
+    setIsGeneratingArt(false);
+  }
+
   if (isEditing) {
     // Load the test once if we haven't checked yet
     if (!abTest && !showLab) {
@@ -228,6 +251,14 @@ function ProductCard({ product, allProducts, abTests }: { product: any; allProdu
           <div className="absolute inset-0 bg-neutral-900/80 backdrop-blur-sm z-10 flex flex-col items-center justify-center">
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-500 mb-2"></div>
             <p className="text-sm text-emerald-400 animate-pulse font-medium">A IA está pensando (Groq + DALL-E)...</p>
+          </div>
+        )}
+        {isGeneratingArt && (
+          <div className="absolute inset-0 bg-neutral-900/80 backdrop-blur-sm z-30 flex flex-col items-center justify-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500 mb-2"></div>
+            <p className="text-sm text-amber-400 animate-pulse font-medium text-center px-4">
+              A IA está compondo a Arte Premium...<br/>Isso leva cerca de 5 segundos.
+            </p>
           </div>
         )}
         {isGeneratingAB && (
@@ -373,13 +404,22 @@ function ProductCard({ product, allProducts, abTests }: { product: any; allProdu
               <div>
                 <label className="text-xs text-neutral-400 flex justify-between items-end mb-1">
                   <span>Link de Imagem Personalizada (Opcional)</span>
-                  <button
-                    type="button"
-                    onClick={() => fileInputRef.current?.click()}
-                    className="text-xs bg-neutral-700 hover:bg-neutral-600 px-2 py-0.5 rounded flex items-center gap-1 transition-colors text-neutral-200 border border-neutral-600"
-                  >
-                    📎 Fazer Upload
-                  </button>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={handleGeneratePremiumArt}
+                      className="text-xs bg-amber-600 hover:bg-amber-500 px-2 py-0.5 rounded flex items-center gap-1 transition-colors text-white border border-amber-500 shadow-[0_0_10px_rgba(217,119,6,0.5)] font-bold"
+                    >
+                      🎨 Gerar Arte Premium (IA)
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => fileInputRef.current?.click()}
+                      className="text-xs bg-neutral-700 hover:bg-neutral-600 px-2 py-0.5 rounded flex items-center gap-1 transition-colors text-neutral-200 border border-neutral-600"
+                    >
+                      📎 Fazer Upload
+                    </button>
+                  </div>
                 </label>
                 <input
                   type="file"
