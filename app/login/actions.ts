@@ -25,12 +25,15 @@ export async function login(formData: FormData) {
   redirect("/dashboard");
 }
 
+import { headers } from "next/headers";
+
 export async function signInWithGoogle() {
   const supabase = createClient();
   
-  let baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL;
-  if (!baseUrl && process.env.VERCEL_URL) baseUrl = `https://${process.env.VERCEL_URL}`;
-  if (!baseUrl) baseUrl = 'http://localhost:3000';
+  const headersList = headers();
+  const host = headersList.get("host") || "localhost:3000";
+  const protocol = host.includes("localhost") ? "http" : "https";
+  const baseUrl = `${protocol}://${host}`;
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',

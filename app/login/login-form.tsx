@@ -39,32 +39,14 @@ function SubmitButtons() {
   );
 }
 
-import { createBrowserClient } from "@supabase/ssr";
-
 function GoogleButton() {
   const { pending } = useFormStatus();
-  const [loading, setLoading] = useState(false);
-  
-  const handleGoogleLogin = async () => {
-    setLoading(true);
-    const supabase = createBrowserClient(
-      process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-    );
-    
-    await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${window.location.origin}/api/auth/callback`,
-      },
-    });
-  };
   
   return (
     <button
-      type="button"
-      onClick={handleGoogleLogin}
-      disabled={pending || loading}
+      formAction={signInWithGoogle}
+      formNoValidate
+      disabled={pending}
       className="w-full flex items-center justify-center gap-3 bg-neutral-900 border border-neutral-700 text-white font-bold py-3 px-4 rounded-lg hover:bg-neutral-800 transition-colors active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
     >
       <svg viewBox="0 0 24 24" className="w-5 h-5" xmlns="http://www.w3.org/2000/svg">
@@ -73,7 +55,7 @@ function GoogleButton() {
         <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
         <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
       </svg>
-      {(pending || loading) ? "Conectando..." : "Continuar com Google"}
+      {pending ? "Conectando..." : "Continuar com Google"}
     </button>
   );
 }
