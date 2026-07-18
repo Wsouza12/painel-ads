@@ -70,33 +70,23 @@ export async function GET(request: NextRequest) {
             display: 'flex',
             width: '1080px',
             height: '1080px',
-            background: `linear-gradient(135deg, #111111 0%, ${copy.themeColor}33 50%, #000000 100%)`,
+            background: 'black',
             flexDirection: 'column',
             position: 'relative',
             overflow: 'hidden',
           }}
         >
-          {/* Fundo abstrato / Luz */}
+          {/* Fundo com cor baseada na IA */}
           <div
             style={{
               position: 'absolute',
-              top: '-20%',
-              right: '-10%',
-              width: '800px',
-              height: '800px',
-              background: `radial-gradient(circle, ${copy.themeColor}88 0%, transparent 60%)`,
-              filter: 'blur(80px)',
-            }}
-          />
-          <div
-            style={{
-              position: 'absolute',
-              bottom: '-20%',
-              left: '-10%',
-              width: '800px',
-              height: '800px',
-              background: `radial-gradient(circle, ${copy.themeColor}55 0%, transparent 60%)`,
-              filter: 'blur(80px)',
+              top: '0',
+              left: '0',
+              right: '0',
+              bottom: '0',
+              display: 'flex',
+              background: `linear-gradient(to bottom right, #111111, ${copy.themeColor})`,
+              opacity: 0.8,
             }}
           />
 
@@ -112,14 +102,14 @@ export async function GET(request: NextRequest) {
           >
             <div
               style={{
+                display: 'flex',
                 background: copy.themeColor,
                 color: 'white',
                 padding: '10px 24px',
-                borderRadius: '100px',
+                borderRadius: '50px',
                 fontSize: '32px',
                 fontWeight: 'bold',
                 textTransform: 'uppercase',
-                alignSelf: 'flex-start',
                 marginBottom: '30px',
                 letterSpacing: '2px',
               }}
@@ -134,7 +124,6 @@ export async function GET(request: NextRequest) {
                 color: 'white',
                 lineHeight: 1.1,
                 margin: 0,
-                textShadow: '0 10px 20px rgba(0,0,0,0.5)',
                 textTransform: 'uppercase',
                 maxWidth: '900px',
               }}
@@ -149,7 +138,6 @@ export async function GET(request: NextRequest) {
                 marginTop: '30px',
                 maxWidth: '800px',
                 lineHeight: 1.3,
-                textShadow: '0 5px 10px rgba(0,0,0,0.5)',
               }}
             >
               {copy.subheadline}
@@ -170,14 +158,13 @@ export async function GET(request: NextRequest) {
               zIndex: 20,
             }}
           >
-            {/* Como a foto original costuma ter fundo branco, vamos colocar ela dentro de uma moldura premium para disfarçar o fundo branco de forma elegante */}
             <div
               style={{
                 display: 'flex',
                 background: 'white',
-                padding: '20px',
+                padding: '40px',
                 borderRadius: '30px',
-                boxShadow: `0 30px 60px rgba(0,0,0,0.6), 0 0 40px ${copy.themeColor}44`,
+                boxShadow: '0 20px 40px rgba(0,0,0,0.5)',
                 width: '100%',
                 height: '100%',
                 justifyContent: 'center',
@@ -191,7 +178,6 @@ export async function GET(request: NextRequest) {
                 style={{
                   width: '100%',
                   height: '100%',
-                  objectFit: 'contain',
                 }}
               />
             </div>
@@ -205,16 +191,19 @@ export async function GET(request: NextRequest) {
               left: '80px',
               display: 'flex',
               flexDirection: 'column',
-              background: 'rgba(0,0,0,0.6)',
+              background: '#000000',
               padding: '30px 40px',
               borderRadius: '24px',
-              border: '2px solid rgba(255,255,255,0.1)',
-              backdropFilter: 'blur(10px)',
+              border: `4px solid ${copy.themeColor}`,
               zIndex: 30,
             }}
           >
-            <span style={{ color: '#aaa', fontSize: '24px', textTransform: 'uppercase', letterSpacing: '2px' }}>Apenas hoje</span>
-            <span style={{ color: 'white', fontSize: '64px', fontWeight: 'bold' }}>R$ {product.price.toFixed(2)}</span>
+            <span style={{ color: '#aaaaaa', fontSize: '24px', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '10px' }}>
+              Apenas hoje
+            </span>
+            <span style={{ color: 'white', fontSize: '64px', fontWeight: 'bold' }}>
+              R$ {product.price.toFixed(2)}
+            </span>
           </div>
 
         </div>
