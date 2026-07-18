@@ -86,7 +86,7 @@ export async function GET(request: NextRequest) {
             display: 'flex',
             width: '1080px',
             height: '1080px',
-            background: 'linear-gradient(to bottom right, #ffffff, #f1f5f9)',
+            background: '#ffffff',
             flexDirection: 'row',
             position: 'relative',
             overflow: 'hidden',
@@ -99,7 +99,8 @@ export async function GET(request: NextRequest) {
               display: 'flex',
               flexDirection: 'column',
               padding: '60px',
-              width: '50%',
+              width: '55%',
+              position: 'relative',
               zIndex: 10,
               justifyContent: 'space-between',
             }}
@@ -161,10 +162,10 @@ export async function GET(request: NextRequest) {
 
             {/* Tags de Confiança Rodapé Esquerdo */}
             <div style={{ display: 'flex', flexDirection: 'row', marginTop: '60px', gap: '20px' }}>
-              <div style={{ display: 'flex', alignItems: 'center', background: '#e2e8f0', padding: '12px 20px', borderRadius: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', background: '#f8fafc', padding: '12px 20px', borderRadius: '12px' }}>
                 <span style={{ fontSize: '20px', color: '#0f172a', fontWeight: 'bold' }}>✅ GARANTIA DE QUALIDADE</span>
               </div>
-              <div style={{ display: 'flex', alignItems: 'center', background: '#e2e8f0', padding: '12px 20px', borderRadius: '12px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', background: '#f8fafc', padding: '12px 20px', borderRadius: '12px' }}>
                 <span style={{ fontSize: '20px', color: '#0f172a', fontWeight: 'bold' }}>🚚 ENVIO RÁPIDO</span>
               </div>
             </div>
@@ -175,9 +176,9 @@ export async function GET(request: NextRequest) {
             style={{
               position: 'absolute',
               top: '40px',
-              right: '20px',
-              width: '650px',
-              height: '650px',
+              right: '-20px',
+              width: '550px',
+              height: '550px',
               display: 'flex',
               justifyContent: 'center',
               alignItems: 'center',
@@ -203,18 +204,18 @@ export async function GET(request: NextRequest) {
               right: '60px',
               display: 'flex',
               flexDirection: 'column',
-              background: '#0f172a',
+              background: '#ef4444',
               padding: '30px 40px',
               borderRadius: '24px',
-              boxShadow: '0 20px 40px rgba(0,0,0,0.2)',
+              boxShadow: '0 20px 40px rgba(239,68,68,0.4)',
               alignItems: 'flex-end',
               zIndex: 20,
             }}
           >
-            <span style={{ color: '#10b981', fontSize: '24px', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '10px', fontWeight: 'bold' }}>
+            <span style={{ color: '#fef08a', fontSize: '24px', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '10px', fontWeight: 'bold' }}>
               {copy.urgency}
             </span>
-            <span style={{ color: 'white', fontSize: '64px', fontWeight: '900' }}>
+            <span style={{ color: '#ffffff', fontSize: '72px', fontWeight: '900' }}>
               R$ {productPrice.toFixed(2)}
             </span>
           </div>
