@@ -405,13 +405,20 @@ function ProductCard({ product, allProducts, abTests }: { product: any; allProdu
                 <label className="text-xs text-neutral-400 flex justify-between items-end mb-1">
                   <span>Link de Imagem Personalizada (Opcional)</span>
                   <div className="flex gap-2">
-                    <button
-                      type="button"
-                      onClick={handleGeneratePremiumArt}
-                      className="text-xs bg-amber-600 hover:bg-amber-500 px-2 py-0.5 rounded flex items-center gap-1 transition-colors text-white border border-amber-500 shadow-[0_0_10px_rgba(217,119,6,0.5)] font-bold"
-                    >
-                      🎨 Gerar Arte Premium (IA)
-                    </button>
+                      <button
+                        type="button"
+                        onClick={() => setFormValues({...formValues, image_url: product.original_image_url})}
+                        className="text-xs bg-blue-600 hover:bg-blue-500 px-2 py-0.5 rounded flex items-center gap-1 transition-colors text-white border border-blue-500 shadow-[0_0_10px_rgba(37,99,235,0.5)] font-bold"
+                      >
+                        📥 Original (ML)
+                      </button>
+                      <button
+                        type="button"
+                        onClick={handleGeneratePremiumArt}
+                        className="text-xs bg-amber-600 hover:bg-amber-500 px-2 py-0.5 rounded flex items-center gap-1 transition-colors text-white border border-amber-500 shadow-[0_0_10px_rgba(217,119,6,0.5)] font-bold"
+                      >
+                        🎨 Gerar Arte Premium (IA)
+                      </button>
                     <button
                       type="button"
                       onClick={() => fileInputRef.current?.click()}
