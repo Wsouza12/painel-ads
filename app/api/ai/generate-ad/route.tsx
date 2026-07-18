@@ -170,61 +170,53 @@ export async function GET(request: NextRequest) {
             </div>
           </div>
 
-          {/* Direita: Imagem do Produto e Preço */}
+          {/* Imagem do Produto Gigante (Ocupa todo o topo direito) */}
           <div
             style={{
+              position: 'absolute',
+              top: '40px',
+              right: '20px',
+              width: '650px',
+              height: '650px',
               display: 'flex',
-              flexDirection: 'column',
-              width: '50%',
-              position: 'relative',
               justifyContent: 'center',
               alignItems: 'center',
-              padding: '40px',
+              zIndex: 5,
             }}
           >
-            {/* Produto */}
-            <div
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={imageUrl}
+              alt="Product"
               style={{
-                display: 'flex',
                 width: '100%',
-                height: '80%',
-                justifyContent: 'center',
-                alignItems: 'center',
+                height: '100%',
               }}
-            >
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={imageUrl}
-                alt="Product"
-                style={{
-                  maxWidth: '100%',
-                  maxHeight: '100%',
-                }}
-              />
-            </div>
+            />
+          </div>
 
-            {/* Selo de Preço / Urgência */}
-            <div
-              style={{
-                position: 'absolute',
-                bottom: '60px',
-                right: '60px',
-                display: 'flex',
-                flexDirection: 'column',
-                background: '#0f172a',
-                padding: '30px 40px',
-                borderRadius: '24px',
-                boxShadow: '0 20px 40px rgba(0,0,0,0.2)',
-                alignItems: 'flex-end',
-              }}
-            >
-              <span style={{ color: '#10b981', fontSize: '24px', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '10px', fontWeight: 'bold' }}>
-                {copy.urgency}
-              </span>
-              <span style={{ color: 'white', fontSize: '64px', fontWeight: '900' }}>
-                R$ {productPrice.toFixed(2)}
-              </span>
-            </div>
+          {/* Selo de Preço / Urgência */}
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '60px',
+              right: '60px',
+              display: 'flex',
+              flexDirection: 'column',
+              background: '#0f172a',
+              padding: '30px 40px',
+              borderRadius: '24px',
+              boxShadow: '0 20px 40px rgba(0,0,0,0.2)',
+              alignItems: 'flex-end',
+              zIndex: 20,
+            }}
+          >
+            <span style={{ color: '#10b981', fontSize: '24px', textTransform: 'uppercase', letterSpacing: '2px', marginBottom: '10px', fontWeight: 'bold' }}>
+              {copy.urgency}
+            </span>
+            <span style={{ color: 'white', fontSize: '64px', fontWeight: '900' }}>
+              R$ {productPrice.toFixed(2)}
+            </span>
           </div>
         </div>
       ),
