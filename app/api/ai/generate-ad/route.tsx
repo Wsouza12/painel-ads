@@ -63,7 +63,10 @@ export async function GET(request: NextRequest) {
       console.error("Failed to parse Groq response", e);
     }
 
-    let imageUrl = product.custom_image_url || product.pictures?.[0] || product.thumbnail || "https://placehold.co/600x600.png";
+    let imageUrl = product.custom_image_url || product.pictures?.[0]?.secure_url || product.pictures?.[0]?.url || product.thumbnail || "https://placehold.co/600x600.png";
+    if (typeof imageUrl !== 'string') {
+      imageUrl = "https://placehold.co/600x600.png";
+    }
     if (imageUrl.startsWith("http://")) {
       imageUrl = imageUrl.replace("http://", "https://");
     }
