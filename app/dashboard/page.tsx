@@ -40,11 +40,21 @@ export default async function DashboardPage() {
   return (
     <main className="min-h-screen bg-neutral-950 text-neutral-100 px-6 py-10">
       <div className="max-w-2xl mx-auto space-y-8">
-        <header>
-          <h1 className="text-2xl font-semibold">Catálogo ML → Meta</h1>
-          <p className="text-neutral-400 text-sm mt-1">
-            Status da sincronização dos seus anúncios com o catálogo do Meta.
-          </p>
+        <header className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h1 className="text-2xl font-semibold">Catálogo ML → Meta</h1>
+            <p className="text-neutral-400 text-sm mt-1">
+              Status da sincronização dos seus anúncios com o catálogo do Meta.
+            </p>
+          </div>
+          <a
+            href="/prompt-generator/index.html"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-md bg-purple-600 hover:bg-purple-500 px-4 py-2 text-sm font-medium text-white transition-colors shadow-[0_0_15px_rgba(147,51,234,0.3)]"
+          >
+            <span>✨</span> Gerador de Prompts IA
+          </a>
         </header>
 
         {!connection ? (

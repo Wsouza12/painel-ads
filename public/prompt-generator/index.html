@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompt Creator AI</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="dark-mode">
+    <div class="app-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1>✨ PROMPT CREATOR AI</h1>
+            </div>
+            
+            <div class="form-group">
+                <label for="templateSelect">Modelos Prontos</label>
+                <select id="templateSelect">
+                    <option value="">Selecione um modelo...</option>
+                    <option value="apple">Apple Premium</option>
+                    <option value="mercadolivre">Mercado Livre</option>
+                    <option value="shopee">Shopee</option>
+                    <option value="nike">Nike Esportivo</option>
+                    <option value="blackfriday">Black Friday</option>
+                    <option value="minimalist">Minimalista</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="productTitle">Título do Produto</label>
+                <input type="text" id="productTitle" placeholder="Ex: Carregador Magnético MagSafe">
+            </div>
+
+            <div class="form-group">
+                <label for="productDesc">Descrição Completa</label>
+                <textarea id="productDesc" rows="4" placeholder="Descreva os detalhes do produto..."></textarea>
+            </div>
+
+            <div class="row">
+                <div class="form-group">
+                    <label for="price">Preço</label>
+                    <input type="text" id="price" placeholder="R$ 89,99">
+                </div>
+                <div class="form-group">
+                    <label for="oldPrice">Preço Antigo</label>
+                    <input type="text" id="oldPrice" placeholder="R$ 149,90">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Público</label>
+                <div class="radio-group">
+                    <label><input type="radio" name="audience" value="Masculino"> Masculino</label>
+                    <label><input type="radio" name="audience" value="Feminino"> Feminino</label>
+                    <label><input type="radio" name="audience" value="Ambos" checked> Ambos</label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="styleSelect">Estilo Visual</label>
+                <select id="styleSelect">
+                    <option value="Apple Premium">Apple Premium</option>
+                    <option value="Cyberpunk">Cyberpunk</option>
+                    <option value="Minimalist">Minimalista</option>
+                    <option value="Luxury">Luxo / Premium</option>
+                    <option value="Photorealistic">Fotorealista</option>
+                    <option value="3D Render">Renderização 3D</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="formatSelect">Formato</label>
+                <select id="formatSelect">
+                    <option value="Facebook Feed 1080x1350">Facebook Feed 1080x1350</option>
+                    <option value="Instagram Story 1080x1920">Instagram Story 1080x1920</option>
+                    <option value="Square 1080x1080">Quadrado 1080x1080</option>
+                    <option value="Catálogo Meta / Paisagem (1200x628)">Catálogo Meta / Paisagem (1200x628)</option>
+                    <option value="Catálogo Coleção (500x262)">Catálogo Coleção (500x262)</option>
+                    <option value="YouTube Thumbnail 1920x1080">YouTube Thumbnail 1920x1080</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="mainColor">Cor Principal</label>
+                <select id="mainColor">
+                    <option value="Vermelho">Vermelho</option>
+                    <option value="Azul">Azul</option>
+                    <option value="Verde">Verde</option>
+                    <option value="Amarelo">Amarelo</option>
+                    <option value="Preto">Preto</option>
+                    <option value="Branco">Branco</option>
+                    <option value="Rosa">Rosa</option>
+                    <option value="Laranja">Laranja</option>
+                    <option value="Roxo">Roxo</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="ctaButton">Botão CTA</label>
+                <input type="text" id="ctaButton" placeholder="COMPRAR AGORA" value="COMPRAR AGORA">
+            </div>
+
+            <div class="form-group">
+                <label>Benefícios Rápidos</label>
+                <div class="checkbox-group">
+                    <label><input type="checkbox" value="Carregamento rápido"> Carregamento rápido</label>
+                    <label><input type="checkbox" value="Frete Grátis"> Frete Grátis</label>
+                    <label><input type="checkbox" value="Alta Qualidade"> Alta Qualidade</label>
+                    <label><input type="checkbox" value="Garantia"> Garantia</label>
+                    <label><input type="checkbox" value="Produto Original"> Produto Original</label>
+                </div>
+            </div>
+
+            <button id="generateBtn" class="btn-primary">🚀 GERAR PROMPT</button>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="content">
+            <header class="content-header">
+                <div class="header-actions">
+                    <button id="toggleThemeBtn" class="btn-icon" title="Alternar Modo Claro/Escuro">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </button>
+                    <button id="saveTemplateBtn" class="btn-secondary">💾 Salvar Modelo Atual</button>
+                </div>
+            </header>
+
+            <div class="prompt-container">
+                <div class="prompt-header">
+                    <h2>Prompt Gerado</h2>
+                    <div class="prompt-actions">
+                        <span id="charCount" class="char-count">0 caracteres</span>
+                        <button id="copyBtn" class="btn-secondary">📋 Copiar</button>
+                        <button id="exportBtn" class="btn-secondary">⬇️ Exportar TXT</button>
+                    </div>
+                </div>
+                
+                <div class="prompt-output-wrapper">
+                    <textarea id="promptOutput" readonly placeholder="O seu prompt otimizado aparecerá aqui..."></textarea>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
