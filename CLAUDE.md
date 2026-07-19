@@ -1,66 +1,37 @@
-# CLAUDE.md — ml-meta-sync
+# Contexto do Projeto: Painel de Ads & Integração Mercado Livre
 
-Instruções de contexto pra qualquer sessão do Claude Code trabalhando neste projeto. Leia isso antes de tocar em qualquer arquivo.
+## 🎯 Objetivo do Sistema
+Plataforma desenvolvida para dropshippers otimizarem campanhas no Facebook Ads (Meta Ads) utilizando o modelo de negócio do Mercado Livre, mas com controle total do funil de tráfego, rastreamento (Pixel) e aparência do produto através de "Páginas Ponte".
 
-## O que é o projeto
+## 🏗️ Arquitetura
+- **Frontend/Backend:** Next.js (React) com App Router.
+- **Banco de Dados:** Supabase (PostgreSQL).
+- **Hospedagem:** Vercel (https://painel-ads-one.vercel.app).
+- **Estilização:** Tailwind CSS.
 
-App Next.js 14 (App Router, TypeScript, Tailwind) que:
-1. Conecta via OAuth numa conta do Mercado Livre.
-2. Puxa todos os anúncios ativos via API do ML.
-3. Gera um feed CSV no formato exigido pelo Meta Commerce Manager.
-4. Sobe esse feed no Supabase Storage (bucket público) e expõe a URL.
-5. Roda tudo automaticamente via Vercel Cron a cada 6h.
-6. Tem um dashboard (`/dashboard`) pra status manual e sync sob demanda.
+## 🔗 Principais Funcionalidades
+1. **Importação do Mercado Livre:** Captura dados de um anúncio original do Mercado Livre (Preço, Título, Link, Imagens) usando a API pública.
+2. **Edição Estratégica (Painel):** O usuário pode customizar a "Capa" do produto (fazer upload de uma imagem chamativa) e editar o preço para criar percepção de ancoragem/desconto, gerando uma nova Página Ponte exclusiva.
+3. **Página Ponte de Alta Conversão:** Uma página intermediária que:
+   - Exibe os dados otimizados.
+   - Carrega o Pixel da Meta (`PageView`, `ViewContent`).
+   - Ao clicar em "Comprar", abre um modal nativo passando segurança e aciona uma contagem regressiva de 5 segundos.
+   - Dispara o evento de `InitiateCheckout` na hora do redirecionamento.
+   - Redireciona o usuário (com o link de afiliado/original) para o Mercado Livre.
+4. **Catálogo Dinâmico (Facebook):** Rota da API (`/api/catalog/fb`) que gera automaticamente um arquivo XML (RSS) com todos os produtos editados para serem usados em Campanhas de Vendas de Catálogo Dinâmico (Advantage+) no Meta Ads. O catálogo bloqueia intencionalmente imagens nativas extras do ML para forçar o FB a exibir apenas as capas com alta conversão.
 
-Uso atual: pessoal, single-tenant (uma linha só na tabela `ml_connections`). Objetivo futuro: pode virar produto vendável — ver seção "Próximo passo" abaixo.
+## 🛠️ Banco de Dados (Supabase)
+Tabela principal: `ml_products`
+- `id` (UUID)
+- `ml_item_id` (String - ID original do ML)
+- `original_title` / `custom_title` (String)
+- `original_price` / `custom_price` (Float)
+- `original_image_url` / `custom_image_url` (String)
+- `original_permalink` (String)
+- `created_at` (Timestamp)
+- `meta_pixel_id` (String - Para o rastreamento dinâmico)
 
-## Stack
-
-- Next.js 14 App Router + TypeScript + Tailwind CSS
-- Supabase (Postgres + Storage), acessado só via `service_role` no server (nunca expor no client)
-- Deploy: Vercel (cron nativo via `vercel.json`)
-- Sem ORM — queries diretas via `@supabase/supabase-js`
-
-## Estrutura de arquivos (não reorganizar sem necessidade)
-
-```
-app/api/ml/connect/route.ts   → inicia OAuth
-app/api/ml/callback/route.ts  → troca code por token, salva ml_connections
-app/api/ml/sync/route.ts      → rota de cron (protegida por CRON_SECRET)
-app/api/ml/sync/manual/route.ts → trigger manual (botão do dashboard)
-app/dashboard/page.tsx        → UI de status
-lib/ml.ts                     → toda chamada à API do Mercado Livre
-lib/meta-feed.ts              → transformação ML → formato Meta + CSV
-lib/sync.ts                   → orquestração (usada por cron E manual)
-lib/supabase.ts               → client admin
-supabase/schema.sql           → schema — rodar manualmente no SQL Editor, não há migration runner configurado ainda
-```
-
-## Regras de negócio importantes (não quebrar)
-
-1. **Refresh token do ML rotaciona a cada uso.** `lib/ml.ts` → `refreshAccessToken()` SEMPRE salva o novo `refresh_token` retornado no banco. Se alguém tentar "otimizar" isso guardando o token em `.env`/variável estática, o próximo sync quebra. Não mexer nesse comportamento.
-2. **`lib/sync.ts` é a única fonte de verdade da orquestração.** Tanto `sync/route.ts` (cron) quanto `sync/manual/route.ts` chamam `syncAllConnections()`. Não duplicar a lógica de sync direto numa rota.
-3. **`ml_connections.user_id` é nullable de propósito.** Hoje fica `null`. É o hook pra multi-tenant — não remover a coluna, não preencher com valor fake.
-4. **`link` do feed aponta pro permalink do ML**, não pra um site próprio (o usuário não tem loja própria ainda). Se isso mudar, editar `toMetaRow()` em `lib/meta-feed.ts`.
-5. **Rota `/api/ml/sync` (cron) exige header `Authorization: Bearer $CRON_SECRET`.** Vercel injeta isso sozinho em cron jobs configurados em `vercel.json`. Não remover essa checagem.
-
-## Próximo passo em andamento: domínio próprio + login
-
-O usuário vai:
-- Apontar um domínio próprio pro deploy (Vercel).
-- Adicionar autenticação (login) na aplicação.
-
-Quando isso for implementado:
-- Login = Supabase Auth (mais direto, já está no stack).
-- `ml_connections.user_id` passa a ser preenchido no callback OAuth com `auth.uid()` da sessão.
-- Precisa de RLS policy em `ml_connections` e `sync_logs` filtrando por `user_id = auth.uid()`.
-- O dashboard hoje pega "a primeira conexão" (`connections?.[0]`) — isso precisa virar "a conexão do usuário logado".
-- `ML_REDIRECT_URI` no `.env` precisa apontar pro domínio novo, e isso também precisa bater com o que está cadastrado no Devcenter do Mercado Livre (senão o OAuth quebra com erro de redirect_uri_mismatch).
-
-Não implementar login especulativamente antes de receber instrução explícita — só documentar aqui que é o próximo passo esperado.
-
-## Protocolo de execução
-
-Antes de qualquer ação (criar/editar arquivo, rodar migration, instalar dependência), gerar um PRE-EXECUTION REPORT curto: o que vai ser feito, quais arquivos são afetados, e esperar confirmação explícita antes de prosseguir. Não pular esse passo mesmo em mudanças que pareçam triviais.
-
-Preferências gerais do usuário: código completo e executável, sem explicação excessiva, automação em vez de passo manual repetido.
+## 📌 Regras de IA (Diretrizes para Assistentes)
+- **Modificações de Layout:** Sempre priorizar um design limpo e de alta confiança ("estilo nativo" ou Premium). A página ponte e o painel de integração foram estilizados com as cores do ML.
+- **Ferramentas de Bash:** Evitar uso desnecessário de ferramentas amplas se houver ferramenta específica (Ex: preferir `replace_file_content` para edição).
+- **Catálogo:** Não incluir `additional_image_link` com as fotos do ML para evitar sujeira visual no carrossel do Meta Ads.
