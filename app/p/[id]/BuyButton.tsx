@@ -4,8 +4,11 @@ import { useEffect, useState } from "react";
 
 export default function BuyButton({ permalink }: { permalink: string }) {
   const [timeLeft, setTimeLeft] = useState(5);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   useEffect(() => {
+    if (!isModalOpen) return;
+
     if (timeLeft <= 0) {
       // Fire pixel
       // @ts-ignore
@@ -23,13 +26,14 @@ export default function BuyButton({ permalink }: { permalink: string }) {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [timeLeft, permalink]);
+  }, [timeLeft, isModalOpen, permalink]);
 
   return (
     <div className="space-y-2">
-      <a 
-        href={permalink}
-        onClick={() => {
+      <button 
+        onClick={(e) => {
+          e.preventDefault();
+          setIsModalOpen(true);
           // @ts-ignore
           if (typeof window !== "undefined" && window.fbq) {
             // @ts-ignore
@@ -39,10 +43,11 @@ export default function BuyButton({ permalink }: { permalink: string }) {
         className="w-full bg-[#3483FA] hover:bg-[#2968c8] text-white font-semibold py-3.5 rounded-md flex items-center justify-center transition-colors text-base"
       >
         Comprar agora
-      </a>
+      </button>
       
       {/* ML Integration Style Redirect Modal */}
-      <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
         <div className="bg-white rounded-xl shadow-2xl w-full max-w-[480px] overflow-hidden animate-in zoom-in-95 duration-200 p-6 flex flex-col">
           
           <div className="text-left mb-4">
@@ -114,7 +119,7 @@ export default function BuyButton({ permalink }: { permalink: string }) {
             </a>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
