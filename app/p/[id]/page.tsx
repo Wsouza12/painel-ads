@@ -2,6 +2,7 @@ import { supabaseAdmin } from "@/lib/supabase";
 import { getDescription } from "@/lib/ml";
 import { notFound } from "next/navigation";
 import PixelTracker from "./PixelTracker";
+import BuyButton from "./BuyButton";
 import { ShieldCheck, Truck, Star, CreditCard } from "lucide-react";
 
 export const revalidate = 3600; // Cache for 1 hour
@@ -121,20 +122,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
 
       {/* Botão Fixo no Rodapé */}
       <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-neutral-200 max-w-md mx-auto">
-        <a 
-          href={product.original_permalink}
-          onClick={() => {
-            // @ts-ignore
-            if (typeof window !== "undefined" && window.fbq) {
-              // @ts-ignore
-              window.fbq('track', 'InitiateCheckout');
-            }
-          }}
-          className="w-full bg-[#3483fa] hover:bg-[#2968c8] text-white font-bold py-4 rounded-md flex flex-col items-center justify-center transition-colors shadow-lg"
-        >
-          <span className="text-lg">Comprar no Mercado Livre</span>
-          <span className="text-xs font-normal text-blue-100 opacity-90">Você será redirecionado em segurança</span>
-        </a>
+        <BuyButton permalink={product.original_permalink} />
       </div>
     </main>
   );
