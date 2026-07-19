@@ -332,11 +332,35 @@ async function init() {
 }
 
 // Quando selecionar um produto, preencher os campos
-formElements.syncedProductSelect.addEventListener('change', (e) => {
+formElements.syncedProductSelect.addEventListener('change', async (e) => {
     const selectedId = e.target.value;
+    if (!selectedId) {
+        formElements.productTitle.value = '';
+        formElements.productDesc.value = '';
+        updateCharCount();
+        return;
+    }
+
     const prod = syncedProductsData.find(p => p.id === selectedId);
     if (prod) {
         formElements.productTitle.value = prod.custom_title || prod.original_title;
+        
+        // Mostrar aviso de carregamento
+        formElements.productDesc.value = "Carregando descrição do Mercado Livre...";
+        updateCharCount();
+
+        try {
+            const res = await fetch(`/api/products/description?id=${selectedId}`);
+            if (res.ok) {
+                const data = await res.json();
+                formElements.productDesc.value = data.description || '';
+            } else {
+                formElements.productDesc.value = "Não foi possível carregar a descrição.";
+            }
+        } catch (err) {
+            formElements.productDesc.value = "Erro ao carregar descrição.";
+        }
+        
         updateCharCount();
     }
 });
