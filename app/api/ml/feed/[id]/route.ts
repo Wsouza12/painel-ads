@@ -69,13 +69,19 @@ export async function GET(request: Request, { params }: { params: { id: string }
       const description = product.original_title; 
 
       if (abTest) {
+        // Função auxiliar para ignorar placehold.co
+        const getValidImage = (url: string | null) => {
+          if (url && url.includes("placehold.co")) return null;
+          return url;
+        };
+
         // Variante A
         rows.push(toMetaRow({
           ...fakeItem,
           id: `${product.ml_item_id}-A`,
         }, description, {
           title: abTest.variant_a_title,
-          image_url: abTest.variant_a_image || product.custom_image_url || product.original_image_url
+          image_url: getValidImage(abTest.variant_a_image) || product.custom_image_url || product.original_image_url
         }, { item_group_id: product.ml_item_id }));
 
         // Variante B
@@ -84,7 +90,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
           id: `${product.ml_item_id}-B`,
         }, description, {
           title: abTest.variant_b_title,
-          image_url: abTest.variant_b_image || product.original_image_url
+          image_url: getValidImage(abTest.variant_b_image) || product.original_image_url
         }, { item_group_id: product.ml_item_id }));
       } else {
         // Produto normal
