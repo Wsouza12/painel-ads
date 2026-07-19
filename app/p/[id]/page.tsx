@@ -3,7 +3,6 @@ import { getDescription } from "@/lib/ml";
 import { notFound } from "next/navigation";
 import PixelTracker from "./PixelTracker";
 import BuyButton from "./BuyButton";
-import { ShieldCheck, Truck, Star, CreditCard } from "lucide-react";
 
 export const revalidate = 3600; // Cache for 1 hour
 
@@ -37,91 +36,154 @@ export default async function ProductPage({ params }: { params: { id: string } }
 
   const imageUrl = product.custom_image_url || product.original_image_url;
   
-  // 4. ML Description (We fetch on demand, or we could just not show it to keep the page short and focused on the button)
-  let description = "Descrição completa no site oficial do Mercado Livre.";
+  // Discount percentage
+  const discountPercent = Math.round(((oldPrice - currentPrice) / oldPrice) * 100);
+  
+  // Installments
+  const installmentValue = (currentPrice / 12).toFixed(2).replace(".", ",");
+
+  // 4. ML Description
+  let description = "";
   try {
     const fetchedDesc = await getDescription(product.ml_item_id);
     if (fetchedDesc) {
-      // Truncate if too long to keep the landing page clean
-      description = fetchedDesc.length > 300 ? fetchedDesc.substring(0, 300) + "..." : fetchedDesc;
+      description = fetchedDesc.length > 400 ? fetchedDesc.substring(0, 400) + "..." : fetchedDesc;
     }
   } catch (e) {
     // ignore
   }
 
   return (
-    <main className="min-h-screen bg-neutral-100 flex flex-col max-w-md mx-auto shadow-xl relative pb-24">
+    <main className="min-h-screen bg-[#EBEBEB] flex flex-col max-w-md mx-auto relative pb-20">
       {connection?.meta_pixel_id && <PixelTracker pixelId={connection.meta_pixel_id} />}
 
-      {/* Cabeçalho Trust */}
-      <div className="bg-[#FFE600] text-black text-center py-2 text-xs font-bold flex items-center justify-center gap-1 shadow-sm relative z-10">
-        <ShieldCheck size={14} />
-        Site Oficial - Compra Garantida Mercado Livre
-      </div>
-
-      {/* Imagem do Produto */}
-      <div className="bg-white w-full aspect-square relative">
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img 
-          src={imageUrl} 
-          alt={title} 
-          className="w-full h-full object-cover"
-        />
-        <div className="absolute bottom-2 left-2 bg-black/70 text-white text-xs px-2 py-1 rounded-md flex items-center gap-1 font-semibold">
-          <Star size={12} className="text-yellow-400 fill-yellow-400" />
-          Top Avaliações
+      {/* Cabeçalho ML */}
+      <div className="bg-[#FFE600] px-4 py-3 flex items-center gap-3">
+        <div className="flex-1">
+          <div className="bg-white rounded-full px-3 py-1.5 flex items-center gap-2">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#999" strokeWidth="2">
+              <circle cx="11" cy="11" r="8"/>
+              <path d="M21 21l-4.35-4.35"/>
+            </svg>
+            <span className="text-sm text-gray-400">Buscar no Mercado Livre</span>
+          </div>
         </div>
       </div>
 
-      {/* Informações */}
-      <div className="p-4 bg-white space-y-4">
-        <h1 className="text-xl font-bold text-neutral-900 leading-tight">
+      {/* Breadcrumb */}
+      <div className="bg-white px-4 py-2 text-xs text-[#3483FA]">
+        &lt; Voltar ao listado
+      </div>
+
+      {/* Imagem do Produto - estilo ML nativo */}
+      <div className="bg-white w-full">
+        <div className="relative aspect-square flex items-center justify-center p-4">
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img 
+            src={imageUrl} 
+            alt={title} 
+            className="max-w-full max-h-full object-contain"
+          />
+        </div>
+        {/* Dot indicators */}
+        <div className="flex items-center justify-center gap-1.5 pb-3">
+          <div className="w-1.5 h-1.5 rounded-full bg-[#3483FA]"></div>
+          <div className="w-1.5 h-1.5 rounded-full bg-gray-300"></div>
+          <div className="w-1.5 h-1.5 rounded-full bg-gray-300"></div>
+          <div className="w-1.5 h-1.5 rounded-full bg-gray-300"></div>
+          <div className="w-1.5 h-1.5 rounded-full bg-gray-300"></div>
+        </div>
+      </div>
+
+      {/* Seção de Preço - estilo ML */}
+      <div className="bg-white px-4 pb-4 border-b border-gray-100">
+        <p className="text-xs text-gray-500 mb-1">Novo  |  +500 vendidos</p>
+        
+        <h1 className="text-sm text-gray-700 leading-snug mb-3">
           {title}
         </h1>
 
-        <div className="space-y-1">
-          <p className="text-sm text-neutral-400 line-through">
+        <div className="space-y-0.5">
+          <p className="text-xs text-gray-400 line-through">
             R$ {oldPrice.toFixed(2).replace(".", ",")}
           </p>
-          <div className="flex items-center gap-2">
-            <p className="text-3xl font-extrabold text-neutral-900">
+          <div className="flex items-baseline gap-2">
+            <p className="text-[28px] font-light text-gray-900">
               R$ {currentPrice.toFixed(2).replace(".", ",")}
             </p>
-            <span className="bg-green-600 text-white text-xs font-bold px-2 py-1 rounded">
-              OFERTA
+            <span className="text-sm font-semibold text-[#00A650]">
+              {discountPercent}% OFF
             </span>
           </div>
-          <p className="text-green-600 font-semibold text-sm">
-            em até 12x sem juros no cartão
+          <p className="text-sm text-[#00A650]">
+            em <span className="font-semibold">12x R$ {installmentValue}</span> sem juros
           </p>
         </div>
+      </div>
 
-        {/* Benefícios */}
-        <div className="grid grid-cols-2 gap-2 pt-2">
-          <div className="flex items-center gap-2 text-xs text-neutral-600 bg-neutral-50 p-2 rounded">
-            <Truck size={16} className="text-green-600" />
-            <span>Envio Rápido</span>
-          </div>
-          <div className="flex items-center gap-2 text-xs text-neutral-600 bg-neutral-50 p-2 rounded">
-            <ShieldCheck size={16} className="text-blue-600" />
-            <span>Compra Garantida</span>
-          </div>
-          <div className="flex items-center gap-2 text-xs text-neutral-600 bg-neutral-50 p-2 rounded col-span-2">
-            <CreditCard size={16} className="text-neutral-500" />
-            <span>Pagamento Seguro pelo Mercado Pago</span>
+      {/* Envio grátis */}
+      <div className="bg-white px-4 py-3 border-b border-gray-100">
+        <div className="flex items-center gap-2">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00A650" strokeWidth="2">
+            <rect x="1" y="3" width="15" height="13" rx="2"/>
+            <path d="M16 8h4l3 5v5h-7V8z"/>
+            <circle cx="5.5" cy="18.5" r="2.5"/>
+            <circle cx="18.5" cy="18.5" r="2.5"/>
+          </svg>
+          <div>
+            <p className="text-sm text-[#00A650] font-semibold">Chegará grátis</p>
+            <p className="text-xs text-gray-500">Saiba os prazos de entrega</p>
           </div>
         </div>
       </div>
 
-      <div className="p-4 space-y-2">
-        <h2 className="font-bold text-neutral-900">Sobre este produto:</h2>
-        <p className="text-sm text-neutral-600 leading-relaxed whitespace-pre-wrap">
-          {description}
-        </p>
+      {/* Devolução */}
+      <div className="bg-white px-4 py-3 border-b border-gray-100">
+        <div className="flex items-center gap-2">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#3483FA" strokeWidth="2">
+            <polyline points="1 4 1 10 7 10"/>
+            <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/>
+          </svg>
+          <p className="text-sm text-[#3483FA]">Devolução grátis</p>
+        </div>
       </div>
 
-      {/* Botão Fixo no Rodapé */}
-      <div className="fixed bottom-0 left-0 right-0 p-4 bg-white border-t border-neutral-200 max-w-md mx-auto">
+      {/* Estoque */}
+      <div className="bg-white px-4 py-3 mb-2">
+        <p className="text-sm text-gray-900 font-semibold">Estoque disponível</p>
+        <div className="flex items-center gap-1 mt-1">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00A650" strokeWidth="3">
+            <path d="M20 6L9 17l-5-5"/>
+          </svg>
+          <p className="text-xs text-gray-500">Compra Garantida, receba o produto que está esperando ou devolvemos o dinheiro.</p>
+        </div>
+      </div>
+
+      {/* Vendedor */}
+      <div className="bg-white px-4 py-3 mb-2">
+        <p className="text-xs text-gray-500 mb-1">Vendido por</p>
+        <p className="text-sm text-[#3483FA] font-semibold">Loja Oficial</p>
+        <div className="mt-2 flex gap-4 text-xs text-gray-500">
+          <div className="flex items-center gap-1">
+            <div className="w-2 h-2 rounded-full bg-[#00A650]"></div>
+            <span>MercadoLíder</span>
+          </div>
+          <span>+1000 vendas</span>
+        </div>
+      </div>
+
+      {/* Descrição */}
+      {description && (
+        <div className="bg-white px-4 py-4 mb-2">
+          <h2 className="text-base text-gray-900 mb-2">Descrição</h2>
+          <p className="text-sm text-gray-600 leading-relaxed whitespace-pre-wrap">
+            {description}
+          </p>
+        </div>
+      )}
+
+      {/* Botão Fixo - estilo ML */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 max-w-md mx-auto px-4 py-3 z-50">
         <BuyButton permalink={product.original_permalink} />
       </div>
     </main>
