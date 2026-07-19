@@ -20,15 +20,16 @@ export async function GET(request: Request, { params }: { params: { id: string }
       return new Response("Connection not found", { status: 404 });
     }
 
-    // Buscar produtos da DB
+    // Buscar produtos da DB - apenas ativos no ML (não pausados)
     let query = supabaseAdmin
       .from("ml_products")
       .select("*")
       .eq("connection_id", connection.id)
-      .eq("is_active", true);
+      .eq("is_active", true)
+      .neq("original_condition", "paused");
 
     const { data: products } = await query;
-    if (!products) return new Response("No products", { status: 404 });
+    if (!products || products.length === 0) return new Response("No products", { status: 404 });
 
     const rows = [];
     
