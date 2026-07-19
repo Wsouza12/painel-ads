@@ -85,13 +85,23 @@ export async function GET(request: Request, { params }: { params: { id: string }
           image_url: getValidImage(abTest.variant_a_image) || product.custom_image_url || product.original_image_url
         }, { item_group_id: product.ml_item_id }));
 
+        // Buscar preco real do Variant B se existir
+        let variantBPrice = product.original_price;
+        if (abTest.variant_b_product_id) {
+          const variantBProduct = products.find((p: any) => p.id === abTest.variant_b_product_id);
+          if (variantBProduct) {
+            variantBPrice = variantBProduct.custom_price || variantBProduct.original_price;
+          }
+        }
+
         // Variante B
         rows.push(toMetaRow({
           ...fakeItem,
           id: `${product.ml_item_id}-B`,
         }, description, {
           title: abTest.variant_b_title,
-          image_url: getValidImage(abTest.variant_b_image) || product.original_image_url
+          image_url: getValidImage(abTest.variant_b_image) || product.original_image_url,
+          price: variantBPrice
         }, { item_group_id: product.ml_item_id }));
       } else {
         // Produto normal
