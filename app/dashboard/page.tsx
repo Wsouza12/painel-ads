@@ -114,6 +114,18 @@ export default async function DashboardPage() {
                     <li>Selecione <strong>Atualização a cada hora (Hourly)</strong>. Pronto!</li>
                   </ol>
                 </div>
+
+                <div className="mt-4 p-3 bg-green-900/10 border border-green-900/30 rounded text-xs text-green-200/70 space-y-2">
+                  <p className="font-bold text-green-400">Como conectar no Google Ads (Merchant Center):</p>
+                  <ol className="list-decimal list-inside space-y-1">
+                    <li>Acesse o <strong className="text-white"><a href="https://merchants.google.com/" target="_blank" className="underline hover:text-green-300">Google Merchant Center</a></strong> e crie sua conta grátis.</li>
+                    <li>No menu lateral, vá em <strong>Produtos &gt; Feeds</strong>.</li>
+                    <li>Clique no botão azul <strong>+</strong> para criar um feed principal.</li>
+                    <li>Escolha <strong>Busca programada (Scheduled fetch)</strong>.</li>
+                    <li>Dê um nome, cole o link do feed (o mesmo ali de cima) no campo de URL do arquivo e salve.</li>
+                    <li>O Google fará a leitura e seus produtos estarão prontos para o Google Shopping!</li>
+                  </ol>
+                </div>
               </div>
             )}
           </div>
