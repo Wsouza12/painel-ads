@@ -59,7 +59,7 @@ export default function BuyButton({ permalink }: { permalink: string }) {
           <div className="flex flex-row items-center gap-4 py-4">
             {/* Ícone amarelo */}
             <div className="flex-shrink-0 w-20 h-20 bg-[#FFE600] rounded-2xl flex items-center justify-center shadow-sm border border-yellow-300/50">
-              <img src="/ml-logo.png" alt="Mercado Livre" className="w-14 h-auto" />
+              <img src="/ml-logo.svg" alt="Mercado Livre" className="w-14 h-auto" />
             </div>
 
             {/* Checkmarks */}
