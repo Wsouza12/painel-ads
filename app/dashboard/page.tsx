@@ -2,6 +2,7 @@ import { supabaseAdmin } from "@/lib/supabase";
 import { createClient } from "@/utils/supabase/server";
 import ProductList from "@/components/ProductList";
 import ConfigTabs from "./ConfigTabs";
+import { savePixelId } from "./actions";
 
 export const revalidate = 0; // force dynamic
 
