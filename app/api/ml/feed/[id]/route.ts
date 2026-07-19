@@ -31,9 +31,10 @@ export async function GET(request: Request, { params }: { params: { id: string }
     if (!products) return new Response("No products", { status: 404 });
 
     const rows = [];
-    let appUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.APP_URL || process.env.URL;
-    if (process.env.VERCEL_URL) appUrl = `https://${process.env.VERCEL_URL}`;
-    if (!appUrl) appUrl = "https://painel-ads.vercel.app";
+    
+    // VERCEL_URL returns the deployment URL which changes on every deploy.
+    // We should use the project domain.
+    let appUrl = "https://painel-ads-one.vercel.app";
 
     for (const product of products) {
       // Aplicar filtro de preço mínimo
@@ -74,7 +75,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
         }, description, {
           title: abTest.variant_a_title,
           image_url: abTest.variant_a_image || product.custom_image_url || product.original_image_url
-        }));
+        }, { item_group_id: product.ml_item_id }));
 
         // Variante B
         rows.push(toMetaRow({
@@ -83,7 +84,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
         }, description, {
           title: abTest.variant_b_title,
           image_url: abTest.variant_b_image || product.original_image_url
-        }));
+        }, { item_group_id: product.ml_item_id }));
       } else {
         // Produto normal
         const overrides = {

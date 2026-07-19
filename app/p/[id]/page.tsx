@@ -54,9 +54,9 @@ export default async function ProductPage({ params }: { params: { id: string } }
       {connection?.meta_pixel_id && <PixelTracker pixelId={connection.meta_pixel_id} />}
 
       {/* Cabeçalho Trust */}
-      <div className="bg-yellow-400 text-black text-center py-2 text-xs font-bold flex items-center justify-center gap-1">
+      <div className="bg-[#FFE600] text-black text-center py-2 text-xs font-bold flex items-center justify-center gap-1 shadow-sm relative z-10">
         <ShieldCheck size={14} />
-        Site Seguro - Redirecionamento Oficial Mercado Livre
+        Site Oficial - Compra Garantida Mercado Livre
       </div>
 
       {/* Imagem do Produto */}
