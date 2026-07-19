@@ -50,9 +50,9 @@ export async function GET(request: Request, { params }: { params: { id: string }
         id: product.ml_item_id,
         title: product.original_title,
         price: product.original_price,
-        status: "active",
+        status: product.original_condition === "paused" ? "paused" : "active",
         available_quantity: 1, // Assume disponível se está no DB como ativo
-        condition: product.original_condition,
+        condition: product.original_condition === "paused" ? "new" : product.original_condition,
         permalink: permalink,
         pictures: [{ secure_url: product.original_image_url }],
         thumbnail: product.original_image_url,
