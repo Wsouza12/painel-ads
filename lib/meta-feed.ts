@@ -35,7 +35,8 @@ export function toMetaRow(
     price: `${(overrides?.price || item.price).toFixed(2)} BRL`,
     link: item.permalink,
     image_link: overrides?.image_url || item.pictures?.[0]?.secure_url || item.thumbnail,
-    additional_image_link: (overrides?.additional_image_urls || item.pictures?.map(p => p.secure_url).slice(1, 11) || []).join(","),
+    // Block native ML additional images so FB Carousel only shows the custom edited image
+    additional_image_link: overrides?.additional_image_urls?.join(",") || "",
     brand: extractBrand(item),
   };
 }
