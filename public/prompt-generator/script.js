@@ -1,4 +1,3 @@
-// Elementos do DOM
 const formElements = {
     productTitle: document.getElementById('productTitle'),
     productDesc: document.getElementById('productDesc'),
@@ -8,7 +7,8 @@ const formElements = {
     formatSelect: document.getElementById('formatSelect'),
     mainColor: document.getElementById('mainColor'),
     ctaButton: document.getElementById('ctaButton'),
-    templateSelect: document.getElementById('templateSelect')
+    templateSelect: document.getElementById('templateSelect'),
+    syncedProductSelect: document.getElementById('syncedProductSelect')
 };
 
 const promptOutput = document.getElementById('promptOutput');
@@ -292,8 +292,10 @@ saveTemplateBtn.addEventListener('click', () => {
     }
 });
 
+let syncedProductsData = [];
+
 // Inicialização
-function init() {
+async function init() {
     // Carregar templates salvos do localStorage
     const savedTemplates = JSON.parse(localStorage.getItem('promptCreatorTemplates')) || {};
     for (const [key, value] of Object.entries(savedTemplates)) {
@@ -303,6 +305,40 @@ function init() {
         option.textContent = key.replace(/_/g, ' ') + " (Custom)";
         formElements.templateSelect.appendChild(option);
     }
+
+    // Carregar produtos sincronizados
+    try {
+        const res = await fetch('/api/products');
+        if (res.ok) {
+            const data = await res.json();
+            if (data.products && data.products.length > 0) {
+                syncedProductsData = data.products;
+                formElements.syncedProductSelect.innerHTML = '<option value="">-- Selecione o produto --</option>';
+                data.products.forEach(p => {
+                    const opt = document.createElement('option');
+                    opt.value = p.id;
+                    opt.textContent = p.custom_title || p.original_title;
+                    formElements.syncedProductSelect.appendChild(opt);
+                });
+            } else {
+                formElements.syncedProductSelect.innerHTML = '<option value="">Nenhum produto encontrado</option>';
+                formElements.syncedProductSelect.disabled = true;
+            }
+        }
+    } catch (err) {
+        formElements.syncedProductSelect.innerHTML = '<option value="">Erro ao carregar</option>';
+        formElements.syncedProductSelect.disabled = true;
+    }
 }
+
+// Quando selecionar um produto, preencher os campos
+formElements.syncedProductSelect.addEventListener('change', (e) => {
+    const selectedId = e.target.value;
+    const prod = syncedProductsData.find(p => p.id === selectedId);
+    if (prod) {
+        formElements.productTitle.value = prod.custom_title || prod.original_title;
+        updateCharCount();
+    }
+});
 
 init();
