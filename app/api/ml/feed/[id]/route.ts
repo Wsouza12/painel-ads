@@ -7,6 +7,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
   try {
     const { searchParams } = new URL(request.url);
     const minPrice = searchParams.get("min_price") ? Number(searchParams.get("min_price")) : 0;
+    const isBridge = searchParams.get("bridge") === "true";
     
     // Buscar conexão
     const { data: connection } = await supabaseAdmin
@@ -39,6 +40,10 @@ export async function GET(request: Request, { params }: { params: { id: string }
       const finalPrice = product.custom_price || product.original_price;
       if (finalPrice < minPrice) continue;
 
+      const permalink = isBridge 
+        ? `${appUrl}/p/${product.id}` 
+        : product.original_permalink;
+
       // Montar objeto fake de MlItem para reaproveitar a lógica
       const fakeItem: any = {
         id: product.ml_item_id,
@@ -46,7 +51,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
         price: product.original_price,
         available_quantity: 1, // Assume disponível se está no DB como ativo
         condition: product.original_condition,
-        permalink: product.original_permalink,
+        permalink: permalink,
         pictures: [{ secure_url: product.original_image_url }],
         thumbnail: product.original_image_url,
       };

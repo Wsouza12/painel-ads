@@ -32,6 +32,16 @@ export async function updateProduct(productId: string, formData: FormData) {
   revalidatePath("/dashboard");
 }
 
+export async function savePixelId(connectionId: string, pixelId: string) {
+  const { error } = await supabaseAdmin
+    .from("ml_connections")
+    .update({ meta_pixel_id: pixelId })
+    .eq("id", connectionId);
+
+  if (error) throw new Error(error.message);
+  revalidatePath("/dashboard");
+}
+
 export async function uploadImage(formData: FormData) {
   const file = formData.get("image") as File;
   if (!file) throw new Error("Nenhum arquivo recebido.");
@@ -98,42 +108,41 @@ export async function createABTest(productId: string, variantA: any, variantB: a
   // Cancela testes anteriores deste produto
   await supabaseAdmin
     .from("ml_ab_tests")
-    .update({ status: "completed" })
+    .update({ status: "stopped" })
     .eq("product_id", productId)
     .eq("status", "running");
+    
+  if (variantBProductId && variantBProductId !== productId) {
+    await supabaseAdmin
+      .from("ml_ab_tests")
+      .update({ status: "stopped" })
+      .eq("product_id", variantBProductId)
+      .eq("status", "running");
+  }
 
-  // Cria o novo teste
   const { error } = await supabaseAdmin
     .from("ml_ab_tests")
     .insert({
       product_id: productId,
-      variant_b_product_id: variantBProductId,
-      variant_a_title: variantA.title,
+      variant_b_product_id: variantBProductId || null,
       variant_a_image: variantA.image,
-      variant_a_desc: variantA.desc,
-      variant_a_price: variantA.price,
-      variant_b_title: variantB.title,
+      variant_a_title: variantA.title,
       variant_b_image: variantB.image,
-      variant_b_desc: variantB.desc,
-      variant_b_price: variantB.price,
+      variant_b_title: variantB.title,
       status: "running"
     });
 
   if (error) throw new Error(error.message);
-  
-  // Dispara a sincronização
-  const { data: product } = await supabaseAdmin.from("ml_products").select("user_id").eq("id", productId).single();
-  if (product) await syncAllConnections(product.user_id).catch(console.error);
-  
   revalidatePath("/dashboard");
 }
 
 export async function stopABTest(productId: string) {
-  await supabaseAdmin
+  const { error } = await supabaseAdmin
     .from("ml_ab_tests")
-    .update({ status: "completed" })
+    .update({ status: "stopped" })
     .eq("product_id", productId)
     .eq("status", "running");
-    
+
+  if (error) throw new Error(error.message);
   revalidatePath("/dashboard");
 }
