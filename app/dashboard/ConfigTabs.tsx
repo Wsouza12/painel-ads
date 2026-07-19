@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useTransition } from "react";
+import { useState, useTransition, useEffect } from "react";
 
 export default function ConfigTabs({ 
   connection, 
@@ -12,6 +12,16 @@ export default function ConfigTabs({
   const [activeTab, setActiveTab] = useState("feeds");
   const [isSaved, setIsSaved] = useState(false);
   const [isPending, startTransition] = useTransition();
+  const [origin, setOrigin] = useState("");
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setOrigin(window.location.origin);
+    }
+  }, []);
+
+  const standardFeed = origin ? `${origin}/api/ml/feed/${connection.id}` : connection.feed_url;
+  const bridgeFeed = origin ? `${origin}/api/ml/feed/${connection.id}?bridge=true` : `${connection.feed_url}?bridge=true`;
 
   return (
     <div className="pt-4 border-t border-neutral-800">
@@ -67,7 +77,7 @@ export default function ConfigTabs({
               <p className="text-neutral-400 mb-1 font-bold">1. Feed Padrão (Direto pro ML):</p>
               <div className="flex flex-col sm:flex-row gap-2 mb-4">
                 <code className="flex-1 bg-neutral-800 rounded px-3 py-2 break-all text-xs border border-neutral-700 select-all">
-                  {connection.feed_url}
+                  {standardFeed}
                 </code>
               </div>
               
@@ -75,7 +85,7 @@ export default function ConfigTabs({
               <p className="text-xs text-neutral-400 mb-2">Use este link no catálogo se quiser que os anúncios direcionem para a nossa Página Ponte.</p>
               <div className="flex flex-col sm:flex-row gap-2">
                 <code className="flex-1 bg-neutral-800 rounded px-3 py-2 break-all text-xs border border-purple-900/50 select-all">
-                  {connection.feed_url}?bridge=true
+                  {bridgeFeed}
                 </code>
               </div>
             </div>
