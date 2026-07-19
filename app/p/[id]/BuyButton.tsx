@@ -45,7 +45,7 @@ export default function BuyButton({ permalink }: { permalink: string }) {
       <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200">
         <div className="bg-white rounded-lg shadow-2xl w-full max-w-[340px] overflow-hidden animate-in zoom-in-95 duration-200 p-8 flex flex-col items-center text-center">
           
-          <img src="/ml-logo.svg" alt="Mercado Livre" className="w-20 h-auto mb-6" />
+          <img src="/ml-logo.png" alt="Mercado Livre" className="w-20 h-auto mb-6" />
           
           <h3 className="text-[19px] font-semibold text-black mb-3">
             Indo para o Mercado Livre
