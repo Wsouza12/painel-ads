@@ -32,7 +32,10 @@ export async function updateProduct(productId: string, formData: FormData) {
   revalidatePath("/dashboard");
 }
 
-export async function savePixelId(connectionId: string, pixelId: string) {
+export async function savePixelId(connectionId: string, formData: FormData) {
+  const pixelId = formData.get("pixelId")?.toString();
+  if (!pixelId) return;
+
   const { error } = await supabaseAdmin
     .from("ml_connections")
     .update({ meta_pixel_id: pixelId })

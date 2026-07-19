@@ -90,11 +90,7 @@ export default async function DashboardPage() {
             {connection.feed_url && (
               <ConfigTabs 
                 connection={connection} 
-                savePixelIdAction={async (formData: FormData) => {
-                  "use server";
-                  const { savePixelId } = await import("./actions");
-                  await savePixelId(connection.id, formData.get("pixelId") as string);
-                }}
+                savePixelIdAction={savePixelId.bind(null, connection.id)}
               />
             )}
           </div>
