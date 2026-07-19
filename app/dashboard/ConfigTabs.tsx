@@ -1,15 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 
 export default function ConfigTabs({ 
   connection, 
   savePixelIdAction 
 }: { 
   connection: any;
-  savePixelIdAction: (formData: FormData) => void;
+  savePixelIdAction: (formData: FormData) => Promise<void>;
 }) {
   const [activeTab, setActiveTab] = useState("feeds");
+  const [isSaved, setIsSaved] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
   return (
     <div className="pt-4 border-t border-neutral-800">
@@ -91,7 +93,13 @@ export default function ConfigTabs({
         )}
 
         {activeTab === "pixel" && (
-          <form action={savePixelIdAction} className="space-y-2 p-4 bg-neutral-900 border border-neutral-700 rounded-md animate-in fade-in slide-in-from-bottom-2">
+          <form action={(formData) => {
+            startTransition(async () => {
+              await savePixelIdAction(formData);
+              setIsSaved(true);
+              setTimeout(() => setIsSaved(false), 3000);
+            });
+          }} className="space-y-2 p-4 bg-neutral-900 border border-neutral-700 rounded-md animate-in fade-in slide-in-from-bottom-2">
             <p className="font-bold text-neutral-200">Pixel do Facebook (Página Ponte)</p>
             <p className="text-xs text-neutral-400 mb-3">
               Cole o ID do seu Pixel para rastrear quem entra na Página Ponte e clica em Comprar.
@@ -104,8 +112,12 @@ export default function ConfigTabs({
                 placeholder="Ex: 123456789012345" 
                 className="flex-1 bg-neutral-800 border border-neutral-700 rounded px-3 py-2 text-sm" 
               />
-              <button type="submit" className="bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-md font-medium text-sm transition-colors">
-                Salvar Pixel
+              <button 
+                type="submit" 
+                disabled={isPending}
+                className="bg-purple-600 hover:bg-purple-500 disabled:opacity-50 text-white px-4 py-2 rounded-md font-medium text-sm transition-colors w-32 flex items-center justify-center"
+              >
+                {isPending ? "..." : isSaved ? "✅ Salvo!" : "Salvar Pixel"}
               </button>
             </div>
           </form>
