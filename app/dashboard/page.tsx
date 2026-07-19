@@ -1,6 +1,7 @@
 import { supabaseAdmin } from "@/lib/supabase";
 import { createClient } from "@/utils/supabase/server";
 import ProductList from "@/components/ProductList";
+import ConfigTabs from "./ConfigTabs";
 
 export const revalidate = 0; // force dynamic
 
@@ -87,74 +88,14 @@ export default async function DashboardPage() {
             </div>
 
             {connection.feed_url && (
-              <div className="text-sm space-y-4 pt-4 border-t border-neutral-800">
-                <form action={async (formData) => {
+              <ConfigTabs 
+                connection={connection} 
+                savePixelIdAction={async (formData: FormData) => {
                   "use server";
                   const { savePixelId } = await import("./actions");
                   await savePixelId(connection.id, formData.get("pixelId") as string);
-                }} className="space-y-2 p-3 bg-neutral-900 border border-neutral-700 rounded-md">
-                  <p className="font-bold text-neutral-200">Pixel do Facebook (Página Ponte)</p>
-                  <p className="text-xs text-neutral-400">Cole o ID do seu Pixel para rastrear quem entra na Página Ponte e clica em Comprar.</p>
-                  <div className="flex gap-2">
-                    <input type="text" name="pixelId" defaultValue={connection.meta_pixel_id || ""} placeholder="Ex: 123456789012345" className="flex-1 bg-neutral-800 border border-neutral-700 rounded px-3 py-1.5 text-sm" />
-                    <button type="submit" className="bg-purple-600 hover:bg-purple-500 text-white px-4 py-1.5 rounded-md font-medium text-sm transition-colors">
-                      Salvar Pixel
-                    </button>
-                  </div>
-                </form>
-
-                <div>
-                  <p className="text-neutral-400 mb-1 font-bold">1. Feed Padrão (Direto pro ML):</p>
-                  <div className="flex flex-col sm:flex-row gap-2 mb-4">
-                    <code className="flex-1 bg-neutral-800 rounded px-3 py-2 break-all text-xs border border-neutral-700 select-all">
-                      {connection.feed_url}
-                    </code>
-                  </div>
-                  
-                  <p className="text-purple-400 mb-1 font-bold">2. Feed Página Ponte (Com Pixel):</p>
-                  <p className="text-xs text-neutral-400 mb-2">Use este link no catálogo se quiser que os anúncios direcionem para a nossa Página Ponte.</p>
-                  <div className="flex flex-col sm:flex-row gap-2">
-                    <code className="flex-1 bg-neutral-800 rounded px-3 py-2 break-all text-xs border border-purple-900/50 select-all">
-                      {connection.feed_url}?bridge=true
-                    </code>
-                  </div>
-                  
-                  <div className="mt-3">
-                    <a
-                      href="https://business.facebook.com/commerce"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center justify-center whitespace-nowrap rounded-md px-3 py-2 text-xs font-bold text-white bg-blue-600 hover:bg-blue-500 transition-colors shadow-[0_0_10px_rgba(37,99,235,0.3)] w-full sm:w-auto"
-                    >
-                      Abrir Commerce Manager ↗
-                    </a>
-                  </div>
-                </div>
-                
-                <div className="mt-4 p-3 bg-blue-900/10 border border-blue-900/30 rounded text-xs text-blue-200/70 space-y-2">
-                  <p className="font-bold text-blue-400">Como conectar no Facebook Ads:</p>
-                  <ol className="list-decimal list-inside space-y-1">
-                    <li>Acesse o <strong className="text-white">Commerce Manager</strong> pelo botão acima.</li>
-                    <li>Escolha o seu Catálogo (ou crie um novo).</li>
-                    <li>No menu lateral, vá em <strong>Catálogo &gt; Fontes de Dados</strong>.</li>
-                    <li>Clique em <strong>Adicionar itens &gt; Feed de Dados (Data feed)</strong>.</li>
-                    <li>Escolha <strong>Upload Programado (Scheduled feed)</strong> e cole o link acima.</li>
-                    <li>Selecione <strong>Atualização a cada hora (Hourly)</strong>. Pronto!</li>
-                  </ol>
-                </div>
-
-                <div className="mt-4 p-3 bg-green-900/10 border border-green-900/30 rounded text-xs text-green-200/70 space-y-2">
-                  <p className="font-bold text-green-400">Como conectar no Google Ads (Merchant Center):</p>
-                  <ol className="list-decimal list-inside space-y-1">
-                    <li>Acesse o <strong className="text-white"><a href="https://merchants.google.com/" target="_blank" className="underline hover:text-green-300">Google Merchant Center</a></strong> e crie sua conta grátis.</li>
-                    <li>No menu lateral, vá em <strong>Produtos &gt; Feeds</strong>.</li>
-                    <li>Clique no botão azul <strong>+</strong> para criar um feed principal.</li>
-                    <li>Escolha <strong>Busca programada (Scheduled fetch)</strong>.</li>
-                    <li>Dê um nome, cole o link do feed (o mesmo ali de cima) no campo de URL do arquivo e salve.</li>
-                    <li>O Google fará a leitura e seus produtos estarão prontos para o Google Shopping!</li>
-                  </ol>
-                </div>
-              </div>
+                }}
+              />
             )}
           </div>
         )}
