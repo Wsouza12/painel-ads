@@ -345,6 +345,13 @@ formElements.syncedProductSelect.addEventListener('change', async (e) => {
     if (prod) {
         formElements.productTitle.value = prod.custom_title || prod.original_title;
         
+        const currentPrice = prod.custom_price || prod.original_price;
+        if (currentPrice) {
+            formElements.price.value = `R$ ${parseFloat(currentPrice).toFixed(2).replace('.', ',')}`;
+        } else {
+            formElements.price.value = '';
+        }
+
         // Mostrar aviso de carregamento
         formElements.productDesc.value = "Carregando descrição do Mercado Livre...";
         updateCharCount();

@@ -22,7 +22,7 @@ export async function GET() {
 
   const { data: products } = await supabaseAdmin
     .from("ml_products")
-    .select("id, original_title, custom_title")
+    .select("id, original_title, custom_title, original_price, custom_price")
     .eq("connection_id", connection.id)
     .order("updated_at", { ascending: false });
 
