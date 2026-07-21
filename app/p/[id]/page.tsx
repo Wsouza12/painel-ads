@@ -55,7 +55,13 @@ export default async function ProductPage({ params }: { params: { id: string } }
 
   return (
     <main className="min-h-screen bg-[#EBEBEB] flex flex-col max-w-md mx-auto relative pb-20">
-      {connection?.meta_pixel_id && <PixelTracker pixelId={connection.meta_pixel_id} />}
+      {connection?.meta_pixel_id && (
+        <PixelTracker 
+          pixelId={connection.meta_pixel_id} 
+          contentId={product.ml_item_id}
+          value={currentPrice}
+        />
+      )}
 
       {/* Cabeçalho ML */}
       <div className="bg-[#FFE600] px-4 py-3 flex items-center gap-3">
@@ -182,9 +188,13 @@ export default async function ProductPage({ params }: { params: { id: string } }
         </div>
       )}
 
-      {/* Botão Fixo - estilo ML */}
-      <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 max-w-md mx-auto px-4 py-3 z-50">
-        <BuyButton permalink={product.original_permalink} />
+      {/* Fixa o botão comprar embaixo */}
+      <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-gray-200 p-3 pb-safe z-40">
+        <BuyButton 
+          permalink={product.original_permalink} 
+          contentId={product.ml_item_id}
+          value={currentPrice}
+        />
       </div>
     </main>
   );

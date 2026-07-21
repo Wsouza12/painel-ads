@@ -2,7 +2,15 @@
 
 import { useEffect, useState } from "react";
 
-export default function BuyButton({ permalink }: { permalink: string }) {
+export default function BuyButton({ 
+  permalink,
+  contentId,
+  value
+}: { 
+  permalink: string;
+  contentId?: string;
+  value?: number;
+}) {
   const [timeLeft, setTimeLeft] = useState(5);
 
   useEffect(() => {
@@ -10,8 +18,18 @@ export default function BuyButton({ permalink }: { permalink: string }) {
       // Fire pixel
       // @ts-ignore
       if (typeof window !== "undefined" && window.fbq) {
-        // @ts-ignore
-        window.fbq('track', 'InitiateCheckout');
+        if (contentId && value) {
+          // @ts-ignore
+          window.fbq('track', 'InitiateCheckout', {
+            content_ids: [contentId],
+            content_type: 'product',
+            value: value,
+            currency: 'BRL'
+          });
+        } else {
+          // @ts-ignore
+          window.fbq('track', 'InitiateCheckout');
+        }
       }
       // Redirect automatically
       window.location.href = permalink;
@@ -23,7 +41,7 @@ export default function BuyButton({ permalink }: { permalink: string }) {
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [timeLeft, permalink]);
+  }, [timeLeft, permalink, contentId, value]);
 
   return (
     <div className="space-y-2">
@@ -32,8 +50,18 @@ export default function BuyButton({ permalink }: { permalink: string }) {
         onClick={() => {
           // @ts-ignore
           if (typeof window !== "undefined" && window.fbq) {
-            // @ts-ignore
-            window.fbq('track', 'InitiateCheckout');
+            if (contentId && value) {
+              // @ts-ignore
+              window.fbq('track', 'InitiateCheckout', {
+                content_ids: [contentId],
+                content_type: 'product',
+                value: value,
+                currency: 'BRL'
+              });
+            } else {
+              // @ts-ignore
+              window.fbq('track', 'InitiateCheckout');
+            }
           }
         }}
         className="w-full bg-[#3483FA] hover:bg-[#2968c8] text-white font-semibold py-3.5 rounded-md flex items-center justify-center transition-colors text-base"

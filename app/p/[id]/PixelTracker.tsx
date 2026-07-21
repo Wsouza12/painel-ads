@@ -3,14 +3,32 @@
 import { useEffect } from "react";
 import Script from "next/script";
 
-export default function PixelTracker({ pixelId }: { pixelId: string }) {
+export default function PixelTracker({ 
+  pixelId,
+  contentId,
+  value
+}: { 
+  pixelId: string;
+  contentId?: string;
+  value?: number;
+}) {
   useEffect(() => {
     // @ts-ignore
     if (typeof window !== "undefined" && window.fbq) {
-      // @ts-ignore
-      window.fbq('track', 'ViewContent');
+      if (contentId && value) {
+        // @ts-ignore
+        window.fbq('track', 'ViewContent', {
+          content_ids: [contentId],
+          content_type: 'product',
+          value: value,
+          currency: 'BRL'
+        });
+      } else {
+        // @ts-ignore
+        window.fbq('track', 'ViewContent');
+      }
     }
-  }, [pixelId]);
+  }, [pixelId, contentId, value]);
 
   return (
     <>
