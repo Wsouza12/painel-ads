@@ -499,6 +499,25 @@ function ProductCard({ product, allProducts, abTests }: { product: any; allProdu
         <h3 className="text-sm font-medium text-white truncate">{displayTitle}</h3>
         <p className="text-emerald-400 text-sm font-bold mt-1">R$ {Number(displayPrice).toFixed(2)}</p>
         
+        {/* Metricas de Trafego */}
+        <div className="flex items-center gap-3 mt-2 text-[10px] font-medium text-neutral-400">
+          <div className="flex items-center gap-1 bg-neutral-800/50 px-2 py-0.5 rounded-full border border-neutral-700/50">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <circle cx="12" cy="12" r="3"/>
+            </svg>
+            <span>{p.views || 0}</span>
+          </div>
+          <div className="flex items-center gap-1 bg-neutral-800/50 px-2 py-0.5 rounded-full border border-neutral-700/50">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M15 3h6v6"/>
+              <path d="M10 14L21 3"/>
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+            </svg>
+            <span>{p.clicks || 0}</span>
+          </div>
+        </div>
+        
         {isVariantA && (
           <span className="inline-block mt-2 bg-purple-600 text-white text-[10px] font-bold px-2 py-0.5 rounded shadow shadow-purple-500/50">
             🧪 Teste A/B Ativo (Variante A)

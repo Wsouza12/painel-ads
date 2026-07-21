@@ -15,6 +15,11 @@ export default function BuyButton({
 
   useEffect(() => {
     if (timeLeft <= 0) {
+      // Internal Tracking (Fire and forget)
+      if (contentId) {
+        fetch(`/api/pixel/track?type=click&id=${contentId}`).catch(() => {});
+      }
+
       // Fire pixel
       // @ts-ignore
       if (typeof window !== "undefined" && window.fbq) {
@@ -48,6 +53,11 @@ export default function BuyButton({
       <a 
         href={permalink}
         onClick={() => {
+          // Internal Tracking
+          if (contentId) {
+            fetch(`/api/pixel/track?type=click&id=${contentId}`).catch(() => {});
+          }
+
           // @ts-ignore
           if (typeof window !== "undefined" && window.fbq) {
             if (contentId && value) {

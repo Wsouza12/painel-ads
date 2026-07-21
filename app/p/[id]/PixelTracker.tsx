@@ -13,6 +13,11 @@ export default function PixelTracker({
   value?: number;
 }) {
   useEffect(() => {
+    // Internal Tracking (Fire and forget)
+    if (contentId) {
+      fetch(`/api/pixel/track?type=view&id=${contentId}`).catch(() => {});
+    }
+
     // @ts-ignore
     if (typeof window !== "undefined" && window.fbq) {
       if (contentId && value) {
