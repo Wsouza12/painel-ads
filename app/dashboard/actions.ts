@@ -149,3 +149,14 @@ export async function stopABTest(productId: string) {
   if (error) throw new Error(error.message);
   revalidatePath("/dashboard");
 }
+
+export async function unlinkABTest(variantBProductId: string) {
+  const { error } = await supabaseAdmin
+    .from("ml_ab_tests")
+    .update({ status: "stopped" })
+    .eq("variant_b_product_id", variantBProductId)
+    .eq("status", "running");
+
+  if (error) throw new Error(error.message);
+  revalidatePath("/dashboard");
+}

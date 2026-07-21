@@ -106,6 +106,12 @@ function ProductCard({ product, allProducts, abTests }: { product: any; allProdu
     setAbTest(null);
   }
 
+  async function handleUnlinkAB() {
+    const { unlinkABTest } = await import("@/app/dashboard/actions");
+    await unlinkABTest(product.id);
+    window.location.reload(); // Simple way to refresh the parent list since state is up
+  }
+
   async function handleSave(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setIsSaving(true);
@@ -513,9 +519,17 @@ function ProductCard({ product, allProducts, abTests }: { product: any; allProdu
             Editar Anúncios
           </button>
         ) : (
-          <p className="block mt-3 text-xs text-neutral-600">
-            Editado pela Variante A
-          </p>
+          <div className="flex items-center gap-3 mt-3">
+            <p className="text-xs text-neutral-600">
+              Editado pela Variante A
+            </p>
+            <button
+              onClick={handleUnlinkAB}
+              className="text-[10px] text-red-400 hover:text-red-300 underline"
+            >
+              Desvincular
+            </button>
+          </div>
         )}
       </div>
 
