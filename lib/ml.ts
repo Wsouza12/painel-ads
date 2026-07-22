@@ -137,3 +137,23 @@ export async function updateDescription(itemId: string, accessToken: string, tex
 
   return true;
 }
+
+export async function getRecentOrders(sellerId: number, accessToken: string) {
+  try {
+    // Fetch recent 50 orders sorted by date desc
+    const res = await fetch(`${ML_API}/orders/search?seller=${sellerId}&sort=date_desc&limit=50`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+    
+    if (!res.ok) {
+      console.error(`[ML SDK] Erro ao buscar pedidos: ${res.status}`);
+      return [];
+    }
+    
+    const data = await res.json();
+    return data.results || [];
+  } catch (err) {
+    console.error("[ML SDK] Exceção ao buscar pedidos:", err);
+    return [];
+  }
+}

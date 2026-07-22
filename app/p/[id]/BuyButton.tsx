@@ -5,11 +5,13 @@ import { useEffect, useState } from "react";
 export default function BuyButton({ 
   permalink,
   contentId,
-  value
+  value,
+  searchParams
 }: { 
   permalink: string;
   contentId?: string;
   value?: number;
+  searchParams?: any;
 }) {
   const [timeLeft, setTimeLeft] = useState(3);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -53,7 +55,13 @@ export default function BuyButton({
         fbp: document.cookie.split("; ").find(row => row.startsWith("_fbp="))?.split("=")[1],
         contentIds: contentId ? [contentId] : [],
         value: value,
-        currency: "BRL"
+        currency: "BRL",
+        customData: {
+          utm_source: searchParams?.utm_source,
+          utm_campaign: searchParams?.utm_campaign,
+          utm_medium: searchParams?.utm_medium,
+          utm_content: searchParams?.utm_content,
+        }
       })
     }).catch(() => {});
 

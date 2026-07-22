@@ -6,11 +6,13 @@ import Script from "next/script";
 export default function PixelTracker({ 
   pixelId,
   contentId,
-  value
+  value,
+  searchParams
 }: { 
   pixelId: string;
   contentId?: string;
   value?: number;
+  searchParams?: any;
 }) {
   useEffect(() => {
     // Internal Tracking (Fire and forget)
@@ -35,7 +37,13 @@ export default function PixelTracker({
         fbp: document.cookie.split("; ").find(row => row.startsWith("_fbp="))?.split("=")[1],
         contentIds: contentId ? [contentId] : [],
         value: value,
-        currency: "BRL"
+        currency: "BRL",
+        customData: {
+          utm_source: searchParams?.utm_source,
+          utm_campaign: searchParams?.utm_campaign,
+          utm_medium: searchParams?.utm_medium,
+          utm_content: searchParams?.utm_content,
+        }
       })
     }).catch(() => {});
 
@@ -54,7 +62,77 @@ export default function PixelTracker({
         window.fbq('track', 'ViewContent', {}, { eventID: eventId });
       }
     }
-  }, [pixelId, contentId, value]);
+
+    // Micro-event: 5 Seconds Time on Page
+    const timer = setTimeout(() => {
+      const timeEventId = "time_" + Math.random().toString(36).substring(2, 9);
+      fetch(`/api/pixel/capi`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          eventName: "ViewedContent_5s",
+          eventId: timeEventId,
+          sourceUrl: window.location.href,
+          userAgent: navigator.userAgent,
+          clientIp: "0.0.0.0",
+          fbc: document.cookie.split("; ").find(row => row.startsWith("_fbc="))?.split("=")[1],
+          fbp: document.cookie.split("; ").find(row => row.startsWith("_fbp="))?.split("=")[1],
+          contentIds: contentId ? [contentId] : [],
+          customData: {
+            utm_source: searchParams?.utm_source,
+            utm_campaign: searchParams?.utm_campaign,
+          }
+        })
+      }).catch(() => {});
+
+      // @ts-ignore
+      if (typeof window !== "undefined" && window.fbq) {
+        // @ts-ignore
+        window.fbq('trackCustom', 'ViewedContent_5s', { content_ids: contentId ? [contentId] : [] }, { eventID: timeEventId });
+      }
+    }, 5000);
+
+    // Micro-event: Scroll 50%
+    const handleScroll = () => {
+      const scrollPercent = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+      if (scrollPercent > 50) {
+        window.removeEventListener('scroll', handleScroll);
+        const scrollEventId = "scroll_" + Math.random().toString(36).substring(2, 9);
+        
+        fetch(`/api/pixel/capi`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            eventName: "ScrolledPage_50",
+            eventId: scrollEventId,
+            sourceUrl: window.location.href,
+            userAgent: navigator.userAgent,
+            clientIp: "0.0.0.0",
+            fbc: document.cookie.split("; ").find(row => row.startsWith("_fbc="))?.split("=")[1],
+            fbp: document.cookie.split("; ").find(row => row.startsWith("_fbp="))?.split("=")[1],
+            contentIds: contentId ? [contentId] : [],
+            customData: {
+              utm_source: searchParams?.utm_source,
+              utm_campaign: searchParams?.utm_campaign,
+            }
+          })
+        }).catch(() => {});
+
+        // @ts-ignore
+        if (typeof window !== "undefined" && window.fbq) {
+          // @ts-ignore
+          window.fbq('trackCustom', 'ScrolledPage_50', { content_ids: contentId ? [contentId] : [] }, { eventID: scrollEventId });
+        }
+      }
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+
+    return () => {
+      clearTimeout(timer);
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, [pixelId, contentId, value, searchParams]);
 
   return (
     <>

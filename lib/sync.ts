@@ -1,5 +1,5 @@
 import { supabaseAdmin } from "./supabase";
-import { refreshAccessToken, getAllItemIds, getItemsDetails, getDescription } from "./ml";
+import { refreshAccessToken, getAllItemIds, getItemsDetails, getDescription, getRecentOrders } from "./ml";
 import { toMetaRow, toCsv } from "./meta-feed";
 
 const BUCKET = "meta-catalog-feed";
@@ -205,6 +205,83 @@ async function syncOneConnection(connection: any) {
     products_count: rows.length,
     feed_url: feedUrl,
   });
+
+  // --- O SANTO GRAAL: Rastreamento de Vendas (Purchase via CAPI) ---
+  try {
+    const PIXEL_ID = connection.meta_pixel_id || process.env.META_PIXEL_ID;
+    const ACCESS_TOKEN = process.env.META_ACCESS_TOKEN;
+
+    if (PIXEL_ID && ACCESS_TOKEN) {
+      const orders = await getRecentOrders(connection.ml_user_id ?? userId, accessToken);
+      
+      for (const order of orders) {
+        // Skip unpaid/cancelled orders
+        if (order.status !== "paid") continue;
+
+        const orderId = order.id.toString();
+        
+        // Verifica se a venda já foi rastreada
+        const { data: alreadyTracked } = await supabaseAdmin
+          .from("ml_orders_tracked")
+          .select("order_id")
+          .eq("order_id", orderId)
+          .single();
+
+        if (!alreadyTracked) {
+          // Extrair Produto e Preço
+          const item = order.order_items?.[0];
+          if (!item) continue;
+          
+          const contentId = item.item?.id;
+          const value = order.total_amount;
+          
+          const eventTime = Math.floor(new Date(order.date_created).getTime() / 1000);
+          
+          const payload = {
+            data: [
+              {
+                event_name: "Purchase",
+                event_time: eventTime,
+                event_id: `purchase_${orderId}`,
+                action_source: "system_generated",
+                user_data: {
+                  // Fornecer o que temos. Vendas do ML geralmente não tem email do cliente final fácil.
+                  // Hash fake ou dados em branco para o Meta aceitar.
+                  client_user_agent: "MercadoLivre_Server_Sync"
+                },
+                custom_data: {
+                  content_ids: [contentId],
+                  content_type: "product",
+                  value: value,
+                  currency: order.currency_id || "BRL",
+                  order_id: orderId
+                },
+              },
+            ],
+            access_token: ACCESS_TOKEN
+          };
+
+          const response = await fetch(`https://graph.facebook.com/v19.0/${PIXEL_ID}/events`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload),
+          });
+
+          if (response.ok) {
+            console.log(`[CAPI] Compra rastreada! Order ID: ${orderId} - Value: ${value}`);
+            // Salvar no banco para não processar de novo
+            await supabaseAdmin.from("ml_orders_tracked").insert({ order_id: orderId });
+          } else {
+            const errResult = await response.json();
+            console.error(`[CAPI] Erro ao enviar compra ${orderId}:`, errResult);
+          }
+        }
+      }
+    }
+  } catch (err) {
+    console.error("[CAPI Sync Orders] Erro:", err);
+  }
+  // ----------------------------------------------------------------
 
   return { status: "success", products_count: rows.length, feed_url: feedUrl };
 }

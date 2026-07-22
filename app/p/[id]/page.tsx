@@ -6,7 +6,7 @@ import BuyButton from "./BuyButton";
 
 export const revalidate = 3600; // Cache for 1 hour
 
-export default async function ProductPage({ params }: { params: { id: string } }) {
+export default async function ProductPage({ params, searchParams }: { params: { id: string }, searchParams: { [key: string]: string | string[] | undefined } }) {
   // 1. Fetch product
   const { data: product } = await supabaseAdmin
     .from("ml_products")
@@ -60,6 +60,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
           pixelId={connection.meta_pixel_id} 
           contentId={product.ml_item_id}
           value={currentPrice}
+          searchParams={searchParams}
         />
       )}
 
@@ -194,6 +195,7 @@ export default async function ProductPage({ params }: { params: { id: string } }
           permalink={product.original_permalink} 
           contentId={product.ml_item_id}
           value={currentPrice}
+          searchParams={searchParams}
         />
       </div>
     </main>
