@@ -35,7 +35,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
     
     // VERCEL_URL returns the deployment URL which changes on every deploy.
     // We should use the project domain.
-    let appUrl = "https://painel-ads-one.vercel.app";
+    let appUrl = process.env.APP_URL || "https://clinquant-biscochitos-b187a8.netlify.app";
 
     for (const product of products) {
       // Aplicar filtro de preço mínimo
