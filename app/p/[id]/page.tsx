@@ -3,6 +3,7 @@ import { getDescription } from "@/lib/ml";
 import { notFound } from "next/navigation";
 import PixelTracker from "./PixelTracker";
 import BuyButton from "./BuyButton";
+import Scarcity from "./Scarcity";
 
 export const revalidate = 3600; // Cache for 1 hour
 
@@ -178,6 +179,9 @@ export default async function ProductPage({ params, searchParams }: { params: { 
           <span>+1000 vendas</span>
         </div>
       </div>
+
+      {/* Scarcity Trigger (Gatilho de Escassez) */}
+      <Scarcity productId={product.ml_item_id} />
 
       {/* Descrição */}
       {description && (
