@@ -12,6 +12,8 @@ export type MetaFeedRow = {
   image_link: string;
   additional_image_link: string;
   brand: string;
+  custom_label_0?: string;
+  custom_label_1?: string;
 };
 
 function extractBrand(item: MlItem): string {
@@ -22,7 +24,7 @@ function extractBrand(item: MlItem): string {
 export function toMetaRow(
   item: MlItem,
   description: string,
-  overrides?: { title?: string | null; price?: number | null; image_url?: string | null; additional_image_urls?: string[] },
+  overrides?: { title?: string | null; price?: number | null; image_url?: string | null; additional_image_urls?: string[], custom_label_0?: string, custom_label_1?: string },
   options?: { id_suffix?: string; item_group_id?: string }
 ): MetaFeedRow {
   return {
@@ -38,6 +40,8 @@ export function toMetaRow(
     // Block native ML additional images so FB Carousel only shows the custom edited image
     additional_image_link: overrides?.additional_image_urls?.join(",") || "",
     brand: extractBrand(item),
+    custom_label_0: overrides?.custom_label_0 || "",
+    custom_label_1: overrides?.custom_label_1 || "",
   };
 }
 
@@ -53,6 +57,8 @@ const HEADERS: (keyof MetaFeedRow)[] = [
   "image_link",
   "additional_image_link",
   "brand",
+  "custom_label_0",
+  "custom_label_1"
 ];
 
 function escapeCsv(val: unknown): string {

@@ -37,6 +37,26 @@ export default function BuyButton({
       fetch(`/api/pixel/track?type=click&id=${contentId}`).catch(() => {});
     }
 
+    const eventId = "init_" + Math.random().toString(36).substring(2, 9);
+
+    // CAPI Tracking
+    fetch(`/api/pixel/capi`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        eventName: "InitiateCheckout",
+        eventId: eventId,
+        sourceUrl: window.location.href,
+        userAgent: navigator.userAgent,
+        clientIp: "0.0.0.0", // Hard to get on client side, omit or pass generic
+        fbc: document.cookie.split("; ").find(row => row.startsWith("_fbc="))?.split("=")[1],
+        fbp: document.cookie.split("; ").find(row => row.startsWith("_fbp="))?.split("=")[1],
+        contentIds: contentId ? [contentId] : [],
+        value: value,
+        currency: "BRL"
+      })
+    }).catch(() => {});
+
     // Fire pixel
     // @ts-ignore
     if (typeof window !== "undefined" && window.fbq) {
@@ -47,10 +67,10 @@ export default function BuyButton({
           content_type: 'product',
           value: value,
           currency: 'BRL'
-        });
+        }, { eventID: eventId });
       } else {
         // @ts-ignore
-        window.fbq('track', 'InitiateCheckout');
+        window.fbq('track', 'InitiateCheckout', {}, { eventID: eventId });
       }
     }
 

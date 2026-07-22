@@ -64,7 +64,9 @@ export async function GET(request: Request, { params }: { params: { id: string }
         id: `${product.ml_item_id}-A`,
       }, description, {
         title: abTest.variant_a_title,
-        image_url: product.custom_image_url || getValidImage(abTest.variant_a_image) || product.original_image_url
+        image_url: product.custom_image_url || getValidImage(abTest.variant_a_image) || product.original_image_url,
+        custom_label_0: "Variante A",
+        custom_label_1: "Teste AB"
       }, { item_group_id: product.ml_item_id }));
 
       // Buscar preco real e imagem do Variant B se existir
@@ -93,7 +95,9 @@ export async function GET(request: Request, { params }: { params: { id: string }
       }, description, {
         title: abTest.variant_b_title,
         image_url: variantBImage || product.original_image_url,
-        price: variantBPrice
+        price: variantBPrice,
+        custom_label_0: "Variante B",
+        custom_label_1: "Teste AB"
       }, { item_group_id: product.ml_item_id }));
     } else {
       // Produto normal
@@ -101,6 +105,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
         title: product.custom_title,
         price: product.custom_price,
         image_url: product.custom_image_url || product.original_image_url,
+        custom_label_0: "Normal"
       };
       rows.push(toMetaRow(fakeItem, description, overrides));
     }
