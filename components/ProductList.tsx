@@ -7,9 +7,16 @@ export default function ProductList({ products, abTests }: { products: any[], ab
   if (!products || products.length === 0) return null;
 
   return (
-    <div className="mt-8 space-y-4">
-      <h2 className="text-sm font-medium text-neutral-400 mb-3">Seus Produtos (Edite para o Facebook e ML)</h2>
-      <div className="grid gap-4 sm:grid-cols-2">
+    <div className="mt-12 space-y-6">
+      <div className="flex items-center gap-3 mb-6">
+        <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-neutral-400">
+          Seus Produtos
+        </h2>
+        <span className="text-xs font-medium bg-white/10 text-neutral-300 px-3 py-1 rounded-full border border-white/5">
+          Edite para Facebook & ML
+        </span>
+      </div>
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
         {products.filter(p => p.original_condition !== "paused").map((product) => (
           <ProductCard key={product.id} product={product} allProducts={products} abTests={abTests} />
         ))}
@@ -487,73 +494,9 @@ function ProductCard({ product, allProducts, abTests }: { product: any; allProdu
     <div className="rounded-md border border-neutral-800 bg-neutral-900 p-4 flex gap-4 items-start relative">
       <div className="relative group cursor-pointer" onClick={openImageModal}>
         <img
-          src={displayImage}
-          alt={displayTitle}
-          className="w-20 h-20 object-contain rounded bg-white group-hover:opacity-80 transition-opacity"
-        />
-        <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity bg-black/40 rounded">
-          <span className="text-white text-xs font-bold">Ver Fotos</span>
-        </div>
-      </div>
-      <div className="flex-1 min-w-0">
-        <h3 className="text-sm font-medium text-white truncate">{displayTitle}</h3>
-        <p className="text-emerald-400 text-sm font-bold mt-1">R$ {Number(displayPrice).toFixed(2)}</p>
-        
-        {/* Metricas de Trafego */}
-        <div className="flex items-center gap-3 mt-2 text-[10px] font-medium text-neutral-400">
-          <div className="flex items-center gap-1 bg-neutral-800/50 px-2 py-0.5 rounded-full border border-neutral-700/50">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-              <circle cx="12" cy="12" r="3"/>
-            </svg>
-            <span>{product.views || 0}</span>
-          </div>
-          <div className="flex items-center gap-1 bg-neutral-800/50 px-2 py-0.5 rounded-full border border-neutral-700/50">
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M15 3h6v6"/>
-              <path d="M10 14L21 3"/>
-              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
-            </svg>
-            <span>{product.clicks || 0}</span>
-          </div>
-        </div>
-        
-        {isVariantA && (
-          <span className="inline-block mt-2 bg-purple-600 text-white text-[10px] font-bold px-2 py-0.5 rounded shadow shadow-purple-500/50">
-            🧪 Teste A/B Ativo (Variante A)
-          </span>
-        )}
-        
-        {isVariantB && (
-          <span className="inline-block mt-2 bg-neutral-700 text-neutral-300 text-[10px] font-bold px-2 py-0.5 rounded shadow">
-            Vinculado ao Teste A/B (Variante B)
-          </span>
-        )}
-
-        {!isVariantB ? (
-          <button
-            onClick={() => setIsEditing(true)}
-            className="block mt-3 text-xs text-neutral-400 hover:text-white underline"
-          >
-            Editar Anúncios
-          </button>
-        ) : (
-          <div className="flex items-center gap-3 mt-3">
-            <p className="text-xs text-neutral-600">
-              Editado pela Variante A
-            </p>
-            <button
-              onClick={handleUnlinkAB}
-              className="text-[10px] text-red-400 hover:text-red-300 underline"
-            >
-              Desvincular
-            </button>
-          </div>
-        )}
-
         {/* Links Unicos de Catalogo */}
-        <div className="mt-4 pt-3 border-t border-neutral-800 space-y-2">
-          <p className="text-[10px] font-bold text-neutral-500 uppercase">Catálogo Único (Meta Ads)</p>
+        <div className="mt-4 pt-4 border-t border-white/5 space-y-3">
+          <p className="text-[10px] font-black text-neutral-500 tracking-widest uppercase">Catálogo Único (Meta Ads)</p>
           <div className="flex flex-col gap-2">
             <button
               onClick={() => {
@@ -561,9 +504,9 @@ function ProductCard({ product, allProducts, abTests }: { product: any; allProdu
                 navigator.clipboard.writeText(url);
                 alert("Link do Catálogo (Página Ponte) copiado!");
               }}
-              className="flex items-center gap-2 text-[11px] text-neutral-300 hover:text-white bg-neutral-800 hover:bg-neutral-700 px-2 py-1.5 rounded border border-neutral-700 transition-colors text-left"
+              className="flex items-center gap-2 text-[11px] font-semibold text-neutral-300 hover:text-white bg-black/30 hover:bg-purple-600/20 px-3 py-2 rounded-lg border border-white/5 hover:border-purple-500/30 transition-all text-left group/btn"
             >
-              📋 Copiar XML (Página Ponte)
+              <span className="group-hover/btn:scale-110 transition-transform">📋</span> Copiar XML (Página Ponte)
             </button>
             <button
               onClick={() => {
@@ -571,9 +514,9 @@ function ProductCard({ product, allProducts, abTests }: { product: any; allProdu
                 navigator.clipboard.writeText(url);
                 alert("Link do Catálogo (Direto ML) copiado!");
               }}
-              className="flex items-center gap-2 text-[11px] text-neutral-300 hover:text-white bg-neutral-800 hover:bg-neutral-700 px-2 py-1.5 rounded border border-neutral-700 transition-colors text-left"
+              className="flex items-center gap-2 text-[11px] font-semibold text-neutral-300 hover:text-white bg-black/30 hover:bg-blue-600/20 px-3 py-2 rounded-lg border border-white/5 hover:border-blue-500/30 transition-all text-left group/btn"
             >
-              📋 Copiar XML (Direto ML)
+              <span className="group-hover/btn:scale-110 transition-transform">📋</span> Copiar XML (Direto ML)
             </button>
           </div>
         </div>
