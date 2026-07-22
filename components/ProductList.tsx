@@ -556,7 +556,6 @@ function ProductCard({ product, allProducts, abTests }: { product: any; allProdu
           </div>
         )}
 
-        {/* Links Unicos de Catalogo */}
         <div className="mt-4 pt-4 border-t border-white/5 space-y-3">
           <p className="text-[10px] font-black text-neutral-500 tracking-widest uppercase">Catálogo Único (Meta Ads)</p>
           <div className="flex flex-col gap-2">
@@ -566,9 +565,16 @@ function ProductCard({ product, allProducts, abTests }: { product: any; allProdu
                 navigator.clipboard.writeText(url);
                 alert("Link do Catálogo (Página Ponte) copiado!");
               }}
-              className="flex items-center gap-2 text-[11px] font-semibold text-neutral-300 hover:text-white bg-black/30 hover:bg-purple-600/20 px-3 py-2 rounded-lg border border-white/5 hover:border-purple-500/30 transition-all text-left group/btn"
+              className="flex items-center justify-between w-full text-[11px] font-semibold text-purple-200 hover:text-white bg-purple-900/10 hover:bg-purple-600/20 px-3 py-2.5 rounded-lg border border-purple-500/20 hover:border-purple-500/40 transition-all text-left group/btn"
             >
-              <span className="group-hover/btn:scale-110 transition-transform">📋</span> Copiar XML (Página Ponte)
+              <div className="flex items-center gap-2">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-purple-400 group-hover/btn:scale-110 transition-transform">
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                </svg>
+                <span>Link da Página Ponte</span>
+              </div>
+              <span className="text-[9px] uppercase font-black text-purple-500/50 group-hover/btn:text-purple-400">Copiar</span>
             </button>
             <button
               onClick={() => {
@@ -576,9 +582,16 @@ function ProductCard({ product, allProducts, abTests }: { product: any; allProdu
                 navigator.clipboard.writeText(url);
                 alert("Link do Catálogo (Direto ML) copiado!");
               }}
-              className="flex items-center gap-2 text-[11px] font-semibold text-neutral-300 hover:text-white bg-black/30 hover:bg-blue-600/20 px-3 py-2 rounded-lg border border-white/5 hover:border-blue-500/30 transition-all text-left group/btn"
+              className="flex items-center justify-between w-full text-[11px] font-semibold text-blue-200 hover:text-white bg-blue-900/10 hover:bg-blue-600/20 px-3 py-2.5 rounded-lg border border-blue-500/20 hover:border-blue-500/40 transition-all text-left group/btn"
             >
-              <span className="group-hover/btn:scale-110 transition-transform">📋</span> Copiar XML (Direto ML)
+              <div className="flex items-center gap-2">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-blue-400 group-hover/btn:scale-110 transition-transform">
+                  <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path>
+                  <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path>
+                </svg>
+                <span>Link Direto pro ML</span>
+              </div>
+              <span className="text-[9px] uppercase font-black text-blue-500/50 group-hover/btn:text-blue-400">Copiar</span>
             </button>
           </div>
         </div>
