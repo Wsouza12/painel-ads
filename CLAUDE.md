@@ -1,37 +1,45 @@
-# Contexto do Projeto: Painel de Ads & Integração Mercado Livre
+# Contexto do Projeto: Painel Ads (Sistema ML)
 
-## 🎯 Objetivo do Sistema
-Plataforma desenvolvida para dropshippers otimizarem campanhas no Facebook Ads (Meta Ads) utilizando o modelo de negócio do Mercado Livre, mas com controle total do funil de tráfego, rastreamento (Pixel) e aparência do produto através de "Páginas Ponte".
+**Para a IA:** Você está assumindo o desenvolvimento de um projeto Next.js focado na criação de Páginas Ponte e Feed XML de Catálogo para arbitragem no Mercado Livre com tráfego do Meta Ads. Leia atentamente as informações abaixo antes de propor qualquer mudança.
 
-## 🏗️ Arquitetura
-- **Frontend/Backend:** Next.js (React) com App Router.
-- **Banco de Dados:** Supabase (PostgreSQL).
-- **Hospedagem:** Vercel (https://painel-ads-one.vercel.app).
-- **Estilização:** Tailwind CSS.
+## Stack e Arquitetura
+- **Framework:** Next.js (App Router, Edge & Node runtimes).
+- **Estilização:** TailwindCSS.
+- **Banco de Dados:** Supabase.
+- **Linguagem:** TypeScript.
 
-## 🔗 Principais Funcionalidades
-1. **Importação do Mercado Livre:** Captura dados de um anúncio original do Mercado Livre (Preço, Título, Link, Imagens) usando a API pública.
-2. **Edição Estratégica (Painel):** O usuário pode customizar a "Capa" do produto (fazer upload de uma imagem chamativa) e editar o preço para criar percepção de ancoragem/desconto, gerando uma nova Página Ponte exclusiva.
-3. **Página Ponte de Alta Conversão:** Uma página intermediária que:
-   - Exibe os dados otimizados.
-   - Carrega o Pixel da Meta (`PageView`, `ViewContent`).
-   - Ao clicar em "Comprar", abre um modal nativo passando segurança e aciona uma contagem regressiva de 5 segundos.
-   - Dispara o evento de `InitiateCheckout` na hora do redirecionamento.
-   - Redireciona o usuário (com o link de afiliado/original) para o Mercado Livre.
-4. **Catálogo Dinâmico (Facebook):** Rota da API (`/api/catalog/fb`) que gera automaticamente um arquivo XML (RSS) com todos os produtos editados para serem usados em Campanhas de Vendas de Catálogo Dinâmico (Advantage+) no Meta Ads. O catálogo bloqueia intencionalmente imagens nativas extras do ML para forçar o FB a exibir apenas as capas com alta conversão.
+## Funcionalidades e Regras de Negócio
 
-## 🛠️ Banco de Dados (Supabase)
-Tabela principal: `ml_products`
-- `id` (UUID)
-- `ml_item_id` (String - ID original do ML)
-- `original_title` / `custom_title` (String)
-- `original_price` / `custom_price` (Float)
-- `original_image_url` / `custom_image_url` (String)
-- `original_permalink` (String)
-- `created_at` (Timestamp)
-- `meta_pixel_id` (String - Para o rastreamento dinâmico)
+### 1. Páginas Ponte (`app/p/[id]/page.tsx`)
+- Funcionam como interceptadores antes de enviar o cliente ao Mercado Livre.
+- **Design:** Moderno, utilizando Glassmorphism (`backdrop-blur`, borders translúcidas).
+- **Comportamento do Botão de Compra (`BuyButton.tsx`):**
+  - O redirecionamento **nunca é automático** na carga da página.
+  - Ao clicar no botão "Comprar agora", um modal com fundo de vidro aparece informando "Redirecionando para ambiente seguro".
+  - O modal fica na tela por 3 segundos antes do redirecionamento efetivo.
 
-## 📌 Regras de IA (Diretrizes para Assistentes)
-- **Modificações de Layout:** Sempre priorizar um design limpo e de alta confiança ("estilo nativo" ou Premium). A página ponte e o painel de integração foram estilizados com as cores do ML.
-- **Ferramentas de Bash:** Evitar uso desnecessário de ferramentas amplas se houver ferramenta específica (Ex: preferir `replace_file_content` para edição).
-- **Catálogo:** Não incluir `additional_image_link` com as fotos do ML para evitar sujeira visual no carrossel do Meta Ads.
+### 2. Rastreamento e Meta CAPI (`app/api/pixel/capi/route.ts` e `PixelTracker.tsx`)
+- O sistema possui **Meta Conversions API (CAPI)** implementada no backend.
+- O Frontend passa eventos (`ViewContent`, `InitiateCheckout`) e **UTMs** via requisição POST para a rota interna CAPI.
+- **Micro-eventos no frontend:** 
+  - `ViewedContent_5s` (Dispara após 5 segundos).
+  - `ScrolledPage_50` (Dispara em 50% de scroll).
+- O sistema sempre envia um `eventId` único em chamadas CAPI e chamadas front-end (`window.fbq`) para deduplicação no Facebook.
+
+### 3. O "Santo Graal" das Compras (Purchase API Sync)
+- Em `lib/sync.ts` e `lib/ml.ts`, há uma lógica de robô chamada via **Cron Job da Vercel** (`/api/cron/sync` configurado no `vercel.json` para cada 15min).
+- O Cron pesquisa os pedidos pagos recentes via API do Mercado Livre (`/orders/search`).
+- Caso um pedido seja novo, o sistema dispara o evento de `Purchase` para o CAPI (Offline Conversions).
+- Para evitar duplicidade de envio, os IDs dos pedidos rastreados são salvos na tabela Supabase `ml_orders_tracked`.
+
+### 4. Feed de Catálogo XML (`app/api/ml/feed/single/[id]/route.ts`)
+- O sistema gera um catálogo formato Meta Ads (`lib/meta-feed.ts`).
+- Identifica dinamicamente Testes A/B injetando Labels:
+  - `custom_label_0` é `Variante A`, `Variante B` ou `Normal`.
+  - `custom_label_1` é marcado como `Teste AB`.
+
+## Próximas Atualizações (Guia para IA)
+- Antes de codar algo novo, sempre verifique o código existente nesses arquivos mencionados.
+- Sempre cuide de tratar as chamadas do ML SDK para lidar com token expirado.
+- Mantenha a estética de Glassmorphism.
+- Ao atualizar o backend (CAPI ou Sync), lembre-se que o Supabase admin SDK e o Vercel Edge Runtime devem ser compatíveis, mas a rota de `track` não pode usar chamadas dinâmicas incompatíveis com prerendering se for tentar build estático.

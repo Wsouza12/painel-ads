@@ -1,20 +1,31 @@
-# Status do Projeto (Atualizado em 19/07/2026)
+# Status do Projeto: Painel Ads (Sistema ML)
+**Última Atualização:** 21 de Julho de 2026
 
-## ✅ Concluído (Em Produção)
-- **Painel Administrativo:** CRUD de produtos e integração com banco de dados Supabase funcionando perfeitamente.
-- **Integração ML:** Extração nativa de dados (Título, Preço, Descrição, Imagens, Link) a partir do ID do produto.
-- **Páginas Ponte (`/p/[id]`):** Layout otimizado, de alta conversão, simulando interface confiável.
-- **Rastreamento (Pixel da Meta):** 
-  - `PageView` e `ViewContent` acionados no carregamento da página ponte.
-  - Modal de redirecionamento "Trust Box" (Amarelo/ML) com timer de 5s ativado mediante clique em "Comprar Agora".
-  - `InitiateCheckout` acionado no exato momento do redirecionamento ao Mercado Livre.
-- **Catálogo Dinâmico (Meta Ads):** XML feed estruturado (`/api/catalog/fb`). Filtro ativado para bloquear imagens adicionais do ML e enviar apenas a "Capa Otimizada" criada no painel, garantindo que o Carrossel Dinâmico do Facebook utilize 100% de tráfego na arte customizada (ideal para Teste A/B).
+## O que é o projeto?
+O "Painel Ads" é uma aplicação focada em arbitragem e dropshipping utilizando o ecossistema do Mercado Livre. Ele funciona como uma "Ponte" inteligente entre o tráfego pago (Meta Ads) e os anúncios do Mercado Livre. O sistema clona produtos do ML, permite edição de títulos/imagens/preços, gera páginas ponte de alta conversão para burlar bloqueios, e cria Feeds XML (Catálogos) otimizados para campanhas dinâmicas.
 
-## 🚀 Fase Atual
-- **Campanha Ativa:** Os anúncios de Carrossel Dinâmico Advantage+ foram configurados no Gerenciador de Anúncios. Estratégia atual engloba 24 variações (Teste A/B com preços e capas editadas) rodando com orçamento CBO (R$ 25/dia).
-- **Domínio:** Campanha de teste inicial veiculada utilizando subdomínio gratuito (`painel-ads-one.vercel.app`).
+## Stack Tecnológico
+- **Frontend:** Next.js (App Router), React, TailwindCSS.
+- **Backend:** Next.js Route Handlers.
+- **Banco de Dados/Auth:** Supabase.
+- **Integrações:** Mercado Livre API (SDK), Meta Graph API (CAPI).
+- **Hospedagem:** Vercel.
 
-## 🔜 Próximos Passos (To-Do List)
-- [ ] Acompanhar métricas de CPA e CTR da campanha de Teste A/B no Facebook nas primeiras 48h.
-- [ ] Comprar e conectar um **Domínio Próprio** (ex: .com.br) ao projeto Vercel para profissionalizar a URL e mitigar riscos de bloqueio no Facebook Ads ao escalar orçamento.
-- [ ] Otimização futura do sistema (se necessário) para suportar upload de múltiplas imagens customizadas para um mesmo anúncio ponte.
+## Funcionalidades Principais Implementadas Recentes
+
+1. **Páginas Ponte com Glassmorphism (UI Premium):**
+   - Redesign completo das páginas de ponte e do card de produtos.
+   - O redirecionamento automático foi removido. Agora a página atua como uma verdadeira ponte: o redirecionamento ocorre após o usuário clicar em "Comprar agora", com um modal elegante de carregamento seguro (3 segundos).
+
+2. **Integração Meta Conversions API (CAPI) - "O Santo Graal":**
+   - **Offline Conversions (Robô de Vendas):** Um Cron Job (rodando a cada 15min via Vercel) busca vendas recém-pagas na API do Mercado Livre e dispara um evento `Purchase` Server-to-Server para o Meta. Evita duplicidade usando a tabela `ml_orders_tracked`.
+   - **Micro-Eventos de Engajamento:** Na página ponte, rastreamos `ViewedContent_5s` (tempo na página) e `ScrolledPage_50` (scroll da página) disparando via CAPI e FBQ.
+   - **UTMs Dinâmicas:** A página ponte extrai os parâmetros UTM da URL e os injeta nos payloads do CAPI para otimização de campanhas avançadas.
+
+3. **Catálogo XML com Custom Labels Dinâmicas:**
+   - O Feed XML (usado no Meta Catalog) agora identifica automaticamente produtos que estão em Teste A/B.
+   - Insere `custom_label_0` como `Variante A`, `Variante B` ou `Normal`.
+
+## Próximos Passos Sugeridos
+- Criação de um Dashboard (Analytics) interno no painel para visualizar ROAS, Cliques e Conversões usando os dados já armazenados no banco.
+- Interface de gerenciamento de cupons dinâmicos.
