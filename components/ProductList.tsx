@@ -550,6 +550,33 @@ function ProductCard({ product, allProducts, abTests }: { product: any; allProdu
             </button>
           </div>
         )}
+
+        {/* Links Unicos de Catalogo */}
+        <div className="mt-4 pt-3 border-t border-neutral-800 space-y-2">
+          <p className="text-[10px] font-bold text-neutral-500 uppercase">Catálogo Único (Meta Ads)</p>
+          <div className="flex flex-col gap-2">
+            <button
+              onClick={() => {
+                const url = `${window.location.origin}/api/ml/feed/single/${product.id}?bridge=true`;
+                navigator.clipboard.writeText(url);
+                alert("Link do Catálogo (Página Ponte) copiado!");
+              }}
+              className="flex items-center gap-2 text-[11px] text-neutral-300 hover:text-white bg-neutral-800 hover:bg-neutral-700 px-2 py-1.5 rounded border border-neutral-700 transition-colors text-left"
+            >
+              📋 Copiar XML (Página Ponte)
+            </button>
+            <button
+              onClick={() => {
+                const url = `${window.location.origin}/api/ml/feed/single/${product.id}?bridge=false`;
+                navigator.clipboard.writeText(url);
+                alert("Link do Catálogo (Direto ML) copiado!");
+              }}
+              className="flex items-center gap-2 text-[11px] text-neutral-300 hover:text-white bg-neutral-800 hover:bg-neutral-700 px-2 py-1.5 rounded border border-neutral-700 transition-colors text-left"
+            >
+              📋 Copiar XML (Direto ML)
+            </button>
+          </div>
+        </div>
       </div>
 
       {showImageModal && (
