@@ -21,15 +21,15 @@ export async function POST(request: Request) {
     const utm_campaign = customData?.utm_campaign || body.customData?.utm_campaign || null;
     const product_id = contentIds?.[0] || null;
 
-    // 1. Logar no banco de dados para Analytics (Fire and forget, não trava a requisição)
-    supabaseAdmin.from("pixel_events_log").insert({
+    // 1. Logar no banco de dados para Analytics
+    await supabaseAdmin.from("pixel_events_log").insert({
       event_id: eventId,
       event_name: eventName,
       product_id: product_id,
       value: value || null,
       utm_source: utm_source,
       utm_campaign: utm_campaign,
-    }).catch(err => console.error("Erro ao salvar log de evento:", err));
+    });
 
     const payload = {
       data: [
