@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
+import { supabaseAdmin } from "@/lib/supabase";
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const { eventName, eventId, sourceUrl, userAgent, clientIp, fbc, fbp, contentIds, value, currency } = body;
+    const { eventName, eventId, sourceUrl, userAgent, clientIp, fbc, fbp, contentIds, value, currency, customData } = body;
 
     const PIXEL_ID = process.env.META_PIXEL_ID;
     const ACCESS_TOKEN = process.env.META_ACCESS_TOKEN;
@@ -14,6 +15,21 @@ export async function POST(request: Request) {
     }
 
     const eventTime = Math.floor(Date.now() / 1000);
+    
+    // Extrai UTMs se vierem encapsuladas dentro de customData
+    const utm_source = customData?.utm_source || body.customData?.utm_source || null;
+    const utm_campaign = customData?.utm_campaign || body.customData?.utm_campaign || null;
+    const product_id = contentIds?.[0] || null;
+
+    // 1. Logar no banco de dados para Analytics (Fire and forget, não trava a requisição)
+    supabaseAdmin.from("pixel_events_log").insert({
+      event_id: eventId,
+      event_name: eventName,
+      product_id: product_id,
+      value: value || null,
+      utm_source: utm_source,
+      utm_campaign: utm_campaign,
+    }).catch(err => console.error("Erro ao salvar log de evento:", err));
 
     const payload = {
       data: [
@@ -34,6 +50,8 @@ export async function POST(request: Request) {
             content_type: "product",
             value: value,
             currency: currency || "BRL",
+            utm_source: utm_source,
+            utm_campaign: utm_campaign,
           },
         },
       ],

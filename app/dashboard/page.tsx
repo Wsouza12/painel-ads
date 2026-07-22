@@ -51,14 +51,22 @@ export default async function DashboardPage() {
               Sincronização inteligente de anúncios e otimização por IA.
             </p>
           </div>
-          <a
-            href="/prompt-generator/index.html"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition-all hover:scale-105 hover:shadow-[0_0_20px_rgba(147,51,234,0.4)] shadow-lg"
-          >
-            <span className="group-hover:animate-pulse">✨</span> Gerador de Prompts IA
-          </a>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <a
+              href="/dashboard/analytics"
+              className="group inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 px-5 py-2.5 text-sm font-semibold text-white transition-all hover:scale-105 shadow-lg shadow-emerald-500/20"
+            >
+              📊 Analytics ao Vivo
+            </a>
+            <a
+              href="/prompt-generator/index.html"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition-all hover:scale-105 hover:shadow-[0_0_20px_rgba(147,51,234,0.4)] shadow-lg"
+            >
+              <span className="group-hover:animate-pulse">✨</span> Prompts IA
+            </a>
+          </div>
         </header>
 
         {!connection ? (

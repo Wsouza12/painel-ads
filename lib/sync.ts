@@ -271,6 +271,16 @@ async function syncOneConnection(connection: any) {
             console.log(`[CAPI] Compra rastreada! Order ID: ${orderId} - Value: ${value}`);
             // Salvar no banco para não processar de novo
             await supabaseAdmin.from("ml_orders_tracked").insert({ order_id: orderId });
+            
+            // Log para Analytics Interno
+            await supabaseAdmin.from("pixel_events_log").insert({
+              event_id: `purchase_${orderId}`,
+              event_name: "Purchase",
+              product_id: contentId,
+              value: value,
+              utm_source: null,
+              utm_campaign: null,
+            }).catch(() => {});
           } else {
             const errResult = await response.json();
             console.error(`[CAPI] Erro ao enviar compra ${orderId}:`, errResult);
