@@ -7,16 +7,9 @@ export default function ProductList({ products, abTests }: { products: any[], ab
   if (!products || products.length === 0) return null;
 
   return (
-    <div className="mt-12 space-y-6">
-      <div className="flex items-center gap-3 mb-6">
-        <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-neutral-400">
-          Seus Produtos
-        </h2>
-        <span className="text-xs font-medium bg-white/10 text-neutral-300 px-3 py-1 rounded-full border border-white/5">
-          Edite para Facebook & ML
-        </span>
-      </div>
-      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+    <div className="mt-8 space-y-4">
+      <h2 className="text-sm font-medium text-neutral-400 mb-3">Seus Produtos (Edite para o Facebook e ML)</h2>
+      <div className="grid gap-4 sm:grid-cols-2">
         {products.filter(p => p.original_condition !== "paused").map((product) => (
           <ProductCard key={product.id} product={product} allProducts={products} abTests={abTests} />
         ))}
@@ -491,9 +484,78 @@ function ProductCard({ product, allProducts, abTests }: { product: any; allProdu
   }
 
   return (
-    <div className="rounded-md border border-neutral-800 bg-neutral-900 p-4 flex gap-4 items-start relative">
-      <div className="relative group cursor-pointer" onClick={openImageModal}>
-        <img
+    <div className="group rounded-2xl border border-white/10 bg-neutral-900/40 backdrop-blur-sm p-5 hover:bg-neutral-800/60 transition-all duration-300 hover:shadow-2xl hover:-translate-y-1 relative overflow-hidden flex flex-col h-full">
+      {/* Glow effect on hover */}
+      <div className="absolute inset-0 bg-gradient-to-b from-purple-500/0 via-purple-500/0 to-purple-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"></div>
+      
+      <div className="flex gap-4">
+        <div className="relative shrink-0">
+          <div className="w-20 h-20 sm:w-24 sm:h-24 bg-black/40 rounded-xl overflow-hidden border border-white/5 shadow-inner cursor-pointer" onClick={() => {
+            setModalImages([product.original_image_url]);
+            setShowImageModal(true);
+          }}>
+            <img src={displayImage} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+          </div>
+        </div>
+        <div className="flex-1 min-w-0 flex flex-col justify-center">
+          <h3 className="text-sm font-bold text-white truncate group-hover:text-purple-300 transition-colors">{displayTitle}</h3>
+          <p className="text-emerald-400 text-lg font-black mt-1 tracking-tight">R$ {Number(displayPrice).toFixed(2)}</p>
+          
+          {/* Metricas de Trafego */}
+          <div className="flex items-center gap-2 mt-2 text-[10px] font-bold text-neutral-400">
+            <div className="flex items-center gap-1.5 bg-black/30 px-2.5 py-1 rounded-full border border-white/5 shadow-inner">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-blue-400">
+                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+              <span className="text-neutral-300">{product.views || 0}</span>
+            </div>
+            <div className="flex items-center gap-1.5 bg-black/30 px-2.5 py-1 rounded-full border border-white/5 shadow-inner">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-emerald-400">
+                <path d="M15 3h6v6"/>
+                <path d="M10 14L21 3"/>
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>
+              </svg>
+              <span className="text-neutral-300">{product.clicks || 0}</span>
+            </div>
+          </div>
+          
+          {isVariantA && (
+            <span className="inline-block mt-3 bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-[10px] font-bold px-3 py-1 rounded-full shadow-lg shadow-purple-500/30 w-max border border-purple-400/30">
+              🧪 Teste A/B Ativo (Var A)
+            </span>
+          )}
+          
+          {isVariantB && (
+            <span className="inline-block mt-3 bg-black/40 text-neutral-400 text-[10px] font-bold px-3 py-1 rounded-full border border-white/10 w-max">
+              Vinculado ao Teste (Var B)
+            </span>
+          )}
+        </div>
+      </div>
+
+      <div className="mt-5 flex-1 flex flex-col justify-end">
+        {!isVariantB ? (
+          <button
+            onClick={() => setIsEditing(true)}
+            className="w-full text-xs font-semibold text-neutral-300 hover:text-white bg-white/5 hover:bg-white/10 py-2.5 rounded-lg border border-white/5 transition-all"
+          >
+            Editar Anúncios
+          </button>
+        ) : (
+          <div className="flex items-center justify-between bg-black/20 p-3 rounded-lg border border-white/5">
+            <p className="text-[11px] font-medium text-neutral-500">
+              Editado pela Variante A
+            </p>
+            <button
+              onClick={handleUnlinkAB}
+              className="text-[11px] font-bold text-red-400 hover:text-red-300 bg-red-400/10 hover:bg-red-400/20 px-3 py-1 rounded-full transition-colors"
+            >
+              Desvincular
+            </button>
+          </div>
+        )}
+
         {/* Links Unicos de Catalogo */}
         <div className="mt-4 pt-4 border-t border-white/5 space-y-3">
           <p className="text-[10px] font-black text-neutral-500 tracking-widest uppercase">Catálogo Único (Meta Ads)</p>
