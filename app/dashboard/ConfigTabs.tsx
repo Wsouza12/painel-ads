@@ -94,6 +94,17 @@ export default function ConfigTabs({
                   {bridgeFeed}
                 </code>
               </div>
+
+              <div className="bg-pink-900/10 p-4 rounded-xl border border-pink-500/20">
+                <p className="text-pink-300 mb-1 font-bold flex items-center gap-2">
+                  <span className="w-5 h-5 rounded-full bg-pink-500/20 flex items-center justify-center text-[10px]">3</span>
+                  Feed de Vídeo (Página Ponte):
+                </p>
+                <p className="text-[11px] text-pink-200/60 mb-3">Crie um catálogo separado e use este link para campanhas focadas em vídeos (Adicione as URLs de vídeo em cada produto na aba Início).</p>
+                <code className="block w-full bg-black/50 rounded-lg px-4 py-3 break-all text-xs border border-pink-500/20 select-all text-pink-400 font-medium">
+                  {bridgeFeed}&amp;video=true
+                </code>
+              </div>
             </div>
             <div className="pt-2">
               <a

@@ -14,6 +14,7 @@ export type MetaFeedRow = {
   brand: string;
   custom_label_0?: string;
   custom_label_1?: string;
+  video_link?: string;
 };
 
 function extractBrand(item: MlItem): string {
@@ -24,7 +25,7 @@ function extractBrand(item: MlItem): string {
 export function toMetaRow(
   item: MlItem,
   description: string,
-  overrides?: { title?: string | null; price?: number | null; image_url?: string | null; additional_image_urls?: string[], custom_label_0?: string, custom_label_1?: string },
+  overrides?: { title?: string | null; price?: number | null; image_url?: string | null; video_url?: string | null; additional_image_urls?: string[], custom_label_0?: string, custom_label_1?: string },
   options?: { id_suffix?: string; item_group_id?: string }
 ): MetaFeedRow {
   return {
@@ -42,6 +43,7 @@ export function toMetaRow(
     brand: extractBrand(item),
     custom_label_0: overrides?.custom_label_0 || "",
     custom_label_1: overrides?.custom_label_1 || "",
+    video_link: overrides?.video_url || "",
   };
 }
 
@@ -58,7 +60,8 @@ const HEADERS: (keyof MetaFeedRow)[] = [
   "additional_image_link",
   "brand",
   "custom_label_0",
-  "custom_label_1"
+  "custom_label_1",
+  "video_link"
 ];
 
 function escapeCsv(val: unknown): string {

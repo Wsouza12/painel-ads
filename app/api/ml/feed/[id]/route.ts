@@ -8,6 +8,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
     const { searchParams } = new URL(request.url);
     const minPrice = searchParams.get("min_price") ? Number(searchParams.get("min_price")) : 0;
     const isBridge = searchParams.get("bridge") === "true";
+    const isVideo = searchParams.get("video") === "true";
     
     // Buscar conexão
     const { data: connection } = await supabaseAdmin
@@ -82,7 +83,8 @@ export async function GET(request: Request, { params }: { params: { id: string }
           id: `${product.ml_item_id}-A`,
         }, description, {
           title: abTest.variant_a_title,
-          image_url: product.custom_image_url || getValidImage(abTest.variant_a_image) || product.original_image_url
+          image_url: product.custom_image_url || getValidImage(abTest.variant_a_image) || product.original_image_url,
+          video_url: isVideo ? product.custom_video_url : null
         }, { item_group_id: product.ml_item_id }));
 
         // Buscar preco real e imagem do Variant B se existir
@@ -106,7 +108,8 @@ export async function GET(request: Request, { params }: { params: { id: string }
         }, description, {
           title: abTest.variant_b_title,
           image_url: variantBImage || product.original_image_url,
-          price: variantBPrice
+          price: variantBPrice,
+          video_url: isVideo ? product.custom_video_url : null
         }, { item_group_id: product.ml_item_id }));
       } else {
         // Produto normal
@@ -114,6 +117,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
           title: product.custom_title,
           price: product.custom_price,
           image_url: product.custom_image_url || product.original_image_url,
+          video_url: isVideo ? product.custom_video_url : null
         };
         rows.push(toMetaRow(fakeItem, description, overrides));
       }

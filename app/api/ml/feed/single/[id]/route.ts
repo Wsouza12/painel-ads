@@ -6,6 +6,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
   try {
     const { searchParams } = new URL(request.url);
     const isBridge = searchParams.get("bridge") === "true";
+    const isVideo = searchParams.get("video") === "true";
     
     // Buscar produto específico da DB
     const { data: product } = await supabaseAdmin
@@ -65,6 +66,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
       }, description, {
         title: abTest.variant_a_title,
         image_url: product.custom_image_url || getValidImage(abTest.variant_a_image) || product.original_image_url,
+        video_url: isVideo ? product.custom_video_url : null,
         custom_label_0: "Variante A",
         custom_label_1: "Teste AB"
       }, { item_group_id: product.ml_item_id }));
@@ -96,6 +98,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
         title: abTest.variant_b_title,
         image_url: variantBImage || product.original_image_url,
         price: variantBPrice,
+        video_url: isVideo ? product.custom_video_url : null,
         custom_label_0: "Variante B",
         custom_label_1: "Teste AB"
       }, { item_group_id: product.ml_item_id }));
@@ -105,6 +108,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
         title: product.custom_title,
         price: product.custom_price,
         image_url: product.custom_image_url || product.original_image_url,
+        video_url: isVideo ? product.custom_video_url : null,
         custom_label_0: "Normal"
       };
       rows.push(toMetaRow(fakeItem, description, overrides));

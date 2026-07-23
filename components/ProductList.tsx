@@ -40,6 +40,7 @@ function ProductCard({ product, allProducts, abTests }: { product: any; allProdu
     title: product.custom_title || product.original_title,
     price: product.custom_price || product.original_price,
     image_url: product.custom_image_url || "",
+    video_url: product.custom_video_url || "",
   });
 
   const displayTitle = product.custom_title || product.original_title;
@@ -409,6 +410,19 @@ function ProductCard({ product, allProducts, abTests }: { product: any; allProdu
                   value={formValues.image_url}
                   onChange={e => setFormValues({...formValues, image_url: e.target.value})}
                   placeholder="Insira a URL da imagem ou faça upload"
+                  className="w-full bg-neutral-900 border border-neutral-700 rounded px-2 py-1 text-sm text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
+                />
+              </div>
+
+              <div className="pt-2">
+                <label className="text-xs text-neutral-400 block mb-1">
+                  URL do Vídeo (Opcional - Para feed de vídeo)
+                </label>
+                <input
+                  name="custom_video_url"
+                  value={formValues.video_url}
+                  onChange={e => setFormValues({...formValues, video_url: e.target.value})}
+                  placeholder="Ex: https://seusite.com/video.mp4"
                   className="w-full bg-neutral-900 border border-neutral-700 rounded px-2 py-1 text-sm text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
                 />
               </div>
