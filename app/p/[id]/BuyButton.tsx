@@ -15,6 +15,17 @@ export default function BuyButton({
 }) {
   const [timeLeft, setTimeLeft] = useState(3);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [hasAutoOpened, setHasAutoOpened] = useState(false);
+
+  useEffect(() => {
+    if (!hasAutoOpened) {
+      setHasAutoOpened(true);
+      const timer = setTimeout(() => {
+        handleBuyClick({ preventDefault: () => {} } as any);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [hasAutoOpened]);
 
   useEffect(() => {
     if (!isModalOpen) return;
