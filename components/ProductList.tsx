@@ -438,8 +438,13 @@ function ProductCard({ product, allProducts, abTests }: { product: any; allProdu
                   value={formValues.video_url}
                   onChange={e => setFormValues({...formValues, video_url: e.target.value})}
                   placeholder="Ex: https://seusite.com/video.mp4"
-                  className="w-full bg-neutral-900 border border-neutral-700 rounded px-2 py-1 text-sm text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none"
+                  className="w-full bg-neutral-900 border border-neutral-700 rounded px-2 py-1 text-sm text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none mt-1"
                 />
+                {formValues.video_url && (
+                  <div className="mt-2 rounded bg-black overflow-hidden border border-neutral-700 max-h-32 flex justify-center">
+                    <video src={formValues.video_url} controls className="max-h-32 object-contain" />
+                  </div>
+                )}
               </div>
 
               {aiPrompt && (
