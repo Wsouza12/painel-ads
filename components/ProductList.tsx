@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { updateProduct, uploadImage, uploadVideo, pushDescriptionToML } from "@/app/dashboard/actions";
+import { updateProduct, uploadImage, generateVideoUploadUrl, pushDescriptionToML } from "@/app/dashboard/actions";
 
 export default function ProductList({ products, abTests }: { products: any[], abTests: any[] }) {
   if (!products || products.length === 0) return null;
@@ -532,10 +532,25 @@ function ProductCard({ product, allProducts, abTests }: { product: any; allProdu
 
     setIsUploading(true);
     try {
-      const formData = new FormData();
-      formData.append("video", file);
-      const url = await uploadVideo(formData);
-      setFormValues({ ...formValues, video_url: url });
+      const fileExt = file.name.split('.').pop() || 'mp4';
+      
+      // 1. Pede permissão para o Servidor (bypassa limite de 6MB do Netlify)
+      const { signedUrl, publicUrl } = await generateVideoUploadUrl(fileExt);
+      
+      // 2. Faz o upload direto do navegador do cliente para o Supabase
+      const res = await fetch(signedUrl, {
+        method: 'PUT',
+        body: file,
+        headers: {
+          'Content-Type': file.type,
+        }
+      });
+
+      if (!res.ok) {
+        throw new Error("Falha ao enviar arquivo direto para a nuvem.");
+      }
+
+      setFormValues({ ...formValues, video_url: publicUrl });
     } catch (err: any) {
       alert(err.message);
     } finally {
