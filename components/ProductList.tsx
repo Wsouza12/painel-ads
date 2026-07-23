@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { updateProduct, uploadImage, pushDescriptionToML } from "@/app/dashboard/actions";
+import { updateProduct, uploadImage, uploadVideo, pushDescriptionToML } from "@/app/dashboard/actions";
 
 export default function ProductList({ products, abTests }: { products: any[], abTests: any[] }) {
   if (!products || products.length === 0) return null;
@@ -35,6 +35,7 @@ function ProductCard({ product, allProducts, abTests }: { product: any; allProdu
   const [isLoadingImages, setIsLoadingImages] = useState(false);
   
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const videoInputRef = useRef<HTMLInputElement>(null);
   const [aiPrompt, setAiPrompt] = useState("");
   const [formValues, setFormValues] = useState({
     title: product.custom_title || product.original_title,
@@ -415,9 +416,23 @@ function ProductCard({ product, allProducts, abTests }: { product: any; allProdu
               </div>
 
               <div className="pt-2">
-                <label className="text-xs text-neutral-400 block mb-1">
-                  URL do Vídeo (Opcional - Para feed de vídeo)
+                <label className="text-xs text-neutral-400 flex justify-between items-end mb-1">
+                  <span>URL do Vídeo (Opcional - Para feed de vídeo)</span>
+                  <button
+                    type="button"
+                    onClick={() => videoInputRef.current?.click()}
+                    className="text-xs bg-neutral-700 hover:bg-neutral-600 px-2 py-0.5 rounded flex items-center gap-1 transition-colors text-neutral-200 border border-neutral-600"
+                  >
+                    {isUploading ? "..." : "📎 Fazer Upload (Max 50MB)"}
+                  </button>
                 </label>
+                <input
+                  type="file"
+                  ref={videoInputRef}
+                  onChange={handleVideoUpload}
+                  accept="video/mp4,video/quicktime,video/webm"
+                  className="hidden"
+                />
                 <input
                   name="custom_video_url"
                   value={formValues.video_url}
@@ -495,6 +510,29 @@ function ProductCard({ product, allProducts, abTests }: { product: any; allProdu
         )}
       </div>
     );
+  }
+
+  async function handleVideoUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Optional client-side size check (e.g., 50MB)
+    if (file.size > 50 * 1024 * 1024) {
+      alert("O vídeo é muito grande. O tamanho máximo permitido é 50MB.");
+      return;
+    }
+
+    setIsUploading(true);
+    try {
+      const formData = new FormData();
+      formData.append("video", file);
+      const url = await uploadVideo(formData);
+      setFormValues({ ...formValues, video_url: url });
+    } catch (err: any) {
+      alert(err.message);
+    } finally {
+      setIsUploading(false);
+    }
   }
 
   return (

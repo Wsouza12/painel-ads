@@ -72,6 +72,32 @@ export async function uploadImage(formData: FormData) {
 
   return publicUrlData.publicUrl;
 }
+
+export async function uploadVideo(formData: FormData) {
+  const file = formData.get("video") as File;
+  if (!file) throw new Error("Nenhum arquivo recebido.");
+
+  const fileExt = file.name.split('.').pop();
+  const fileName = `${Math.random().toString(36).substring(2)}_${Date.now()}.${fileExt}`;
+  const filePath = `uploads/videos/${fileName}`;
+
+  const { error } = await supabaseAdmin.storage
+    .from("meta-catalog-feed")
+    .upload(filePath, await file.arrayBuffer(), {
+      contentType: file.type,
+      upsert: false
+    });
+
+  if (error) {
+    throw new Error(`Erro no upload do vídeo: ${error.message}`);
+  }
+
+  const { data: publicUrlData } = supabaseAdmin.storage
+    .from("meta-catalog-feed")
+    .getPublicUrl(filePath);
+
+  return publicUrlData.publicUrl;
+}
 export async function pushDescriptionToML(productId: string, description: string) {
   // 1. Pegar produto e conexão
   const { data: product } = await supabaseAdmin
