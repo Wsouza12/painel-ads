@@ -21,6 +21,14 @@ export async function POST(request: Request) {
     const utm_campaign = customData?.utm_campaign || body.customData?.utm_campaign || null;
     const product_id = contentIds?.[0] || null;
 
+    // Obtém o IP real do cliente se disponível
+    const forwardedFor = request.headers.get("x-forwarded-for");
+    const realIp = request.headers.get("x-real-ip");
+    let actualIp = forwardedFor ? forwardedFor.split(',')[0].trim() : realIp;
+    if (!actualIp || actualIp === "::1" || actualIp === "127.0.0.1") {
+      actualIp = (clientIp && clientIp !== "0.0.0.0") ? clientIp : undefined;
+    }
+
     // 1. Logar no banco de dados para Analytics
     await supabaseAdmin.from("pixel_events_log").insert({
       event_id: eventId,
@@ -40,7 +48,7 @@ export async function POST(request: Request) {
           event_source_url: sourceUrl,
           action_source: "website",
           user_data: {
-            client_ip_address: clientIp,
+            client_ip_address: actualIp,
             client_user_agent: userAgent,
             fbc: fbc || undefined,
             fbp: fbp || undefined,
