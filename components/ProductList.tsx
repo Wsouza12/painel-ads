@@ -430,7 +430,7 @@ function ProductCard({ product, allProducts, abTests }: { product: any; allProdu
                   type="file"
                   ref={videoInputRef}
                   onChange={handleVideoUpload}
-                  accept="video/mp4,video/quicktime,video/webm"
+                  accept="video/*"
                   className="hidden"
                 />
                 <input
@@ -520,6 +520,9 @@ function ProductCard({ product, allProducts, abTests }: { product: any; allProdu
   async function handleVideoUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    // Reset input so the same file can be selected again
+    e.target.value = "";
 
     // Optional client-side size check (e.g., 50MB)
     if (file.size > 50 * 1024 * 1024) {
