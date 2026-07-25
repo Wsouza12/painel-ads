@@ -11,6 +11,7 @@ export async function updateProduct(productId: string, formData: FormData) {
   const custom_price = formData.get("custom_price") ? Number(formData.get("custom_price")) : null;
   const custom_image_url = formData.get("custom_image_url")?.toString() || null;
   const custom_video_url = formData.get("custom_video_url")?.toString() || null;
+  const custom_video_url_square = formData.get("custom_video_url_square")?.toString() || null;
 
   const { error } = await supabaseAuth
     .from("ml_products")
@@ -19,6 +20,7 @@ export async function updateProduct(productId: string, formData: FormData) {
       custom_price,
       custom_image_url,
       custom_video_url,
+      custom_video_url_square,
       updated_at: new Date().toISOString(),
     })
     .eq("id", productId);

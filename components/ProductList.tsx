@@ -36,12 +36,15 @@ function ProductCard({ product, allProducts, abTests }: { product: any; allProdu
   
   const fileInputRef = useRef<HTMLInputElement>(null);
   const videoInputRef = useRef<HTMLInputElement>(null);
+  const videoSquareInputRef = useRef<HTMLInputElement>(null);
+  const [isUploadingSquareVideo, setIsUploadingSquareVideo] = useState(false);
   const [aiPrompt, setAiPrompt] = useState("");
   const [formValues, setFormValues] = useState({
     title: product.custom_title || product.original_title,
     price: product.custom_price || product.original_price,
     image_url: product.custom_image_url || "",
     video_url: product.custom_video_url || "",
+    video_url_square: product.custom_video_url_square || "",
   });
 
   const displayTitle = product.custom_title || product.original_title;
@@ -206,6 +209,38 @@ function ProductCard({ product, allProducts, abTests }: { product: any; allProdu
       alert("Erro ao fazer upload: " + err.message);
     }
     setIsUploading(false);
+  }
+
+  async function handleVideoUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    if (!e.target.files || e.target.files.length === 0) return;
+    const file = e.target.files[0];
+    
+    setIsUploading(true);
+    try {
+      const publicUrl = await generateVideoUploadUrl(product.id, file.name, file.type, file);
+      setFormValues(prev => ({ ...prev, video_url: publicUrl }));
+    } catch (err: any) {
+      alert("Erro ao fazer upload do vídeo: " + err.message);
+    }
+    setIsUploading(false);
+    
+    if (videoInputRef.current) videoInputRef.current.value = "";
+  }
+
+  async function handleSquareVideoUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    if (!e.target.files || e.target.files.length === 0) return;
+    const file = e.target.files[0];
+    
+    setIsUploadingSquareVideo(true);
+    try {
+      const publicUrl = await generateVideoUploadUrl(product.id, "sq_" + file.name, file.type, file);
+      setFormValues(prev => ({ ...prev, video_url_square: publicUrl }));
+    } catch (err: any) {
+      alert("Erro ao fazer upload do vídeo quadrado: " + err.message);
+    }
+    setIsUploadingSquareVideo(false);
+    
+    if (videoSquareInputRef.current) videoSquareInputRef.current.value = "";
   }
 
   async function openImageModal() {
@@ -415,36 +450,72 @@ function ProductCard({ product, allProducts, abTests }: { product: any; allProdu
                 />
               </div>
 
-              <div className="pt-2">
-                <label className="text-xs text-neutral-400 flex justify-between items-end mb-1">
-                  <span>URL do Vídeo (Opcional - Para feed de vídeo)</span>
-                  <button
-                    type="button"
-                    onClick={() => videoInputRef.current?.click()}
-                    className="text-xs bg-neutral-700 hover:bg-neutral-600 px-2 py-0.5 rounded flex items-center gap-1 transition-colors text-neutral-200 border border-neutral-600"
-                  >
-                    {isUploading ? "..." : "📎 Fazer Upload (Max 50MB)"}
-                  </button>
-                </label>
-                <input
-                  type="file"
-                  ref={videoInputRef}
-                  onChange={handleVideoUpload}
-                  accept="video/*"
-                  className="hidden"
-                />
-                <input
-                  name="custom_video_url"
-                  value={formValues.video_url}
-                  onChange={e => setFormValues({...formValues, video_url: e.target.value})}
-                  placeholder="Ex: https://seusite.com/video.mp4"
-                  className="w-full bg-neutral-900 border border-neutral-700 rounded px-2 py-1 text-sm text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none mt-1"
-                />
-                {formValues.video_url && (
-                  <div className="mt-2 rounded bg-black overflow-hidden border border-neutral-700 max-h-32 flex justify-center">
-                    <video src={formValues.video_url} controls className="max-h-32 object-contain" />
-                  </div>
-                )}
+              <div className="pt-2 border-t border-neutral-700/50 mt-2 space-y-3">
+                {/* Vertical Video */}
+                <div>
+                  <label className="text-xs text-neutral-400 flex justify-between items-end mb-1">
+                    <span>📱 Vídeo Vertical (9:16) - Reels/Stories</span>
+                    <button
+                      type="button"
+                      onClick={() => videoInputRef.current?.click()}
+                      className="text-xs bg-neutral-700 hover:bg-neutral-600 px-2 py-0.5 rounded flex items-center gap-1 transition-colors text-neutral-200 border border-neutral-600"
+                    >
+                      {isUploading ? "..." : "📎 Upload (Max 50MB)"}
+                    </button>
+                  </label>
+                  <input
+                    type="file"
+                    ref={videoInputRef}
+                    onChange={handleVideoUpload}
+                    accept="video/*"
+                    className="hidden"
+                  />
+                  <input
+                    name="custom_video_url"
+                    value={formValues.video_url}
+                    onChange={e => setFormValues({...formValues, video_url: e.target.value})}
+                    placeholder="Ex: https://seusite.com/video-9x16.mp4"
+                    className="w-full bg-neutral-900 border border-neutral-700 rounded px-2 py-1 text-sm text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none mt-1"
+                  />
+                  {formValues.video_url && (
+                    <div className="mt-2 rounded bg-black overflow-hidden border border-neutral-700 max-h-32 flex justify-center">
+                      <video src={formValues.video_url} controls className="max-h-32 object-contain" />
+                    </div>
+                  )}
+                </div>
+
+                {/* Square Video */}
+                <div>
+                  <label className="text-xs text-neutral-400 flex justify-between items-end mb-1">
+                    <span>⬛ Vídeo Quadrado (1:1) - Feed</span>
+                    <button
+                      type="button"
+                      onClick={() => videoSquareInputRef.current?.click()}
+                      className="text-xs bg-neutral-700 hover:bg-neutral-600 px-2 py-0.5 rounded flex items-center gap-1 transition-colors text-neutral-200 border border-neutral-600"
+                    >
+                      {isUploadingSquareVideo ? "..." : "📎 Upload (Max 50MB)"}
+                    </button>
+                  </label>
+                  <input
+                    type="file"
+                    ref={videoSquareInputRef}
+                    onChange={handleSquareVideoUpload}
+                    accept="video/*"
+                    className="hidden"
+                  />
+                  <input
+                    name="custom_video_url_square"
+                    value={formValues.video_url_square}
+                    onChange={e => setFormValues({...formValues, video_url_square: e.target.value})}
+                    placeholder="Ex: https://seusite.com/video-1x1.mp4"
+                    className="w-full bg-neutral-900 border border-neutral-700 rounded px-2 py-1 text-sm text-white focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 outline-none mt-1"
+                  />
+                  {formValues.video_url_square && (
+                    <div className="mt-2 rounded bg-black overflow-hidden border border-neutral-700 max-h-32 flex justify-center">
+                      <video src={formValues.video_url_square} controls className="max-h-32 object-contain" />
+                    </div>
+                  )}
+                </div>
               </div>
 
               {aiPrompt && (
