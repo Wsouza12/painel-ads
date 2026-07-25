@@ -40,7 +40,7 @@ export function toMetaRow(
     condition: item.condition === "used" ? "used" : "new",
     price: `${(overrides?.price || item.price).toFixed(2)} BRL`,
     link: item.permalink,
-    image_link: "", // Isolado para teste, antes era: overrides?.image_url || item.pictures?.[0]?.secure_url || item.thumbnail
+    image_link: overrides?.image_url || item.pictures?.[0]?.secure_url || item.thumbnail,
     additional_image_link: overrides?.additional_image_urls?.join(",") || "",
     brand: extractBrand(item),
     custom_label_0: overrides?.custom_label_0 || "",
