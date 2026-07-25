@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+// Trigger Cloudflare Pages deployment with nodejs_compat
 import { supabaseAdmin } from "@/lib/supabase";
 import { toMetaRow, toCsv } from "@/lib/meta-feed";
 import { getDescription } from "@/lib/ml";
