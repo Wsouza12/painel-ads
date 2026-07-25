@@ -217,7 +217,17 @@ function ProductCard({ product, allProducts, abTests }: { product: any; allProdu
     
     setIsUploading(true);
     try {
-      const publicUrl = await generateVideoUploadUrl(product.id, file.name, file.type, file);
+      const ext = file.name.split('.').pop() || 'mp4';
+      const { signedUrl, publicUrl } = await generateVideoUploadUrl(ext);
+      
+      const res = await fetch(signedUrl, {
+        method: "PUT",
+        body: file,
+        headers: { "Content-Type": file.type },
+      });
+      
+      if (!res.ok) throw new Error("Falha ao salvar na nuvem");
+      
       setFormValues(prev => ({ ...prev, video_url: publicUrl }));
     } catch (err: any) {
       alert("Erro ao fazer upload do vídeo: " + err.message);
@@ -233,7 +243,17 @@ function ProductCard({ product, allProducts, abTests }: { product: any; allProdu
     
     setIsUploadingSquareVideo(true);
     try {
-      const publicUrl = await generateVideoUploadUrl(product.id, "sq_" + file.name, file.type, file);
+      const ext = file.name.split('.').pop() || 'mp4';
+      const { signedUrl, publicUrl } = await generateVideoUploadUrl("sq_" + ext);
+      
+      const res = await fetch(signedUrl, {
+        method: "PUT",
+        body: file,
+        headers: { "Content-Type": file.type },
+      });
+      
+      if (!res.ok) throw new Error("Falha ao salvar na nuvem");
+
       setFormValues(prev => ({ ...prev, video_url_square: publicUrl }));
     } catch (err: any) {
       alert("Erro ao fazer upload do vídeo quadrado: " + err.message);
