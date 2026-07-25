@@ -244,7 +244,7 @@ function ProductCard({ product, allProducts, abTests }: { product: any; allProdu
     setIsUploadingSquareVideo(true);
     try {
       const ext = file.name.split('.').pop() || 'mp4';
-      const { signedUrl, publicUrl } = await generateVideoUploadUrl("sq_" + ext);
+      const { signedUrl, publicUrl } = await generateVideoUploadUrl(ext);
       
       const res = await fetch(signedUrl, {
         method: "PUT",
