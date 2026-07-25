@@ -46,7 +46,7 @@ export function toMetaRow(
     custom_label_0: overrides?.custom_label_0 || "",
     custom_label_1: overrides?.custom_label_1 || "",
     "video[0].url": overrides?.video_url_square || overrides?.video_url || "",
-    "video[0].tag[0]": overrides?.video_url_square ? "1:1" : (overrides?.video_url ? "9:16" : ""),
+    "video[0].tag[0]": overrides?.video_url_square ? "4:5" : (overrides?.video_url ? "9:16" : ""),
     "video[1].url": (overrides?.video_url_square && overrides?.video_url) ? overrides?.video_url : "",
     "video[1].tag[0]": (overrides?.video_url_square && overrides?.video_url) ? "9:16" : "",
   };
