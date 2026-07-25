@@ -14,8 +14,7 @@ export type MetaFeedRow = {
   brand: string;
   custom_label_0?: string;
   custom_label_1?: string;
-  "video[0].url"?: string;
-  "video[1].url"?: string;
+  video?: string;
 };
 
 function extractBrand(item: MlItem): string {
@@ -29,6 +28,14 @@ export function toMetaRow(
   overrides?: { title?: string | null; price?: number | null; image_url?: string | null; video_url?: string | null; video_url_square?: string | null; additional_image_urls?: string[], custom_label_0?: string, custom_label_1?: string },
   options?: { id_suffix?: string; item_group_id?: string }
 ): MetaFeedRow {
+  const videos = [];
+  if (overrides?.video_url_square) {
+    videos.push({ url: overrides.video_url_square, tag: ["1:1"] });
+  }
+  if (overrides?.video_url) {
+    videos.push({ url: overrides.video_url, tag: ["9:16"] });
+  }
+
   return {
     id: options?.id_suffix ? `${item.id}${options.id_suffix}` : item.id,
     item_group_id: options?.item_group_id || item.id,
@@ -39,13 +46,11 @@ export function toMetaRow(
     price: `${(overrides?.price || item.price).toFixed(2)} BRL`,
     link: item.permalink,
     image_link: overrides?.image_url || item.pictures?.[0]?.secure_url || item.thumbnail,
-    // Block native ML additional images so FB Carousel only shows the custom edited image
     additional_image_link: overrides?.additional_image_urls?.join(",") || "",
     brand: extractBrand(item),
     custom_label_0: overrides?.custom_label_0 || "",
     custom_label_1: overrides?.custom_label_1 || "",
-    "video[0].url": overrides?.video_url || "",
-    "video[1].url": overrides?.video_url_square || "",
+    video: videos.length > 0 ? JSON.stringify(videos) : "",
   };
 }
 
@@ -63,8 +68,7 @@ const HEADERS: (keyof MetaFeedRow)[] = [
   "brand",
   "custom_label_0",
   "custom_label_1",
-  "video[0].url",
-  "video[1].url"
+  "video"
 ];
 
 function escapeCsv(val: unknown): string {
