@@ -14,7 +14,10 @@ export type MetaFeedRow = {
   brand: string;
   custom_label_0?: string;
   custom_label_1?: string;
-  video?: string;
+  "video[0].url"?: string;
+  "video[0].tag[0]"?: string;
+  "video[1].url"?: string;
+  "video[1].tag[0]"?: string;
 };
 
 function extractBrand(item: MlItem): string {
@@ -28,14 +31,6 @@ export function toMetaRow(
   overrides?: { title?: string | null; price?: number | null; image_url?: string | null; video_url?: string | null; video_url_square?: string | null; additional_image_urls?: string[], custom_label_0?: string, custom_label_1?: string },
   options?: { id_suffix?: string; item_group_id?: string }
 ): MetaFeedRow {
-  const videos = [];
-  if (overrides?.video_url_square) {
-    videos.push({ url: overrides.video_url_square, tag: ["1:1"] });
-  }
-  if (overrides?.video_url) {
-    videos.push({ url: overrides.video_url, tag: ["9:16"] });
-  }
-
   return {
     id: options?.id_suffix ? `${item.id}${options.id_suffix}` : item.id,
     item_group_id: options?.item_group_id || item.id,
@@ -50,7 +45,10 @@ export function toMetaRow(
     brand: extractBrand(item),
     custom_label_0: overrides?.custom_label_0 || "",
     custom_label_1: overrides?.custom_label_1 || "",
-    video: videos.length > 0 ? JSON.stringify(videos) : "",
+    "video[0].url": overrides?.video_url_square || overrides?.video_url || "",
+    "video[0].tag[0]": overrides?.video_url_square ? "1:1" : (overrides?.video_url ? "9:16" : ""),
+    "video[1].url": (overrides?.video_url_square && overrides?.video_url) ? overrides?.video_url : "",
+    "video[1].tag[0]": (overrides?.video_url_square && overrides?.video_url) ? "9:16" : "",
   };
 }
 
@@ -68,7 +66,10 @@ const HEADERS: (keyof MetaFeedRow)[] = [
   "brand",
   "custom_label_0",
   "custom_label_1",
-  "video"
+  "video[0].url",
+  "video[0].tag[0]",
+  "video[1].url",
+  "video[1].tag[0]"
 ];
 
 function escapeCsv(val: unknown): string {
