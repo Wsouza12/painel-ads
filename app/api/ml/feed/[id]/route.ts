@@ -3,6 +3,8 @@ import { supabaseAdmin } from "@/lib/supabase";
 import { toMetaRow, toCsv } from "@/lib/meta-feed";
 import { getDescription } from "@/lib/ml";
 
+export const dynamic = "force-dynamic";
+
 export async function GET(request: Request, { params }: { params: { id: string } }) {
   try {
     const { searchParams } = new URL(request.url);
