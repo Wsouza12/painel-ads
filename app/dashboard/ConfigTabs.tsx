@@ -105,6 +105,17 @@ export default function ConfigTabs({
                   {standardFeed}?video=true
                 </code>
               </div>
+
+              <div className="bg-gradient-to-r from-amber-950/30 to-yellow-950/30 p-4 rounded-xl border border-amber-500/30">
+                <p className="text-amber-300 mb-1 font-bold flex items-center gap-2">
+                  <span className="w-5 h-5 rounded-full bg-amber-500/30 flex items-center justify-center text-[10px]">👑</span>
+                  Feed Santo Graal (Vídeo + Página Ponte + Pixel/CAPI):
+                </p>
+                <p className="text-[11px] text-amber-200/70 mb-3">A combinação máxima! Inclui vídeos 4:5 e 9:16 + Fotos + Página Ponte com rastreamento Pixel & CAPI ativado.</p>
+                <code className="block w-full bg-black/50 rounded-lg px-4 py-3 break-all text-xs border border-amber-500/30 select-all text-amber-300 font-medium">
+                  {bridgeFeed}&video=true
+                </code>
+              </div>
             </div>
             <div className="pt-2">
               <a
