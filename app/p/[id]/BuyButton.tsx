@@ -13,7 +13,7 @@ export default function BuyButton({
   value?: number;
   searchParams?: any;
 }) {
-  const [timeLeft, setTimeLeft] = useState(3);
+  const [timeLeft, setTimeLeft] = useState(2);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [hasAutoOpened, setHasAutoOpened] = useState(false);
 
@@ -22,7 +22,7 @@ export default function BuyButton({
       setHasAutoOpened(true);
       const timer = setTimeout(() => {
         handleBuyClick({ preventDefault: () => {} } as any);
-      }, 500);
+      }, 300);
       return () => clearTimeout(timer);
     }
   }, [hasAutoOpened]);
@@ -61,7 +61,7 @@ export default function BuyButton({
         eventId: eventId,
         sourceUrl: window.location.href,
         userAgent: navigator.userAgent,
-        clientIp: "0.0.0.0", // Hard to get on client side, omit or pass generic
+        clientIp: "0.0.0.0",
         fbc: document.cookie.split("; ").find(row => row.startsWith("_fbc="))?.split("=")[1],
         fbp: document.cookie.split("; ").find(row => row.startsWith("_fbp="))?.split("=")[1],
         contentIds: contentId ? [contentId] : [],
@@ -94,7 +94,7 @@ export default function BuyButton({
     }
 
     setIsModalOpen(true);
-    setTimeLeft(3); // Reset to 3 seconds
+    setTimeLeft(2);
   };
 
   return (
