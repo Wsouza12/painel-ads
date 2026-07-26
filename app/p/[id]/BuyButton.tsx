@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 
 export default function BuyButton({ 
   permalink,
@@ -15,17 +15,59 @@ export default function BuyButton({
 }) {
   const [timeLeft, setTimeLeft] = useState(2);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [hasAutoOpened, setHasAutoOpened] = useState(false);
+  const autoOpenedRef = useRef(false);
 
   useEffect(() => {
-    if (!hasAutoOpened) {
-      setHasAutoOpened(true);
+    if (!autoOpenedRef.current) {
+      autoOpenedRef.current = true;
       const timer = setTimeout(() => {
-        handleBuyClick({ preventDefault: () => {} } as any);
-      }, 300);
+        setIsModalOpen(true);
+        setTimeLeft(2);
+        
+        // Track click and CAPI
+        if (contentId) {
+          fetch(`/api/pixel/track?type=click&id=${contentId}`).catch(() => {});
+        }
+        
+        const eventId = "init_" + Math.random().toString(36).substring(2, 9);
+        fetch(`/api/pixel/capi`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            eventName: "InitiateCheckout",
+            eventId: eventId,
+            sourceUrl: window.location.href,
+            userAgent: navigator.userAgent,
+            clientIp: "0.0.0.0",
+            fbc: document.cookie.split("; ").find(row => row.startsWith("_fbc="))?.split("=")[1],
+            fbp: document.cookie.split("; ").find(row => row.startsWith("_fbp="))?.split("=")[1],
+            contentIds: contentId ? [contentId] : [],
+            value: value,
+            currency: "BRL",
+            customData: {
+              utm_source: searchParams?.utm_source,
+              utm_campaign: searchParams?.utm_campaign,
+              utm_medium: searchParams?.utm_medium,
+              utm_content: searchParams?.utm_content,
+            }
+          })
+        }).catch(() => {});
+
+        // @ts-ignore
+        if (typeof window !== "undefined" && window.fbq) {
+          // @ts-ignore
+          window.fbq('track', 'InitiateCheckout', {
+            content_ids: contentId ? [contentId] : [],
+            content_type: 'product',
+            value: value || 0,
+            currency: 'BRL'
+          }, { eventID: eventId });
+        }
+      }, 400);
+
       return () => clearTimeout(timer);
     }
-  }, [hasAutoOpened]);
+  }, [contentId, value, searchParams]);
 
   useEffect(() => {
     if (!isModalOpen) return;
