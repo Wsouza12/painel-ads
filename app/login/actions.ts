@@ -31,9 +31,16 @@ export async function signInWithGoogle() {
   const supabase = createClient();
   
   const headersList = headers();
-  const host = headersList.get("host") || "localhost:3000";
-  const protocol = host.includes("localhost") ? "http" : "https";
-  const baseUrl = `${protocol}://${host}`;
+  const forwardedHost = headersList.get("x-forwarded-host");
+  const host = forwardedHost || headersList.get("host") || "localhost:3000";
+  const protocol = headersList.get("x-forwarded-proto")?.split(",")[0] || (host.includes("localhost") ? "http" : "https");
+  
+  let baseUrl = process.env.APP_URL
+    ? (process.env.APP_URL.startsWith("http") ? process.env.APP_URL : `https://${process.env.APP_URL}`)
+    : `${protocol}://${host}`;
+    
+  // Clean trailing slash if present
+  baseUrl = baseUrl.replace(/\/$/, "");
 
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider: 'google',
