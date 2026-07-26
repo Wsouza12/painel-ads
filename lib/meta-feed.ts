@@ -22,6 +22,7 @@ export type MetaFeedRow = {
   custom_label_3: string;
   custom_label_4: string;
   video_url: string;
+  video_link: string;
   video: string;
   "video[0].url": string;
   "video[1].url": string;
@@ -119,6 +120,7 @@ export function toMetaRow(
     custom_label_3: overrides?.custom_label_3 || "",
     custom_label_4: overrides?.custom_label_4 || "",
     video_url: v1,
+    video_link: v1,
     video: videoJson,
     "video[0].url": v1,
     "video[1].url": v2,
@@ -147,6 +149,7 @@ const HEADERS: (keyof MetaFeedRow)[] = [
   "custom_label_3",
   "custom_label_4",
   "video_url",
+  "video_link",
   "video",
   "video[0].url",
   "video[1].url"
