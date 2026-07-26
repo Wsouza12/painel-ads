@@ -37,9 +37,8 @@ export async function GET(request: Request, { params }: { params: { id: string }
 
     const rows = [];
     
-    // VERCEL_URL returns the deployment URL which changes on every deploy.
-    // We should use the project domain.
-    let appUrl = process.env.APP_URL || "https://clinquant-biscochitos-b187a8.netlify.app";
+    // Use Railway or environment APP_URL
+    let appUrl = process.env.APP_URL || "https://mercadoshops.up.railway.app";
 
     for (const product of products) {
       // Aplicar filtro de preço mínimo
