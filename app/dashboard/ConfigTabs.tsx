@@ -219,16 +219,44 @@ export default function ConfigTabs({
         )}
 
         {activeTab === "google" && (
-          <div className="p-6 bg-gradient-to-br from-green-900/10 to-transparent border border-green-500/20 rounded-2xl text-sm text-green-100/70 space-y-4 animate-in fade-in slide-in-from-bottom-2">
-            <p className="font-bold text-green-400 text-base">Como conectar no Google Ads (Merchant Center):</p>
-            <ol className="list-decimal list-inside space-y-3 marker:text-green-500/50">
-              <li>Acesse o <strong className="text-white"><a href="https://merchants.google.com/" target="_blank" className="underline hover:text-green-300">Google Merchant Center</a></strong> e crie sua conta grátis.</li>
-              <li>No menu lateral, vá em <strong className="text-white">Produtos &gt; Feeds</strong>.</li>
-              <li>Clique no botão azul <strong className="text-white">+</strong> para criar um feed principal.</li>
-              <li>Escolha <strong className="text-white">Busca programada (Scheduled fetch)</strong>.</li>
-              <li>Dê um nome, cole o link do feed (Feed Padrão) no campo de URL do arquivo e salve.</li>
-              <li>O Google fará a leitura e seus produtos estarão prontos para o Google Shopping!</li>
-            </ol>
+          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2">
+            {/* Guia Google Shopping */}
+            <div className="p-6 bg-gradient-to-br from-emerald-950/20 via-green-950/20 to-black border border-emerald-500/30 rounded-2xl space-y-4">
+              <h3 className="text-base font-bold text-emerald-300 flex items-center gap-2">
+                <span>🚀</span> Como Dominar o Google Shopping &amp; Performance Max (PMax)
+              </h3>
+              <p className="text-xs text-neutral-300 leading-relaxed">
+                Diferente do Meta Ads (onde a pessoa vê o anúncio enquanto rola o feed), no <strong>Google Ads o comprador já está PESQUISANDO pelo nome do produto</strong> no motor de busca! A taxa de intenção de compra é gigante.
+              </p>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs pt-2">
+                <div className="bg-black/50 p-4 rounded-xl border border-emerald-500/20 space-y-2">
+                  <span className="inline-block px-2.5 py-1 bg-emerald-500/20 text-emerald-300 rounded-md font-bold">1. Google Shopping Padrão</span>
+                  <p className="text-neutral-300 font-semibold">Usa o Feed Padrão (Direto pro ML)</p>
+                  <p className="text-neutral-400">Exibe a foto do seu produto no topo da pesquisa do Google. Quando o comprador clica, vai direto para a sua página no Mercado Livre.</p>
+                </div>
+
+                <div className="bg-black/50 p-4 rounded-xl border border-purple-500/20 space-y-2">
+                  <span className="inline-block px-2.5 py-1 bg-purple-500/20 text-purple-300 rounded-md font-bold">2. Google PMax + Página Ponte</span>
+                  <p className="text-purple-200 font-semibold">Usa o Feed Santo Graal (&amp;bridge=true)</p>
+                  <p className="text-purple-300/70">Exibe no Google Shopping, YouTube e Gmail. O comprador passa pela Página Ponte, dispara o Pixel + CAPI e cai no Mercado Livre.</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Passo a Passo Google Merchant Center */}
+            <div className="p-6 bg-gradient-to-br from-green-900/10 to-transparent border border-green-500/20 rounded-2xl text-sm text-green-100/70 space-y-4">
+              <p className="font-bold text-green-400 text-base">Passo a Passo: Como Conectar no Google Merchant Center</p>
+              <ol className="list-decimal list-inside space-y-3 marker:text-green-500/50 text-xs sm:text-sm">
+                <li>Acesse o <strong className="text-white"><a href="https://merchants.google.com/" target="_blank" rel="noopener noreferrer" className="underline hover:text-green-300">Google Merchant Center</a></strong> e crie sua conta gratuita.</li>
+                <li>No menu lateral esquerdo, vá em <strong className="text-white">Produtos &gt; Feeds</strong> (ou *Fontes de Dados*).</li>
+                <li>Clique no botão azul <strong className="text-white">+ Adicionar Feed Principal</strong>.</li>
+                <li>Escolha o método: <strong className="text-white">Busca Programada (Scheduled fetch)</strong>.</li>
+                <li>No campo de URL do arquivo, cole o link do nosso **Feed Padrão** ou **Feed Santo Graal**.</li>
+                <li>Defina a frequência de busca para <strong className="text-white">Diária (Daily)</strong> e clique em Salvar.</li>
+                <li>O Google processará os seus produtos e você poderá vincular a conta do Merchant Center ao **Google Ads** para criar campanhas de **Performance Max / Google Shopping**!</li>
+              </ol>
+            </div>
           </div>
         )}
       </div>
