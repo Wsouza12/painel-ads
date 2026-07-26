@@ -5,15 +5,24 @@ import PixelTracker from "./PixelTracker";
 import BuyButton from "./BuyButton";
 import Scarcity from "./Scarcity";
 
-export const revalidate = 3600; // Cache for 1 hour
+export const dynamic = "force-dynamic";
 
 export default async function ProductPage({ params, searchParams }: { params: { id: string }, searchParams: { [key: string]: string | string[] | undefined } }) {
   // 1. Fetch product (by UUID or by ml_item_id)
   const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(params.id);
-  const query = supabaseAdmin.from("ml_products").select("*");
-  const { data: product } = isUuid 
-    ? await query.eq("id", params.id).single()
-    : await query.eq("ml_item_id", params.id).single();
+  
+  let product = null;
+  if (isUuid) {
+    const { data } = await supabaseAdmin.from("ml_products").select("*").eq("id", params.id).maybeSingle();
+    product = data;
+  }
+  
+  if (!product) {
+    const { data } = await supabaseAdmin.from("ml_products").select("*").eq("ml_item_id", params.id).limit(1);
+    if (data && data.length > 0) {
+      product = data[0];
+    }
+  }
 
   if (!product) {
     return notFound();
