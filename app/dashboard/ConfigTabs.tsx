@@ -164,16 +164,51 @@ export default function ConfigTabs({
         )}
 
         {activeTab === "meta" && (
-          <div className="p-6 bg-gradient-to-br from-blue-900/10 to-transparent border border-blue-500/20 rounded-2xl text-sm text-blue-100/70 space-y-4 animate-in fade-in slide-in-from-bottom-2">
-            <p className="font-bold text-blue-400 text-base">Como conectar no Facebook Ads:</p>
-            <ol className="list-decimal list-inside space-y-3 marker:text-blue-500/50">
-              <li>Acesse o <strong className="text-white">Commerce Manager</strong> pelo botão na aba Feeds.</li>
-              <li>Escolha o seu Catálogo (ou crie um novo).</li>
-              <li>No menu lateral, vá em <strong className="text-white">Catálogo &gt; Fontes de Dados</strong>.</li>
-              <li>Clique em <strong className="text-white">Adicionar itens &gt; Feed de Dados (Data feed)</strong>.</li>
-              <li>Escolha <strong className="text-white">Upload Programado (Scheduled feed)</strong> e cole o link do feed que preferir.</li>
-              <li>Selecione <strong className="text-white">Atualização a cada hora (Hourly)</strong>. Pronto!</li>
-            </ol>
+          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2">
+            {/* Guia dos 4 Catálogos */}
+            <div className="p-6 bg-gradient-to-br from-amber-950/20 via-purple-950/20 to-black border border-amber-500/30 rounded-2xl space-y-4">
+              <h3 className="text-base font-bold text-amber-300 flex items-center gap-2">
+                <span>📖</span> Guia Rápido: Qual dos 4 Links de Catálogo Escolher?
+              </h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                <div className="bg-black/50 p-4 rounded-xl border border-white/10 space-y-2">
+                  <span className="inline-block px-2.5 py-1 bg-white/10 text-neutral-200 rounded-md font-bold">1. Feed Padrão</span>
+                  <p className="text-neutral-300 font-semibold">Direto pro Mercado Livre (Apenas Fotos)</p>
+                  <p className="text-neutral-400"><strong>Quando usar:</strong> Campanhas diretas simples de catálogo de fotos sem passar por página ponte nem Pixel próprio.</p>
+                </div>
+
+                <div className="bg-black/50 p-4 rounded-xl border border-purple-500/20 space-y-2">
+                  <span className="inline-block px-2.5 py-1 bg-purple-500/20 text-purple-300 rounded-md font-bold">2. Feed Página Ponte</span>
+                  <p className="text-purple-200 font-semibold">Fotos + Rastreamento Pixel/CAPI</p>
+                  <p className="text-purple-300/70"><strong>Quando usar:</strong> Campanhas de conversão com fotos onde você quer marcar o Pixel e CAPI (PageView + ViewContent) na sua Página Ponte antes de ir pro ML.</p>
+                </div>
+
+                <div className="bg-black/50 p-4 rounded-xl border border-pink-500/20 space-y-2">
+                  <span className="inline-block px-2.5 py-1 bg-pink-500/20 text-pink-300 rounded-md font-bold">3. Feed de Vídeo</span>
+                  <p className="text-pink-200 font-semibold">Vídeos 4:5 e 9:16 + Direto pro ML</p>
+                  <p className="text-pink-300/70"><strong>Quando usar:</strong> Campanhas focadas em Anúncios Dinâmicos de Vídeo (Reels/Stories/Feed) mandando o cliente direto para o Mercado Livre.</p>
+                </div>
+
+                <div className="bg-gradient-to-br from-amber-900/30 to-yellow-900/20 p-4 rounded-xl border border-amber-500/40 space-y-2">
+                  <span className="inline-block px-2.5 py-1 bg-amber-500/30 text-amber-300 rounded-md font-bold">👑 4. Feed Santo Graal (Recomendado)</span>
+                  <p className="text-amber-200 font-semibold">Vídeos 4:5 e 9:16 + Fotos + Página Ponte + Pixel/CAPI</p>
+                  <p className="text-amber-300/80"><strong>Quando usar:</strong> A combinação perfeita de alta conversão! Exibe vídeos dinâmicos no Instagram/Facebook e rastreia 100% dos cliques com Pixel/CAPI antes do ML.</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Passo a Passo Meta Ads */}
+            <div className="p-6 bg-gradient-to-br from-blue-900/10 to-transparent border border-blue-500/20 rounded-2xl text-sm text-blue-100/70 space-y-4">
+              <p className="font-bold text-blue-400 text-base">Passo a Passo: Como Conectar no Meta Ads (Commerce Manager)</p>
+              <ol className="list-decimal list-inside space-y-3 marker:text-blue-500/50 text-xs sm:text-sm">
+                <li>Acesse o <strong className="text-white">Commerce Manager</strong> pelo botão azul na aba Feeds.</li>
+                <li>Escolha o seu Catálogo (ou crie um novo tipo "Comércio de Produtos").</li>
+                <li>No menu lateral esquerdo, clique em <strong className="text-white">Catálogo &gt; Fontes de Dados (Data sources)</strong>.</li>
+                <li>Clique em <strong className="text-white">Adicionar itens &gt; Feed de Dados (Data feed)</strong>.</li>
+                <li>Selecione <strong className="text-white">Upload Programado (Scheduled feed)</strong> e cole o link do catálogo escolhido.</li>
+                <li>Defina a frequência de atualização para <strong className="text-white">A cada hora (Hourly)</strong> e confirme. Pronto!</li>
+              </ol>
+            </div>
           </div>
         )}
 
