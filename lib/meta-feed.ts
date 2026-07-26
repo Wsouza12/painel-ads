@@ -21,6 +21,8 @@ export type MetaFeedRow = {
   custom_label_2: string;
   custom_label_3: string;
   custom_label_4: string;
+  video_url: string;
+  video: string;
   "video[0].url": string;
   "video[1].url": string;
 };
@@ -86,6 +88,15 @@ export function toMetaRow(
     }
   }
 
+  const v1 = overrides?.video_url || overrides?.video_url_square || "";
+  const v2 = (overrides?.video_url && overrides?.video_url_square) ? overrides.video_url_square : "";
+
+  // Build JSON video array format recommended by Meta
+  const videoList: { url: string }[] = [];
+  if (v1) videoList.push({ url: v1 });
+  if (v2) videoList.push({ url: v2 });
+  const videoJson = videoList.length > 0 ? JSON.stringify(videoList) : "";
+
   return {
     id: options?.id_suffix ? `${item.id}${options.id_suffix}` : item.id,
     item_group_id: options?.item_group_id || item.id,
@@ -107,8 +118,10 @@ export function toMetaRow(
     custom_label_2: overrides?.custom_label_2 || "",
     custom_label_3: overrides?.custom_label_3 || "",
     custom_label_4: overrides?.custom_label_4 || "",
-    "video[0].url": overrides?.video_url || overrides?.video_url_square || "",
-    "video[1].url": (overrides?.video_url && overrides?.video_url_square) ? overrides.video_url_square : "",
+    video_url: v1,
+    video: videoJson,
+    "video[0].url": v1,
+    "video[1].url": v2,
   };
 }
 
@@ -133,6 +146,8 @@ const HEADERS: (keyof MetaFeedRow)[] = [
   "custom_label_2",
   "custom_label_3",
   "custom_label_4",
+  "video_url",
+  "video",
   "video[0].url",
   "video[1].url"
 ];
