@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   title: "PainelAds | Gerencie seu Catálogo",
   description: "Plataforma avançada para gestão e sincronização de anúncios.",
   verification: {
-    google: "QoVqg9w_wIotiyZcUjN1I84M-SYXq4aJHcjo1wW6x8I",
+    google: "QoVqg9w_wlotiyZcUjN1l04M-SYXq4aJHcjoiwW6x0I",
   },
 };
 
@@ -29,7 +29,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <meta name="google-site-verification" content="QoVqg9w_wIotiyZcUjN1I84M-SYXq4aJHcjo1wW6x8I" />
+        <meta name="google-site-verification" content="QoVqg9w_wlotiyZcUjN1l04M-SYXq4aJHcjoiwW6x0I" />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
