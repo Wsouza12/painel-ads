@@ -19,8 +19,9 @@ export async function GET(request: Request) {
     if (!error) {
       return NextResponse.redirect(`${baseUrl}${next}`);
     }
+    return NextResponse.redirect(`${baseUrl}/login?error=${encodeURIComponent(error?.message || "Erro ao trocar token")}`);
   }
 
   // URL to redirect to after sign in process completes
-  return NextResponse.redirect(`${baseUrl}/login?error=Nao_foi_possivel_autenticar`);
+  return NextResponse.redirect(`${baseUrl}/login?error=Codigo_auth_ausente`);
 }
