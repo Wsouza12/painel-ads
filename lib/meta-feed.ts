@@ -148,9 +148,32 @@ const HEADERS: (keyof MetaFeedRow)[] = [
   "custom_label_2",
   "custom_label_3",
   "custom_label_4",
-  "video_link",
   "video[0].url",
   "video[1].url"
+];
+
+const PINTEREST_HEADERS: (keyof MetaFeedRow)[] = [
+  "id",
+  "item_group_id",
+  "title",
+  "description",
+  "availability",
+  "condition",
+  "price",
+  "sale_price",
+  "sale_price_effective_date",
+  "link",
+  "image_link",
+  "additional_image_link",
+  "brand",
+  "google_product_category",
+  "inventory",
+  "custom_label_0",
+  "custom_label_1",
+  "custom_label_2",
+  "custom_label_3",
+  "custom_label_4",
+  "video_link"
 ];
 
 function escapeCsv(val: unknown): string {
@@ -158,10 +181,12 @@ function escapeCsv(val: unknown): string {
   return /[",\n]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
 }
 
-export function toCsv(rows: MetaFeedRow[]): string {
-  const lines = [HEADERS.join(",")];
+export function toCsv(rows: MetaFeedRow[], platform: "meta" | "pinterest" = "meta"): string {
+  const headers = platform === "pinterest" ? PINTEREST_HEADERS : HEADERS;
+  const lines = [headers.join(",")];
   for (const row of rows) {
-    lines.push(HEADERS.map((h) => escapeCsv(row[h])).join(","));
+    lines.push(headers.map((h) => escapeCsv(row[h])).join(","));
   }
   return lines.join("\n");
 }
+

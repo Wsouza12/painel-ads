@@ -118,7 +118,8 @@ export async function GET(request: Request, { params }: { params: { id: string }
       rows.push(toMetaRow(fakeItem, description, overrides));
     }
 
-    const csvContent = toCsv(rows);
+    const platformParam = searchParams.get("platform") === "pinterest" ? "pinterest" : "meta";
+    const csvContent = toCsv(rows, platformParam);
 
     return new Response(csvContent, {
       headers: {
