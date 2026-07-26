@@ -148,9 +148,6 @@ const HEADERS: (keyof MetaFeedRow)[] = [
   "custom_label_2",
   "custom_label_3",
   "custom_label_4",
-  "video_url",
-  "video_link",
-  "video",
   "video[0].url",
   "video[1].url"
 ];
