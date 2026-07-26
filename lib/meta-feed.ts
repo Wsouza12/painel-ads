@@ -57,6 +57,7 @@ export type MetaOverrides = {
 export type MetaRowOptions = {
   id_suffix?: string;
   item_group_id?: string;
+  enrich_title?: boolean;
 };
 
 export function toMetaRow(
@@ -77,10 +78,18 @@ export function toMetaRow(
       .filter(Boolean);
   }
 
+  // Holy Grail Title Enrichment with Social Proof & Urgency triggers
+  let rawTitle = overrides?.title || item.title;
+  if (options?.enrich_title !== false && !rawTitle.includes("🔥") && !rawTitle.includes("⚡") && !rawTitle.includes("PROMO")) {
+    if (rawTitle.length <= 130) {
+      rawTitle = `${rawTitle} - 🔥 +500 Vendidos`;
+    }
+  }
+
   return {
     id: options?.id_suffix ? `${item.id}${options.id_suffix}` : item.id,
     item_group_id: options?.item_group_id || item.id,
-    title: overrides?.title || item.title,
+    title: rawTitle,
     description: overrides?.description || description || item.title,
     availability: (item.status === "active" && item.available_quantity > 0) ? "in stock" : "out of stock",
     condition: item.condition === "used" ? "used" : "new",
