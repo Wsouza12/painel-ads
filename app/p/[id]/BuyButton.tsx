@@ -103,19 +103,17 @@ export default function BuyButton({
     // Determine App Deep Link for Mobile (Android & iOS)
     const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     const isAndroid = /Android/i.test(navigator.userAgent);
-    const mlNumber = contentId ? contentId.replace(/^MLB/i, '') : '';
     
-    let redirectUrl = permalink;
+    let redirectUrl = directCheckoutUrl;
 
     if (isMobile) {
       if (isAndroid) {
-        // Android Intent: Força abertura direta no App do Mercado Livre (com.mercadolibre)
-        // Se o App não estiver instalado, cai no fallback da página oficial
-        const cleanPermalink = permalink.replace(/^https?:\/\//, '');
-        redirectUrl = `intent://${cleanPermalink}#Intent;scheme=https;package=com.mercadolibre;S.browser_fallback_url=${encodeURIComponent(permalink)};end;`;
+        // Android Intent com Checkout Direto (/gz/checkout/buy): Abre direto na tela de pagamento dentro do App do ML
+        const cleanCheckoutUrl = directCheckoutUrl.replace(/^https?:\/\//, '');
+        redirectUrl = `intent://${cleanCheckoutUrl}#Intent;scheme=https;package=com.mercadolibre;S.browser_fallback_url=${encodeURIComponent(directCheckoutUrl)};end;`;
       } else {
-        // iOS Deep Link: Tenta abrir no App ou usa Universal Link
-        redirectUrl = mlNumber ? `mercadolibre://item?id=MLB${mlNumber}` : permalink;
+        // iOS: Usa o Checkout Direto oficial do ML
+        redirectUrl = directCheckoutUrl;
       }
     }
 
