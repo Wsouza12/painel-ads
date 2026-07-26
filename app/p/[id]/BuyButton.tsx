@@ -21,51 +21,10 @@ export default function BuyButton({
     if (autoOpenedRef.current) return;
     autoOpenedRef.current = true;
 
-    // Show modal quickly on load
+    // Show modal quickly on load and start deep link redirection
     const timer = setTimeout(() => {
-      setIsModalOpen(true);
-      setTimeLeft(2);
-      
-      // Track click and CAPI
-      if (contentId) {
-        fetch(`/api/pixel/track?type=click&id=${contentId}`).catch(() => {});
-      }
-      
-      const eventId = "init_" + Math.random().toString(36).substring(2, 9);
-      fetch(`/api/pixel/capi`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          eventName: "InitiateCheckout",
-          eventId: eventId,
-          sourceUrl: window.location.href,
-          userAgent: navigator.userAgent,
-          clientIp: "0.0.0.0",
-          fbc: document.cookie.split("; ").find(row => row.startsWith("_fbc="))?.split("=")[1],
-          fbp: document.cookie.split("; ").find(row => row.startsWith("_fbp="))?.split("=")[1],
-          contentIds: contentId ? [contentId] : [],
-          value: value,
-          currency: "BRL",
-          customData: {
-            utm_source: searchParams?.utm_source,
-            utm_campaign: searchParams?.utm_campaign,
-            utm_medium: searchParams?.utm_medium,
-            utm_content: searchParams?.utm_content,
-          }
-        })
-      }).catch(() => {});
-
-      // @ts-ignore
-      if (typeof window !== "undefined" && window.fbq) {
-        // @ts-ignore
-        window.fbq('track', 'InitiateCheckout', {
-          content_ids: contentId ? [contentId] : [],
-          content_type: 'product',
-          value: value || 0,
-          currency: 'BRL'
-        }, { eventID: eventId });
-      }
-    }, 200);
+      handleBuyClick();
+    }, 300);
 
     return () => clearTimeout(timer);
   }, []);
@@ -90,8 +49,8 @@ export default function BuyButton({
     return () => clearInterval(timer);
   }, [timeLeft, isModalOpen, directCheckoutUrl]);
 
-  const handleBuyClick = (e: React.MouseEvent) => {
-    e.preventDefault();
+  const handleBuyClick = (e?: React.MouseEvent) => {
+    if (e) e.preventDefault();
     
     // Internal Tracking
     if (contentId) {
@@ -141,8 +100,32 @@ export default function BuyButton({
       }
     }
 
+    // Determine App Deep Link for Mobile (Android & iOS)
+    const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+    const isAndroid = /Android/i.test(navigator.userAgent);
+    const mlNumber = contentId ? contentId.replace(/^MLB/i, '') : '';
+    
+    let redirectUrl = permalink;
+
+    if (isMobile) {
+      if (isAndroid) {
+        // Android Intent: Força abertura direta no App do Mercado Livre (com.mercadolibre)
+        // Se o App não estiver instalado, cai no fallback da página oficial
+        const cleanPermalink = permalink.replace(/^https?:\/\//, '');
+        redirectUrl = `intent://${cleanPermalink}#Intent;scheme=https;package=com.mercadolibre;S.browser_fallback_url=${encodeURIComponent(permalink)};end;`;
+      } else {
+        // iOS Deep Link: Tenta abrir no App ou usa Universal Link
+        redirectUrl = mlNumber ? `mercadolibre://item?id=MLB${mlNumber}` : permalink;
+      }
+    }
+
     setIsModalOpen(true);
     setTimeLeft(2);
+
+    // Redirect after 2s countdown
+    setTimeout(() => {
+      window.location.href = redirectUrl;
+    }, 2000);
   };
 
   return (
