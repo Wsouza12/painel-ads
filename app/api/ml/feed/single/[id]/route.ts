@@ -23,9 +23,8 @@ export async function GET(request: Request, { params }: { params: { id: string }
 
     const rows = [];
     
-    // VERCEL_URL returns the deployment URL which changes on every deploy.
-    // We should use the project domain.
-    let appUrl = "https://painel-ads-one.vercel.app";
+    // Use Railway or environment APP_URL
+    let appUrl = process.env.APP_URL || "https://mercadoshops.up.railway.app";
 
     const permalink = isBridge 
       ? `${appUrl}/p/${product.id}` 
@@ -68,7 +67,8 @@ export async function GET(request: Request, { params }: { params: { id: string }
       }, description, {
         title: abTest.variant_a_title,
         image_url: product.custom_image_url || getValidImage(abTest.variant_a_image) || product.original_image_url,
-        video_url: isVideo ? product.custom_video_url : null,
+        video_url: product.custom_video_url || null,
+        video_url_square: product.custom_video_url_square || null,
         custom_label_0: "Variante A",
         custom_label_1: "Teste AB"
       }, { item_group_id: product.ml_item_id }));
@@ -100,7 +100,8 @@ export async function GET(request: Request, { params }: { params: { id: string }
         title: abTest.variant_b_title,
         image_url: variantBImage || product.original_image_url,
         price: variantBPrice,
-        video_url: isVideo ? product.custom_video_url : null,
+        video_url: product.custom_video_url || null,
+        video_url_square: product.custom_video_url_square || null,
         custom_label_0: "Variante B",
         custom_label_1: "Teste AB"
       }, { item_group_id: product.ml_item_id }));
@@ -110,7 +111,8 @@ export async function GET(request: Request, { params }: { params: { id: string }
         title: product.custom_title,
         price: product.custom_price,
         image_url: product.custom_image_url || product.original_image_url,
-        video_url: isVideo ? product.custom_video_url : null,
+        video_url: product.custom_video_url || null,
+        video_url_square: product.custom_video_url_square || null,
         custom_label_0: "Normal"
       };
       rows.push(toMetaRow(fakeItem, description, overrides));

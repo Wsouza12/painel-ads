@@ -92,18 +92,32 @@ export default async function ProductPage({ params, searchParams }: { params: { 
         &lt; Voltar ao listado
       </div>
 
-      {/* Imagem do Produto - estilo ML nativo */}
+      {/* Imagem ou Vídeo do Produto - estilo ML nativo */}
       <div className="bg-white w-full">
-        <div className="relative aspect-square flex items-center justify-center p-4">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img 
-            src={imageUrl} 
-            alt={title} 
-            className="max-w-full max-h-full object-contain"
-          />
-        </div>
+        {(product.custom_video_url || product.custom_video_url_square) ? (
+          <div className="relative aspect-[9/16] max-h-[480px] w-full flex items-center justify-center p-2 bg-black overflow-hidden shadow-inner">
+            <video 
+              src={product.custom_video_url || product.custom_video_url_square} 
+              controls 
+              autoPlay 
+              muted 
+              loop 
+              playsInline 
+              className="w-full h-full object-contain"
+            />
+          </div>
+        ) : (
+          <div className="relative aspect-square flex items-center justify-center p-4">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img 
+              src={imageUrl} 
+              alt={title} 
+              className="max-w-full max-h-full object-contain"
+            />
+          </div>
+        )}
         {/* Dot indicators */}
-        <div className="flex items-center justify-center gap-1.5 pb-3">
+        <div className="flex items-center justify-center gap-1.5 py-3">
           <div className="w-1.5 h-1.5 rounded-full bg-[#3483FA]"></div>
           <div className="w-1.5 h-1.5 rounded-full bg-gray-300"></div>
           <div className="w-1.5 h-1.5 rounded-full bg-gray-300"></div>
