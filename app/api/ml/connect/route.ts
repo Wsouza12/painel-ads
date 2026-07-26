@@ -6,8 +6,12 @@ export async function GET() {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
+  let appUrl = process.env.APP_URL || "https://mercadoshops.up.railway.app";
+  if (appUrl.includes("localhost") && process.env.NODE_ENV === "production") {
+    appUrl = "https://mercadoshops.up.railway.app";
+  }
   if (!user) {
-    return NextResponse.redirect(`${process.env.APP_URL}/login`);
+    return NextResponse.redirect(`${appUrl}/login`);
   }
 
   const params = new URLSearchParams({

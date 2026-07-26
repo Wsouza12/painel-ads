@@ -51,5 +51,9 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Database error", details: error.message }, { status: 500 });
   }
 
-  return NextResponse.redirect(`${process.env.APP_URL}/dashboard`);
+  let appUrl = process.env.APP_URL || "https://mercadoshops.up.railway.app";
+  if (appUrl.includes("localhost") && process.env.NODE_ENV === "production") {
+    appUrl = "https://mercadoshops.up.railway.app";
+  }
+  return NextResponse.redirect(`${appUrl}/dashboard`);
 }
