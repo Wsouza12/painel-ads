@@ -70,11 +70,16 @@ export default function BuyButton({
     return () => clearTimeout(timer);
   }, []);
 
+  // Link de Checkout Direto no Mercado Livre para pular a tela de recomendados/concorrentes
+  const directCheckoutUrl = contentId && contentId.startsWith("MLB") 
+    ? `https://www.mercadolivre.com.br/gz/checkout/buy?item_id=${contentId}&quantity=1` 
+    : permalink;
+
   useEffect(() => {
     if (!isModalOpen) return;
 
     if (timeLeft <= 0) {
-      window.location.href = permalink;
+      window.location.href = directCheckoutUrl;
       return;
     }
 
@@ -83,7 +88,7 @@ export default function BuyButton({
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [timeLeft, isModalOpen, permalink]);
+  }, [timeLeft, isModalOpen, directCheckoutUrl]);
 
   const handleBuyClick = (e: React.MouseEvent) => {
     e.preventDefault();
@@ -209,7 +214,7 @@ export default function BuyButton({
               </div>
 
               <a 
-                href={permalink}
+                href={directCheckoutUrl}
                 className="w-full bg-[#3483FA] hover:bg-[#2968c8] text-white font-semibold py-3.5 rounded-md flex items-center justify-center transition-colors text-[15px]"
               >
                 Ir para o App Agora
