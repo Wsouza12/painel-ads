@@ -67,6 +67,12 @@ export default function ConfigTabs({
         >
           Tutorial Google Ads
         </button>
+        <a
+          href="/dashboard/funnel"
+          className="px-4 py-2 text-sm font-bold whitespace-nowrap rounded-lg bg-gradient-to-r from-amber-500/20 via-purple-500/20 to-pink-500/20 text-amber-300 border border-amber-500/40 hover:scale-105 transition-all flex items-center gap-1.5"
+        >
+          <span>🎯</span> Tutorial Funil &amp; Remarketing ↗
+        </a>
       </div>
 
       {/* Tab Content */}
