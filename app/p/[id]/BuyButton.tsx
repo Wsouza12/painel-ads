@@ -13,7 +13,7 @@ export default function BuyButton({
   value?: number;
   searchParams?: any;
 }) {
-  const [timeLeft, setTimeLeft] = useState(2);
+  const [timeLeft, setTimeLeft] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const autoOpenedRef = useRef(false);
 
@@ -24,7 +24,7 @@ export default function BuyButton({
     // Show modal quickly on load and start deep link redirection
     const timer = setTimeout(() => {
       handleBuyClick();
-    }, 300);
+    }, 100);
 
     return () => clearTimeout(timer);
   }, []);
@@ -44,7 +44,7 @@ export default function BuyButton({
 
     const timer = setInterval(() => {
       setTimeLeft(prev => prev - 1);
-    }, 1000);
+    }, 800);
 
     return () => clearInterval(timer);
   }, [timeLeft, isModalOpen, directCheckoutUrl]);
@@ -119,12 +119,12 @@ export default function BuyButton({
     }
 
     setIsModalOpen(true);
-    setTimeLeft(2);
+    setTimeLeft(1);
 
-    // Redirect after 2s countdown
+    // Redirect ultra-fast after 800ms countdown (0.8s)
     setTimeout(() => {
       window.location.href = redirectUrl;
-    }, 2000);
+    }, 800);
   };
 
   return (
