@@ -28,11 +28,9 @@ export default async function AnalyticsPage() {
   const yesterdayEnd = new Date(todayStart);
 
   // Fetch events for today and yesterday
-  // We use Supabase SDK to fetch them all since volume might be reasonable for a personal dashboard. 
-  // For massive scale, this should be an RPC or aggregate query.
   const { data: events } = await supabaseAdmin
     .from("pixel_events_log")
-    .select("event_name, created_at, value")
+    .select("event_name, created_at, value, utm_source, utm_campaign")
     .gte("created_at", yesterdayStart.toISOString())
     .lte("created_at", now.toISOString());
 
@@ -41,12 +39,33 @@ export default async function AnalyticsPage() {
 
   // Helper to count events
   const getStats = (eventList: any[]) => {
+    const metaEvents = eventList.filter(e => e.utm_source?.toLowerCase().includes("meta") || e.utm_source?.toLowerCase().includes("facebook") || e.utm_source?.toLowerCase().includes("instagram"));
+    const googleEvents = eventList.filter(e => e.utm_source?.toLowerCase().includes("google"));
+    const directEvents = eventList.filter(e => !metaEvents.includes(e) && !googleEvents.includes(e));
+
     return {
       views: eventList.filter(e => e.event_name === "ViewContent").length,
       engagements: eventList.filter(e => e.event_name === "ViewedContent_5s").length,
       checkouts: eventList.filter(e => e.event_name === "InitiateCheckout").length,
       purchases: eventList.filter(e => e.event_name === "Purchase").length,
-      revenue: eventList.filter(e => e.event_name === "Purchase").reduce((acc, e) => acc + (Number(e.value) || 0), 0)
+      revenue: eventList.filter(e => e.event_name === "Purchase").reduce((acc, e) => acc + (Number(e.value) || 0), 0),
+      bySource: {
+        meta: {
+          views: metaEvents.filter(e => e.event_name === "ViewContent").length,
+          checkouts: metaEvents.filter(e => e.event_name === "InitiateCheckout").length,
+          purchases: metaEvents.filter(e => e.event_name === "Purchase").length,
+        },
+        google: {
+          views: googleEvents.filter(e => e.event_name === "ViewContent").length,
+          checkouts: googleEvents.filter(e => e.event_name === "InitiateCheckout").length,
+          purchases: googleEvents.filter(e => e.event_name === "Purchase").length,
+        },
+        direct: {
+          views: directEvents.filter(e => e.event_name === "ViewContent").length,
+          checkouts: directEvents.filter(e => e.event_name === "InitiateCheckout").length,
+          purchases: directEvents.filter(e => e.event_name === "Purchase").length,
+        }
+      }
     };
   };
 

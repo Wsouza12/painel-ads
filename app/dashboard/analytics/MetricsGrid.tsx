@@ -2,12 +2,23 @@
 
 import { useEffect, useState } from "react";
 
+type SourceStats = {
+  views: number;
+  checkouts: number;
+  purchases: number;
+};
+
 type Stats = {
   views: number;
   engagements: number;
   checkouts: number;
   purchases: number;
   revenue: number;
+  bySource?: {
+    meta: SourceStats;
+    google: SourceStats;
+    direct: SourceStats;
+  };
 };
 
 export default function MetricsGrid({ today, yesterday }: { today: Stats; yesterday: Stats }) {
@@ -61,6 +72,12 @@ export default function MetricsGrid({ today, yesterday }: { today: Stats; yester
   const cToP = today.checkouts > 0 ? (today.purchases / today.checkouts) * 100 : 0;
   const overallCTR = today.views > 0 ? (today.checkouts / today.views) * 100 : 0;
 
+  const sources = today.bySource || {
+    meta: { views: 0, checkouts: 0, purchases: 0 },
+    google: { views: 0, checkouts: 0, purchases: 0 },
+    direct: { views: 0, checkouts: 0, purchases: 0 },
+  };
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -96,6 +113,63 @@ export default function MetricsGrid({ today, yesterday }: { today: Stats; yester
               <p className="text-purple-300 text-xs mb-1 font-semibold">3. Clique → Venda Concluída</p>
               <p className="text-3xl font-extrabold text-emerald-400">{cToP.toFixed(1)}%</p>
               <p className="text-[11px] text-neutral-400 mt-1">Conversão final no Mercado Livre</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Tabela de Atribuição de Tráfego por Origem (Meta vs. Google) */}
+      <div className="bg-neutral-900/60 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-xl space-y-4">
+        <h3 className="text-base font-bold text-white flex items-center gap-2">
+          <span>📡</span> Atribuição de Origem: De Onde Vêm as Suas Conversões?
+        </h3>
+        <p className="text-xs text-neutral-400">
+          Identificação automática do tráfego através de UTMs e fontes de origem
+        </p>
+
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+          {/* Meta Ads */}
+          <div className="bg-gradient-to-br from-blue-950/40 to-indigo-950/20 border border-blue-500/30 rounded-xl p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-blue-400 flex items-center gap-1.5">
+                <span>📘</span> Meta Ads (FB &amp; IG)
+              </span>
+              <span className="text-[10px] bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded font-mono">utm_source=meta</span>
+            </div>
+            <div className="space-y-1 text-xs text-neutral-300">
+              <div className="flex justify-between"><span>Visitas:</span> <strong className="text-white">{sources.meta.views}</strong></div>
+              <div className="flex justify-between"><span>Cliques no Comprar:</span> <strong className="text-emerald-400">{sources.meta.checkouts}</strong></div>
+              <div className="flex justify-between"><span>Vendas:</span> <strong className="text-amber-300">{sources.meta.purchases}</strong></div>
+            </div>
+          </div>
+
+          {/* Google Ads */}
+          <div className="bg-gradient-to-br from-emerald-950/40 to-green-950/20 border border-emerald-500/30 rounded-xl p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
+                <span>🚀</span> Google Ads (Shopping/PMax)
+              </span>
+              <span className="text-[10px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded font-mono">utm_source=google</span>
+            </div>
+            <div className="space-y-1 text-xs text-neutral-300">
+              <div className="flex justify-between"><span>Visitas:</span> <strong className="text-white">{sources.google.views}</strong></div>
+              <div className="flex justify-between"><span>Cliques no Comprar:</span> <strong className="text-emerald-400">{sources.google.checkouts}</strong></div>
+              <div className="flex justify-between"><span>Vendas:</span> <strong className="text-amber-300">{sources.google.purchases}</strong></div>
+            </div>
+          </div>
+
+          {/* Tráfego Direto */}
+          <div className="bg-gradient-to-br from-purple-950/40 to-neutral-900 border border-purple-500/30 rounded-xl p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold text-purple-400 flex items-center gap-1.5">
+                <span>🌐</span> Tráfego Direto / Orgânico
+              </span>
+              <span className="text-[10px] bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded font-mono">Outras Fontes</span>
+            </div>
+            <div className="space-y-1 text-xs text-neutral-300">
+              <div className="flex justify-between"><span>Visitas:</span> <strong className="text-white">{sources.direct.views}</strong></div>
+              <div className="flex justify-between"><span>Cliques no Comprar:</span> <strong className="text-emerald-400">{sources.direct.checkouts}</strong></div>
+              <div className="flex justify-between"><span>Vendas:</span> <strong className="text-amber-300">{sources.direct.purchases}</strong></div>
             </div>
           </div>
         </div>
