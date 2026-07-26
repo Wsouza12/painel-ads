@@ -8,12 +8,12 @@ import Scarcity from "./Scarcity";
 export const revalidate = 3600; // Cache for 1 hour
 
 export default async function ProductPage({ params, searchParams }: { params: { id: string }, searchParams: { [key: string]: string | string[] | undefined } }) {
-  // 1. Fetch product
-  const { data: product } = await supabaseAdmin
-    .from("ml_products")
-    .select("*")
-    .eq("id", params.id)
-    .single();
+  // 1. Fetch product (by UUID or by ml_item_id)
+  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(params.id);
+  const query = supabaseAdmin.from("ml_products").select("*");
+  const { data: product } = isUuid 
+    ? await query.eq("id", params.id).single()
+    : await query.eq("ml_item_id", params.id).single();
 
   if (!product) {
     return notFound();
