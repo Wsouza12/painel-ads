@@ -135,6 +135,7 @@ export async function GET(request: Request, { params }: { params: { id: string }
       headers: {
         "Content-Type": "text/csv; charset=utf-8",
         "Content-Disposition": `attachment; filename="feed-${params.id}.csv"`,
+        "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
       },
     });
   } catch (error: any) {
