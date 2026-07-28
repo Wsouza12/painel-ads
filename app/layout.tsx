@@ -32,23 +32,21 @@ export default function RootLayout({
       <head>
         <meta name="google-site-verification" content="L7qEPRifPpo2dvzMX6Zrlo5lCW8ohzbKZFvt_gA-KIw" />
         <meta name="google-site-verification" content="QoVqg9w_wlotiyZcUjN1l04M-SYXq4aJHcjoiwW6x0I" />
+        <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18351203132"></script>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', 'AW-18351203132');
+            `,
+          }}
+        />
       </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <Script
-          src="https://www.googletagmanager.com/gtag/js?id=AW-18351203132"
-          strategy="afterInteractive"
-        />
-        <Script id="google-ads-tag" strategy="afterInteractive">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-
-            gtag('config', 'AW-18351203132');
-          `}
-        </Script>
         {children}
       </body>
     </html>
