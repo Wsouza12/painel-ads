@@ -18,19 +18,19 @@ O **"Painel Ads"** é uma plataforma avançada de arbitragem, dropshipping e tr�
    - **Efeito Flash (0.8s):** Redirecionamento otimizado com modal abrindo em 100ms e transição em 800ms, permitindo rastreamento 100% íntegro sem causar abandono pelo cliente.
    - **Deep Linking Nativo no Celular:** Abertura garantida do **aplicativo oficial do Mercado Livre (`com.mercadolibre`)** em Android e iOS. O comprador entra logado em seu app, finalizando compras no Pix/Cartão com 1 clique sem pedido de senha na web.
 
-2. **Google Merchant Center & Google Ads (Verificado e no Ar):**
-   - Domínio `mercadoshops.up.railway.app` oficialmente Verificado e Reivindicado no Google Merchant Center (ID `5827915218`, Conta `Zayhon`).
-   - Política de Devolução oficial publicada em `/politica-de-devolucao` conforme regras de Compra Garantida de 30 dias.
-   - Campanha `Performance Max-1` ativa no Google Ads.
+2. **Google Merchant Center & Google Ads (100% Verificado, Aprovado e Ativo):**
+   - **Merchant Center:** Domínio `mercadoshops.up.railway.app` verificado no Google Merchant Center (ID `5827915218`, Conta `Zayhon`). **31 produtos aprovados com 100% de sucesso (0 reprovações)**.
+   - **Google Ads - Conversões & Rastreamento (`AW-18351203132`):** Tag do Google Ads instalada nas Páginas Ponte com rastreamento automático de cliques de saída e conversões de compra, validada via Google Tag Assistant.
+   - **Campanhas no Ar:** Campanha `Performance Max-1` (R$ 30/dia) qualificada e conectada ao catálogo do Merchant Center ("Produtos de Zayhon").
 
 3. **Catálogos Dinâmicos com Vídeo para Meta Ads & Google Ads (`/api/ml/feed/[id]` e `/single/[id]`):**
    - Injeção automática das colunas de vídeo (`video_url`, `video`, `video[0].url`, `video[1].url`) nos feeds XML e CSV globais e individuais.
    - Suporte completo para campanhas de **Advantage+ Catalog no Meta Ads** exibindo vídeos em movimento no Reels e Stories.
    - Rótulos para Testes A/B (`custom_label_0` com `Variante A`, `Variante B` e `Normal`).
 
-4. **Analytics de Atribuição de Origem em Tempo Real (`/dashboard/analytics`):**
-   - Rastreamento e agrupamento em tempo real de eventos por canal (`utm_source` e `utm_campaign`), dividindo visualizações, cliques e checkouts entre Meta Ads, Google Ads e Tráfego Direto.
-   - Disparo simultâneo de eventos **Meta Conversions API (CAPI)** server-side e Pixel Client-side com deduplicação por `eventId`.
+4. **Analytics de Atribuição de Origem & Meta CAPI de Alta Qualidade (EMQ 6.1/10):**
+   - **Nota de Correspondência Meta (EMQ 6.1 / 10):** Pontuação 6.1/10 alcançada sem login ou e-mail, com envio de **100% de IP, 100% de User-Agent, 100% de `fbp` e 97.92% de `fbc`** (Facebook Click ID).
+   - **Suporte Automático Google Ads (`GCLID` / UTMs):** Reconhecimento automático de parâmetros `gclid`, `gbraid`, `wbraid`, `gad_source`, `shopping` e `pmax` em `app/api/pixel/capi/route.ts` e `app/dashboard/analytics/page.tsx`, separando com precisão tráfego Google Ads e Meta Ads em tempo real.
 
 ## Próximos Passos Sugeridos
 - Escalar campanhas de Catálogo Dinâmico no Meta Ads com os vídeos já aprovados e gerados nas rotas individuais.

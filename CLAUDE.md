@@ -23,15 +23,16 @@
   - **No Desktop:** Redireciona para o link de checkout/comprar ou permalink oficial.
 
 ### 2. Rastreamento, Atribuição e Meta CAPI (`app/api/pixel/capi/route.ts` e `PixelTracker.tsx`)
-- O sistema possui **Meta Conversions API (CAPI)** server-side de alto score e pixel front-end.
-- Extrai e rastrea **UTMs** (`utm_source`, `utm_campaign`, `utm_medium`, `utm_content`).
+- O sistema possui **Meta Conversions API (CAPI)** server-side com score de **6.1/10 EMQ** (enviando 100% IP, 100% User-Agent, 100% fbp e **97.92% fbc**).
+- Extrai e rastreia **UTMs** e códigos de clique pago do Google (`gclid`, `gbraid`, `wbraid`, `gad_source`, `shopping`, `pmax`).
 - **Analytics ao Vivo (`app/dashboard/analytics/`):** Agrupa os eventos em tempo real separando conversões por origem de canal (Meta Ads, Google Ads e Direto).
 
 ### 3. Google Merchant Center & Google Ads
-- **Domínio Reivindicado e Verificado:** Domínio `mercadoshops.up.railway.app` certificado no Google Merchant Center (ID `5827915218`).
+- **Domínio Reivindicado e Verificado:** Domínio `mercadoshops.up.railway.app` certificado no Google Merchant Center (ID `5827915218`, Conta `Zayhon`). **31 produtos aprovados sem ressalvas**.
 - Meta tags de verificação presentes em `app/layout.tsx`.
 - **Política de Devolução:** Página oficial em `/politica-de-devolucao` documentando a Compra Garantida de 30 dias do Mercado Livre.
-- Campanha `Performance Max-1` em operação no Google Ads.
+- **Rastreamento de Conversões Google Ads (`AW-18351203132`):** Tag instalada e validada para cliques de saída e compras.
+- **Campanhas no Ar:** Campanha `Performance Max-1` ativa e qualificada.
 
 ### 4. Feeds XML Dinâmicos de Vídeo (`app/api/ml/feed/[id]/route.ts` e `/api/ml/feed/single/[id]/route.ts`)
 - Geração automática de catálogos XML e CSV para Meta Ads e Google Ads.
