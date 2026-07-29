@@ -35,3 +35,4 @@ O **"Painel Ads"** é uma plataforma avançada de arbitragem, dropshipping e tr�
 ## Próximos Passos Sugeridos
 - Escalar campanhas de Catálogo Dinâmico no Meta Ads com os vídeos já aprovados e gerados nas rotas individuais.
 - Monitorar conversões por canal no painel de Analytics (`/dashboard/analytics`).
+- **Monetização & Pagamento Automático:** Implementar cobrança utilizando **Efí Bank com Bolix** (Boleto + Pix em um único QR Code/código com baixa e pagamento automático via Webhook).

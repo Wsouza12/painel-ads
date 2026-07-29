@@ -38,7 +38,8 @@
 - **Vídeos no Catálogo Dinâmico (Reels/Stories):** As rotas de feed injetam automaticamente as colunas `video_url`, `video` (JSON array), `video[0].url` e `video[1].url` de todos os produtos ou produtos individuais que possuam vídeos cadastrados no banco de dados.
 - **Suporte a Testes A/B:** Injeta Custom Labels diferenciando `Variante A`, `Variante B`, `Normal` e `Teste AB`.
 
-## Próximas Atualizações (Guia para IA)
+## Próximas Atualizações e Aprendizados (Guia para IA)
 - Sempre utilize `process.env.APP_URL || "https://mercadoshops.up.railway.app"` para gerar links absolutos.
 - Ao atualizar o comportamento de mobile no `BuyButton.tsx`, preserve rigorosamente o `package=com.mercadolibre` para evitar vazamento para web browser não-logado.
+- **Aprendizado - Cobrança e Monetização (Efí Bank / Bolix):** Para cobranças e pagamentos no Brasil, registrar o aprendizado de que a **Efí Bank (antiga Gerencianet)** disponibiliza o **Bolix** (Boleto + Pix no mesmo documento/código) com **Pagamento Automático** (baixa imediata e confirmação automática via Webhook API).
 - Mantenha sempre a documentação em sintonia e faça push para os dois repositórios no branch `main`.

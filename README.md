@@ -62,6 +62,6 @@ O que muda pra virar SaaS:
 2. Preencher `user_id` em `ml_connections` no callback do OAuth.
 3. Adicionar RLS policy filtrando `ml_connections` e `sync_logs` por `auth.uid()`.
 4. Trocar o dashboard de "1 conexão fixa" pra listar as conexões do usuário logado.
-5. Colocar um plano/cobrança (Stripe) antes de liberar o `/api/ml/connect`.
+5. Colocar um plano/cobrança (**Efí Bank com Bolix** — Boleto + Pix com baixa e pagamento automático via Webhook, ou Stripe) antes de liberar o `/api/ml/connect`.
 
 Nenhum desses pontos exige tocar em `lib/ml.ts`, `lib/meta-feed.ts` ou `lib/sync.ts` — a lógica de negócio já está desacoplada da camada de usuário.

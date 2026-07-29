@@ -44,9 +44,13 @@ export async function POST(request: Request) {
 
     const eventTime = Math.floor(Date.now() / 1000);
     
-    // Extract UTM parameters
-    const utm_source = customData?.utm_source || body.utm_source || null;
+    // Extract UTM parameters & Google Ads click IDs (gclid, gad_source, gbraid, wbraid)
+    let utm_source = customData?.utm_source || body.utm_source || null;
     const utm_campaign = customData?.utm_campaign || body.utm_campaign || null;
+    const refUrl = sourceUrl || request.headers.get("referer") || "";
+    if (!utm_source && (refUrl.includes("gclid=") || refUrl.includes("gad_source=") || refUrl.includes("gbraid=") || refUrl.includes("wbraid=") || refUrl.toLowerCase().includes("google"))) {
+      utm_source = "google";
+    }
     const product_id = contentIds?.[0] || null;
 
     // Advanced IP & UserAgent Extraction for EMQ 9.0+

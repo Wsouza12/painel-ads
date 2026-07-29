@@ -40,7 +40,7 @@ export default async function AnalyticsPage() {
   // Helper to count events
   const getStats = (eventList: any[]) => {
     const metaEvents = eventList.filter(e => e.utm_source?.toLowerCase().includes("meta") || e.utm_source?.toLowerCase().includes("facebook") || e.utm_source?.toLowerCase().includes("instagram"));
-    const googleEvents = eventList.filter(e => e.utm_source?.toLowerCase().includes("google"));
+    const googleEvents = eventList.filter(e => e.utm_source?.toLowerCase().includes("google") || e.utm_campaign?.toLowerCase().includes("shopping") || e.utm_campaign?.toLowerCase().includes("pmax") || e.utm_campaign?.toLowerCase().includes("google"));
     const directEvents = eventList.filter(e => !metaEvents.includes(e) && !googleEvents.includes(e));
 
     return {
