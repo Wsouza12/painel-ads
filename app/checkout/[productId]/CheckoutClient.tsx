@@ -477,13 +477,16 @@ export default function CheckoutClient({
                 </div>
                 
                 {/* Tabs de pagamento */}
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 gap-3">
                   <label className={`cursor-pointer border-2 rounded-xl p-4 flex flex-col items-center justify-center gap-2 transition-all ${paymentMethod === 'pix' ? 'border-emerald-500 bg-emerald-50 text-emerald-700 shadow-md shadow-emerald-100' : 'border-slate-200 hover:border-emerald-300 text-slate-600'}`}>
                     <input type="radio" name="payment" className="hidden" checked={paymentMethod === 'pix'} onChange={() => setPaymentMethod('pix')} />
                     <QrCode className="w-6 h-6" />
                     <span className="font-bold text-sm">PIX</span>
                     <span className="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full font-semibold">-5% OFF</span>
                   </label>
+                  
+                  {/* Cartão e Boleto em Hibernação (Aguardando Configuração EFI API de Cobranças) */}
+                  {/* 
                   <label className={`cursor-pointer border-2 rounded-xl p-4 flex flex-col items-center justify-center gap-2 transition-all ${paymentMethod === 'credit_card' ? 'border-emerald-500 bg-emerald-50 text-emerald-700 shadow-md shadow-emerald-100' : 'border-slate-200 hover:border-emerald-300 text-slate-600'}`}>
                     <input type="radio" name="payment" className="hidden" checked={paymentMethod === 'credit_card'} onChange={() => setPaymentMethod('credit_card')} />
                     <CreditCard className="w-6 h-6" />
@@ -495,7 +498,8 @@ export default function CheckoutClient({
                     <Barcode className="w-6 h-6" />
                     <span className="font-bold text-sm">Boleto</span>
                     <span className="text-[10px] text-slate-400 font-medium">À vista</span>
-                  </label>
+                  </label> 
+                  */}
                 </div>
 
                 {/* ===== Formulário de Cartão (aparece quando selecionado) ===== */}
