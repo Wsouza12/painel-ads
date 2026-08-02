@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default async function StorePage({ params }: { params: { slug: string } }) {
   // 1. Fetch connection by ml_nickname or id or fallback to top connection
@@ -55,7 +56,7 @@ export default async function StorePage({ params }: { params: { slug: string } }
       .from("ml_products")
       .select("*")
       .eq("is_active", true)
-      .order("created_at", { ascending: false })
+      .order("updated_at", { ascending: false })
       .limit(48);
     
     if (error) {
