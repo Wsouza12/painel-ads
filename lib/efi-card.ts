@@ -107,11 +107,7 @@ export async function createEfiCardCharge(
   token: string,
   valor: string,
   cardData: {
-    number: string;
-    cvv: string;
-    expMonth: string;
-    expYear: string;
-    holderName: string;
+    paymentToken: string;
   },
   customerInfo: { name: string; email: string; cpf: string; phone: string }
 ): Promise<{ chargeId: string; status: string; txid: string }> {
@@ -126,7 +122,7 @@ export async function createEfiCardCharge(
 
   // Passo 1: Criar cobrança
   const chargeOptions: https.RequestOptions = {
-    hostname: "api.gerencianet.com.br",
+    hostname: "api.efipay.com.br", // URL base de produção API EFI
     port: 443,
     path: "/v1/charge",
     method: "POST",
@@ -155,13 +151,13 @@ export async function createEfiCardCharge(
           phone_number: customerInfo.phone.replace(/\D/g, ""),
         },
         installments: 1,
-        payment_token: "", // Será gerado pelo frontend SDK
+        payment_token: cardData.paymentToken, // Token gerado no frontend
         billing_address: {
-          street: "N/A",
-          number: "0",
-          neighborhood: "N/A",
-          zipcode: "00000000",
-          city: "N/A",
+          street: "Rua do Cliente",
+          number: "123",
+          neighborhood: "Bairro",
+          zipcode: "01001000",
+          city: "São Paulo",
           state: "SP"
         }
       }
@@ -169,7 +165,7 @@ export async function createEfiCardCharge(
   };
 
   const payOptions: https.RequestOptions = {
-    hostname: "api.gerencianet.com.br",
+    hostname: "api.efipay.com.br", // URL base de produção API EFI
     port: 443,
     path: `/v1/charge/${chargeId}/pay`,
     method: "POST",

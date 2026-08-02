@@ -3,6 +3,13 @@
 import { useState } from "react";
 import { ArrowLeft, CheckCircle2, Copy, CreditCard, QrCode, ShieldCheck, Truck, User, FileText, Lock, Loader2, Barcode } from "lucide-react";
 import { useRouter } from "next/navigation";
+import Script from "next/script";
+
+declare global {
+  interface Window {
+    $gn: any;
+  }
+}
 
 export default function CheckoutClient({
   product,
@@ -89,19 +96,54 @@ export default function CheckoutClient({
         storeSlug
       };
 
-      // Se cartão, enviar dados do cartão
+      // Se cartão, gerar token via EFI
       if (paymentMethod === "credit_card") {
         if (!cardData.number || !cardData.holderName || !cardData.expMonth || !cardData.expYear || !cardData.cvv) {
           setError("Preencha todos os dados do cartão.");
           setLoading(false);
           return;
         }
+
+        const cardNumberClean = cardData.number.replace(/\s/g, "");
+        const getBrand = (number: string) => {
+          if (number.startsWith("4")) return "visa";
+          if (/^5[1-5]/.test(number)) return "mastercard";
+          if (/^3[47]/.test(number)) return "amex";
+          if (/^3(?:0[0-5]|[68][0-9])[0-9]{11}/.test(number)) return "diners";
+          if (/^6(?:011|5[0-9]{2})[0-9]{12}/.test(number)) return "discover";
+          if (/^(5067|4576|4011|5090|5099|4312|4389|4514)/.test(number)) return "elo";
+          if (/^(3841|60)/.test(number)) return "hipercard";
+          return "visa"; // fallback
+        };
+
+        const brand = getBrand(cardNumberClean);
+
+        // Promise para obter o token da EFI
+        const paymentToken = await new Promise((resolve, reject) => {
+          if (!window.$gn) {
+            reject("Script de pagamento seguro (EFI) não carregou. Recarregue a página.");
+            return;
+          }
+
+          window.$gn.ready((checkout: any) => {
+            checkout.getPaymentToken({
+              brand: brand,
+              number: cardNumberClean,
+              cvv: cardData.cvv,
+              expiration_month: cardData.expMonth,
+              expiration_year: cardData.expYear
+            }, (err: any, res: any) => {
+              if (err) {
+                reject("Erro ao verificar cartão: " + (err.error_description || "Dados inválidos"));
+              } else {
+                resolve(res.data.payment_token);
+              }
+            });
+          });
+        });
+
         payload.cardData = {
-          number: cardData.number.replace(/\s/g, ""),
-          holderName: cardData.holderName,
-          expMonth: cardData.expMonth,
-          expYear: cardData.expYear,
-          cvv: cardData.cvv,
+          paymentToken: paymentToken
         };
       }
 
@@ -269,7 +311,12 @@ export default function CheckoutClient({
 
   // ========== FORMULÁRIO DE CHECKOUT ==========
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+    <>
+      <Script 
+        src={`https://api.efipay.com.br/v1/cdn/Oecf209bd5aa4c1c9a65249124dcefcd/${Math.floor(Math.random() * 1000000)}`} 
+        strategy="lazyOnload" 
+      />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
       {/* Coluna Esquerda: Formulário */}
       <div className="md:col-span-2 space-y-6">
         
@@ -545,5 +592,6 @@ export default function CheckoutClient({
         </div>
       </div>
     </div>
+    </>
   );
 }
