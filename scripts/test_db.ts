@@ -1,20 +1,19 @@
-import { supabaseAdmin } from "../lib/supabase";
+import { createClient } from "@supabase/supabase-js";
+
+const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL || process.env.SUPABASE_URL || "",
+  process.env.SUPABASE_SERVICE_ROLE_KEY || ""
+);
 
 async function check() {
-  const { data, error } = await supabaseAdmin
-    .from("pixel_events_log")
-    .select("*")
-    .order("created_at", { ascending: false })
-    .limit(10);
-  
-  if (error) {
-    console.error("Error:", error);
-    return;
-  }
-  console.log("--- ULTIMOS 10 EVENTOS EM TEMPO REAL ---");
-  data?.forEach(e => {
-    console.log(`[${e.created_at}] Evento: ${e.event_name} | UTM_Source: ${e.utm_source || "direto"} | UTM_Campaign: ${e.utm_campaign || "n/a"}`);
-  });
+  const { data: connections } = await supabase.from("ml_connections").select("id, ml_nickname, ml_user_id");
+  console.log("--- CONEXOES ---", connections);
+
+  const { data: products } = await supabase.from("ml_products").select("id, connection_id, original_title, custom_title").limit(10);
+  console.log("--- PRODUTOS (amostra de 10) ---", products);
+
+  const { count } = await supabase.from("ml_products").select("*", { count: 'exact', head: true });
+  console.log("TOTAL PRODUTOS NO BANCO:", count);
 }
 
 check();

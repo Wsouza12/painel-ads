@@ -58,15 +58,17 @@ export default async function StorePage({ params }: { params: { slug: string } }
       .order("created_at", { ascending: false });
     
     products = data || [];
-  } else {
-    // If no specific connection match, fetch all active products
-    const { data } = await supabaseAdmin
+  }
+
+  // Fallback: If no products found for this specific connection_id, fetch all products from the catalog
+  if (!products || products.length === 0) {
+    const { data: allProds } = await supabaseAdmin
       .from("ml_products")
       .select("*")
       .order("created_at", { ascending: false })
-      .limit(24);
+      .limit(48);
 
-    products = data || [];
+    products = allProds || [];
   }
 
   const storeName = connection?.ml_nickname ? `Loja Oficial ${connection.ml_nickname}` : "Loja Oficial Premium";
