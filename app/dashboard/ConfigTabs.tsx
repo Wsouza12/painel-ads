@@ -101,6 +101,12 @@ export default function ConfigTabs({
         >
           <span>🎯</span> Tutorial Funil &amp; Remarketing ↗
         </a>
+        <a
+          href="/dashboard/pedidos"
+          className="px-4 py-2 text-sm font-bold whitespace-nowrap rounded-lg bg-emerald-900/40 text-emerald-400 border border-emerald-500/30 hover:scale-105 transition-all flex items-center gap-1.5"
+        >
+          <span>📦</span> Pedidos & Expedição
+        </a>
       </div>
 
       {/* Tab Content */}

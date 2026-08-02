@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { 
   ShieldCheck, 
   Truck, 
@@ -36,13 +37,7 @@ export default function StoreProductClient({
   };
   searchParams: any;
 }) {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [customerName, setCustomerName] = useState("");
-  const [customerCpf, setCustomerCpf] = useState("");
-  const [customerPhone, setCustomerPhone] = useState("");
-  const [loading, setLoading] = useState(false);
-  const [pixData, setPixData] = useState<any>(null);
-  const [copied, setCopied] = useState(false);
+  const router = useRouter();
 
   // Auto-fire ViewContent on page load
   useEffect(() => {
@@ -66,7 +61,6 @@ export default function StoreProductClient({
   }, [product, searchParams]);
 
   const handleOpenCheckout = () => {
-    setIsModalOpen(true);
     // Track InitiateCheckout
     const eventId = "init_" + Math.random().toString(36).substring(2, 9);
     fetch("/api/pixel/capi", {
@@ -85,48 +79,8 @@ export default function StoreProductClient({
         }
       })
     }).catch(() => {});
-  };
-
-  const handleGeneratePix = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!customerName || !customerCpf) return;
-
-    setLoading(true);
-    try {
-      const res = await fetch("/api/checkout/pix", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          productId: product.id,
-          productTitle: product.title,
-          price: product.price,
-          customerName,
-          customerCpf,
-          customerPhone,
-          utmSource: searchParams?.utm_source,
-          utmCampaign: searchParams?.utm_campaign,
-          gclid: searchParams?.gclid,
-          connectionId: product.connection_id,
-        })
-      });
-
-      const data = await res.json();
-      if (data.success) {
-        setPixData(data);
-      }
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleCopyPix = () => {
-    if (pixData?.pixCopyPaste) {
-      navigator.clipboard.writeText(pixData.pixCopyPaste);
-      setCopied(true);
-      setTimeout(() => setCopied(false), 3000);
-    }
+    
+    router.push(`/checkout/${product.id}?slug=${slug}`);
   };
 
   return (
@@ -290,132 +244,3 @@ export default function StoreProductClient({
       </div>
 
       {/* 1-Click PIX Checkout Modal */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-white border border-slate-200 rounded-3xl w-full max-w-md overflow-hidden shadow-2xl animate-in fade-in zoom-in-95 duration-200">
-            {/* Modal Header */}
-            <div className="bg-slate-900 text-white p-4 px-5 flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="w-5 h-5 text-emerald-400" />
-                <h3 className="font-bold text-sm">Checkout Transparente PIX</h3>
-              </div>
-              <button 
-                onClick={() => { setIsModalOpen(false); setPixData(null); }}
-                className="text-slate-400 hover:text-white text-lg font-bold px-2"
-              >
-                ✕
-              </button>
-            </div>
-
-            {/* Modal Content */}
-            <div className="p-5 space-y-4">
-              {!pixData ? (
-                <form onSubmit={handleGeneratePix} className="space-y-4">
-                  <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 flex items-center gap-3">
-                    <img src={product.imageUrl} alt="" className="w-12 h-12 object-contain rounded-lg bg-white p-1" />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs font-bold text-slate-800 truncate">{product.title}</p>
-                      <p className="text-sm font-black text-emerald-600">
-                        R$ {product.price.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="space-y-3">
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1">Nome Completo</label>
-                      <input
-                        type="text"
-                        required
-                        placeholder="Ex: João da Silva"
-                        value={customerName}
-                        onChange={(e) => setCustomerName(e.target.value)}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1">CPF (para emissão da nota)</label>
-                      <input
-                        type="text"
-                        required
-                        placeholder="000.000.000-00"
-                        value={customerCpf}
-                        onChange={(e) => setCustomerCpf(e.target.value)}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 mb-1">WhatsApp / Telefone</label>
-                      <input
-                        type="text"
-                        placeholder="(11) 99999-9999"
-                        value={customerPhone}
-                        onChange={(e) => setCustomerPhone(e.target.value)}
-                        className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
-                      />
-                    </div>
-                  </div>
-
-                  <button
-                    type="submit"
-                    disabled={loading}
-                    className="w-full bg-emerald-600 hover:bg-emerald-700 active:scale-[0.99] text-white font-black text-sm py-3.5 rounded-xl shadow-md shadow-emerald-600/30 flex items-center justify-center gap-2 transition-all"
-                  >
-                    {loading ? (
-                      <span>Gerando QR Code PIX...</span>
-                    ) : (
-                      <>
-                        <Zap className="w-4 h-4 fill-yellow-300 text-yellow-300" />
-                        <span>GERAR PIX AGORA</span>
-                      </>
-                    )}
-                  </button>
-                </form>
-              ) : (
-                /* PIX Output Screen */
-                <div className="text-center space-y-4 py-2">
-                  <div className="bg-emerald-50 border border-emerald-200 p-3 rounded-xl flex items-center justify-center gap-2 text-emerald-800 text-xs font-bold">
-                    <Check className="w-4 h-4 text-emerald-600" />
-                    <span>PIX Gerado com Sucesso! Pedido {pixData.orderId}</span>
-                  </div>
-
-                  <p className="text-xs text-slate-500">
-                    Copie a chave abaixo e cole no aplicativo do seu banco para concluir o pagamento:
-                  </p>
-
-                  {/* Copy Paste Box */}
-                  <div className="bg-slate-100 p-3 rounded-xl border border-slate-200 break-all text-[11px] font-mono text-slate-700 select-all max-h-24 overflow-y-auto">
-                    {pixData.pixCopyPaste}
-                  </div>
-
-                  <button
-                    onClick={handleCopyPix}
-                    className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold text-sm py-3 rounded-xl shadow-md flex items-center justify-center gap-2 transition-all"
-                  >
-                    {copied ? (
-                      <>
-                        <Check className="w-4 h-4" />
-                        <span>CHAVE COPIADA COM SUCESSO!</span>
-                      </>
-                    ) : (
-                      <>
-                        <Copy className="w-4 h-4" />
-                        <span>COPIAR CHAVE PIX (COPIA E COLA)</span>
-                      </>
-                    )}
-                  </button>
-
-                  <div className="pt-2 text-[11px] text-slate-400">
-                    Após efetuar o pagamento no seu banco, a aprovação é automática em poucos segundos.
-                  </div>
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-}
