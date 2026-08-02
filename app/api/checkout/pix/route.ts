@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
+import { getEfiToken, createEfiCharge, getEfiQrCode } from "@/lib/efi";
 
 export async function POST(request: Request) {
   try {
@@ -43,40 +44,20 @@ export async function POST(request: Request) {
     let qrCodeBase64 = "";
     let status = "pending";
 
-    // 2. Call Mercado Pago API if access token is present
-    if (mpAccessToken) {
-      try {
-        const mpRes = await fetch("https://api.mercadopago.com/v1/payments", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${mpAccessToken}`,
-            "X-Idempotency-Key": orderId,
-          },
-          body: JSON.stringify({
-            transaction_amount: Number(price),
-            description: productTitle || "Compra na Loja Virtual",
-            payment_method_id: "pix",
-            payer: {
-              email: `${cleanCpf}@cliente-pix.com`,
-              first_name: customerName.split(" ")[0] || customerName,
-              last_name: customerName.split(" ").slice(1).join(" ") || "Cliente",
-              identification: {
-                type: "CPF",
-                number: cleanCpf,
-              },
-            },
-          }),
-        });
-
-        if (mpRes.ok) {
-          const mpData = await mpRes.json();
-          pixCopyPaste = mpData.point_of_interaction?.transaction_data?.qr_code || "";
-          qrCodeBase64 = mpData.point_of_interaction?.transaction_data?.qr_code_base64 || "";
+    // 2. Call EFI Bank API for PIX
+    try {
+      if (process.env.EFI_CLIENT_ID && process.env.EFI_CERT_BASE64) {
+        const token = await getEfiToken();
+        const cobranca = await createEfiCharge(token, price, cleanCpf, customerName);
+        
+        if (cobranca && cobranca.loc && cobranca.loc.id) {
+          const qrCodeData = await getEfiQrCode(token, cobranca.loc.id);
+          pixCopyPaste = qrCodeData.qrcode || "";
+          qrCodeBase64 = qrCodeData.imagemQrcode ? qrCodeData.imagemQrcode.replace("data:image/png;base64,", "") : "";
         }
-      } catch (e) {
-        console.error("Erro Mercado Pago API:", e);
       }
+    } catch (e: any) {
+      console.error("Erro EFI Bank API:", e.message || e);
     }
 
     // Fallback simulation PIX if API token not active (allows testing & Instant QR Code)
