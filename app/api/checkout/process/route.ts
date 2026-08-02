@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 import { getEfiToken, createEfiCharge, getEfiQrCode } from "@/lib/efi";
-import { createEfiBoletoCharge, createEfiCardCharge } from "@/lib/efi-card";
+import { createEfiBoletoCharge, createEfiCardCharge, getEfiV1Token } from "@/lib/efi-card";
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -112,8 +112,8 @@ export async function POST(request: Request) {
 
       try {
         if (process.env.EFI_CLIENT_ID && process.env.EFI_CERT_BASE64) {
-          const token = await getEfiToken();
-          const boleto = await createEfiBoletoCharge(token, product.price, customer);
+          const tokenV1 = await getEfiV1Token();
+          const boleto = await createEfiBoletoCharge(tokenV1, product.price, customer);
           boletoUrl = boleto.boletoUrl;
           linhaDigitavel = boleto.linhaDigitavel;
           

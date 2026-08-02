@@ -49,12 +49,31 @@ function httpsRequest(options: https.RequestOptions, bodyData?: any): Promise<an
   });
 }
 
+export async function getEfiV1Token(): Promise<string> {
+  const credentials = Buffer.from(`${clientId}:${clientSecret}`).toString("base64");
+  
+  const options: https.RequestOptions = {
+    hostname: "api.efipay.com.br", // URL correta para API v1 (Boleto/Cartão)
+    port: 443,
+    path: "/oauth/token",
+    method: "POST",
+    headers: {
+      Authorization: `Basic ${credentials}`,
+      "Content-Type": "application/json",
+    },
+    agent: getAgent(),
+  };
+
+  const response = await httpsRequest(options, { grant_type: "client_credentials" });
+  return response.access_token;
+}
+
 /**
  * Cria cobrança de Boleto via EFI Bank
- * Usa a API de cobranças com vencimento (cobv) para gerar boleto
+ * Usa a API de cobranças (v1/charge) para gerar boleto real
  */
 export async function createEfiBoletoCharge(
-  token: string,
+  token: string, // Espera token da v1
   valor: string,
   customerInfo: { name: string; email: string; cpf: string; phone: string; zipCode: string; address: string; number: string; neighborhood: string; city: string; state: string }
 ): Promise<{ boletoUrl: string; codigoBarras: string; linhaDigitavel: string; txid: string }> {
