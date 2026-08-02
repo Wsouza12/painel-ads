@@ -99,11 +99,11 @@ export default function ConfigTabs({
           href="/dashboard/funnel"
           className="px-4 py-2 text-sm font-bold whitespace-nowrap rounded-lg bg-gradient-to-r from-amber-500/20 via-purple-500/20 to-pink-500/20 text-amber-300 border border-amber-500/40 hover:scale-105 transition-all flex items-center gap-1.5"
         >
-          <span>🎯</span> Tutorial Funil &amp; Remarketing ↗
+          <span>🔥</span> Funil de Vendas
         </a>
         <a
           href="/dashboard/pedidos"
-          className="px-4 py-2 text-sm font-bold whitespace-nowrap rounded-lg bg-emerald-900/40 text-emerald-400 border border-emerald-500/30 hover:scale-105 transition-all flex items-center gap-1.5"
+          className="px-4 py-2 text-sm font-bold whitespace-nowrap rounded-lg bg-gradient-to-r from-emerald-500/20 to-teal-500/20 text-emerald-300 border border-emerald-500/40 hover:scale-105 transition-all flex items-center gap-1.5"
         >
           <span>📦</span> Pedidos & Expedição
         </a>
