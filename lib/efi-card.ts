@@ -55,13 +55,13 @@ export async function getEfiV1Token(): Promise<string> {
   const options: https.RequestOptions = {
     hostname: "api.efipay.com.br", // URL correta para API v1 (Boleto/Cartão)
     port: 443,
-    path: "/oauth/token",
+    path: "/v1/authorize", // Endpoint correto para v1
     method: "POST",
     headers: {
       Authorization: `Basic ${credentials}`,
       "Content-Type": "application/json",
-    },
-    agent: getAgent(),
+    }
+    // NOTA: A API v1 não utiliza certificado mTLS, portanto não passamos o 'agent' aqui.
   };
 
   const response = await httpsRequest(options, { grant_type: "client_credentials" });
@@ -96,7 +96,6 @@ export async function createEfiBoletoCharge(
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
-    agent: getAgent(),
   };
 
   const charge = await httpsRequest(chargeOptions, chargeBody);
@@ -138,7 +137,6 @@ export async function createEfiBoletoCharge(
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
-    agent: getAgent(),
   };
 
   const result = await httpsRequest(payOptions, payBody);
@@ -187,7 +185,6 @@ export async function createEfiCardCharge(
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
-    agent: getAgent(),
   };
 
   const charge = await httpsRequest(chargeOptions, chargeBody);
@@ -230,7 +227,6 @@ export async function createEfiCardCharge(
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
     },
-    agent: getAgent(),
   };
 
   const payResult = await httpsRequest(payOptions, payBody);
