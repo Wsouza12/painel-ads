@@ -288,10 +288,10 @@ export default function CheckoutClient({
                 href={checkoutResult.boletoUrl} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 bg-amber-600 text-white font-bold py-3 px-6 rounded-xl hover:bg-amber-700 transition-colors"
+                className="mt-6 w-full py-4 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl shadow-lg shadow-emerald-200 transition-all active:scale-95 flex items-center justify-center gap-2"
               >
                 <FileText className="w-5 h-5" />
-                Abrir Boleto
+                Baixar Boleto PDF
               </a>
             )}
             <div className="flex items-center justify-center gap-2 text-amber-600 animate-pulse">
@@ -422,6 +422,20 @@ export default function CheckoutClient({
                     <input required type="text" value={customer.number} onChange={e => setCustomer({...customer, number: e.target.value})} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-shadow" placeholder="123" />
                   </div>
                 </div>
+                
+                {/* Bloco de Frete Confiável */}
+                <div className="mt-6 mb-4 p-4 border border-emerald-200 bg-emerald-50/50 rounded-xl flex items-start gap-3">
+                  <div className="p-2 bg-emerald-100 text-emerald-600 rounded-lg shrink-0">
+                    <Truck className="w-5 h-5" />
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-slate-800 text-sm">Frete Expresso Gratuito</h4>
+                    <p className="text-xs text-slate-600 mt-1">
+                      Entrega estimada em <strong>5 a 12 dias úteis</strong> para sua região. Produto com código de rastreamento completo.
+                    </p>
+                  </div>
+                </div>
+
                 <button type="submit" className="w-full mt-6 bg-emerald-600 text-white font-bold py-3.5 rounded-xl hover:bg-emerald-700 transition-colors active:scale-[0.98]">
                   Ir para Pagamento →
                 </button>
@@ -548,11 +562,29 @@ export default function CheckoutClient({
                   </div>
                 )}
 
+                <div className="flex justify-between items-center bg-slate-50 border border-slate-100 p-3 rounded-lg mb-4 mt-2">
+                  <div className="flex items-center gap-2 text-xs text-slate-600 font-medium">
+                    <Lock className="w-4 h-4 text-emerald-500" />
+                    Transação 100% Segura
+                  </div>
+                  <div className="flex gap-1.5 opacity-70 grayscale hover:grayscale-0 transition-all">
+                    <div className="h-6 w-9 bg-white border border-slate-200 rounded flex items-center justify-center">
+                      <span className="text-[9px] font-black text-blue-800">VISA</span>
+                    </div>
+                    <div className="h-6 w-9 bg-white border border-slate-200 rounded flex items-center justify-center">
+                      <span className="text-[10px] font-bold text-red-600">MC</span>
+                    </div>
+                    <div className="h-6 w-9 bg-white border border-slate-200 rounded flex items-center justify-center">
+                      <span className="text-[9px] font-bold text-sky-500">AMEX</span>
+                    </div>
+                  </div>
+                </div>
+
                 <button 
                   type="button" 
                   onClick={handleProcessCheckout}
                   disabled={loading}
-                  className="w-full bg-emerald-600 text-white font-bold py-4 rounded-xl hover:bg-emerald-700 transition-all flex items-center justify-center gap-2 disabled:opacity-50 active:scale-[0.98] shadow-lg shadow-emerald-600/20"
+                  className="w-full bg-emerald-600 hover:bg-emerald-700 disabled:opacity-50 text-white font-bold py-4 rounded-xl shadow-lg shadow-emerald-200 transition-all active:scale-95 flex items-center justify-center gap-2 text-lg"
                 >
                   {loading ? (
                     <>
@@ -566,6 +598,13 @@ export default function CheckoutClient({
                     </>
                   )}
                 </button>
+
+                <div className="mt-4 flex flex-col items-center justify-center gap-2 text-[11px] text-slate-400 font-medium pb-2">
+                   <div className="flex items-center gap-4">
+                     <span className="flex items-center gap-1"><Lock className="w-3 h-3"/> SSL 256-bit</span>
+                     <span className="flex items-center gap-1"><ShieldCheck className="w-3 h-3"/> Proteção EFI Bank</span>
+                   </div>
+                </div>
               </div>
             )}
           </form>
