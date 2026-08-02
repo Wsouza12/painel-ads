@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArrowLeft, CheckCircle2, Copy, CreditCard, QrCode, ShieldCheck, Truck, User, FileText, Lock, Loader2, Barcode } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Script from "next/script";
@@ -189,6 +189,26 @@ export default function CheckoutClient({
     setTimeout(() => setCopied(false), 3000);
   };
 
+  // Efeito para verificar status do PIX automaticamente
+  useEffect(() => {
+    let interval: NodeJS.Timeout;
+    if (checkoutResult && checkoutResult.paymentMethod === "pix" && checkoutResult.txid && checkoutResult.status !== "pago") {
+      interval = setInterval(async () => {
+        try {
+          const res = await fetch(`/api/checkout/check-pix?txid=${checkoutResult.txid}`);
+          const data = await res.json();
+          if (data.success && data.status === "pago") {
+            setCheckoutResult((prev: any) => ({ ...prev, status: "pago" }));
+            clearInterval(interval);
+          }
+        } catch (e) {
+          console.error("Erro no polling do PIX:", e);
+        }
+      }, 5000); // 5 segundos
+    }
+    return () => clearInterval(interval);
+  }, [checkoutResult]);
+
   // ========== TELA DE RESULTADO ==========
   if (checkoutResult) {
     return (
@@ -202,33 +222,42 @@ export default function CheckoutClient({
         {/* ===== RESULTADO PIX ===== */}
         {checkoutResult.paymentMethod === "pix" && (
           <div className="space-y-4">
-            {checkoutResult.qrCodeBase64 && (
-              <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
-                <img 
-                  src={`data:image/png;base64,${checkoutResult.qrCodeBase64}`} 
-                  alt="QR Code PIX" 
-                  className="w-48 h-48 mx-auto"
-                />
+            {checkoutResult.status === "pago" ? (
+              <div className="py-8">
+                <h3 className="text-xl font-bold text-emerald-600 mb-2">Pagamento Confirmado!</h3>
+                <p className="text-slate-600 text-sm">Recebemos o seu PIX com sucesso. Seu pedido já está sendo preparado.</p>
               </div>
-            )}
-            {checkoutResult.pixCopyPaste && (
+            ) : (
               <>
-                <p className="text-sm text-slate-500">Copie o código PIX abaixo:</p>
-                <div className="bg-slate-100 p-3 rounded-lg flex items-center gap-2 overflow-hidden relative group">
-                  <span className="text-xs text-slate-500 truncate select-all flex-1">{checkoutResult.pixCopyPaste}</span>
-                  <button 
-                    onClick={() => copyText(checkoutResult.pixCopyPaste)}
-                    className="shrink-0 bg-white p-1.5 rounded-md shadow-sm border border-slate-200 hover:bg-emerald-50 text-emerald-600 transition-colors"
-                  >
-                    {copied ? <CheckCircle2 className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
-                  </button>
+                {checkoutResult.qrCodeBase64 && (
+                  <div className="p-4 bg-slate-50 rounded-xl border border-slate-200">
+                    <img 
+                      src={`data:image/png;base64,${checkoutResult.qrCodeBase64}`} 
+                      alt="QR Code PIX" 
+                      className="w-48 h-48 mx-auto"
+                    />
+                  </div>
+                )}
+                {checkoutResult.pixCopyPaste && (
+                  <>
+                    <p className="text-sm text-slate-500">Copie o código PIX abaixo:</p>
+                    <div className="bg-slate-100 p-3 rounded-lg flex items-center gap-2 overflow-hidden relative group">
+                      <span className="text-xs text-slate-500 truncate select-all flex-1">{checkoutResult.pixCopyPaste}</span>
+                      <button 
+                        onClick={() => copyText(checkoutResult.pixCopyPaste)}
+                        className="shrink-0 bg-white p-1.5 rounded-md shadow-sm border border-slate-200 hover:bg-emerald-50 text-emerald-600 transition-colors"
+                      >
+                        {copied ? <CheckCircle2 className="w-4 h-4" /> : <Copy className="w-4 h-4" />}
+                      </button>
+                    </div>
+                  </>
+                )}
+                <div className="flex items-center justify-center gap-2 text-emerald-600 animate-pulse">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span className="text-sm font-semibold">Aguardando pagamento...</span>
                 </div>
               </>
             )}
-            <div className="flex items-center justify-center gap-2 text-emerald-600 animate-pulse">
-              <Loader2 className="w-4 h-4 animate-spin" />
-              <span className="text-sm font-semibold">Aguardando pagamento...</span>
-            </div>
           </div>
         )}
 
