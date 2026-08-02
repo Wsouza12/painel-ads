@@ -93,16 +93,16 @@ export async function createEfiBoletoCharge(
       banking_billet: {
         expire_at: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split("T")[0], // 3 dias
         customer: {
-          name: customerInfo.name,
-          email: customerInfo.email,
-          cpf: customerInfo.cpf.replace(/\D/g, ""),
-          phone_number: customerInfo.phone.replace(/\D/g, ""),
+          name: customerInfo.name || "Cliente Não Informado",
+          email: customerInfo.email || "cliente@email.com",
+          cpf: customerInfo.cpf?.replace(/\D/g, "") || "00000000000",
+          phone_number: customerInfo.phone?.replace(/\D/g, "") || "11999999999",
           address: {
-            street: customerInfo.address || "Rua",
-            number: customerInfo.number || "0",
-            neighborhood: customerInfo.neighborhood || "Bairro",
-            zipcode: customerInfo.zipCode.replace(/\D/g, "") || "00000000",
-            city: customerInfo.city || "Cidade",
+            street: customerInfo.address || "Rua Principal",
+            number: customerInfo.number || "S/N",
+            neighborhood: customerInfo.neighborhood || "Centro",
+            zipcode: customerInfo.zipCode?.replace(/\D/g, "") || "01001000",
+            city: customerInfo.city || "São Paulo",
             state: customerInfo.state || "SP"
           }
         }

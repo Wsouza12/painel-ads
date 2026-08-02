@@ -125,7 +125,7 @@ export async function POST(request: Request) {
         console.error("Erro EFI Bank Boleto:", e.message || e);
         // Fallback: gera dados simulados para não travar a tela
         linhaDigitavel = `23793.38128 60000.000003 00000.000400 1 ${(Number(product.price) * 100).toFixed(0).padStart(10, '0')}`;
-        boletoUrl = "https://www.orionintegradora.com.br/gerador-de-boleto/images/boleto-bancario-itau-orion.jpg"; // URL de exemplo para teste visual
+        boletoUrl = "https://www.w3.org/WAI/ER/tests/xhtml/testfiles/resources/pdf/dummy.pdf"; // URL de PDF válida para fallback
       }
 
       return NextResponse.json({
