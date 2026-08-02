@@ -11,7 +11,9 @@ import {
   Zap, 
   CheckCircle2, 
   Lock,
-  ArrowRight
+  ArrowRight,
+  User,
+  Package
 } from "lucide-react";
 
 export const dynamic = "force-dynamic";
@@ -106,11 +108,19 @@ export default async function StorePage({ params }: { params: { slug: string } }
             <Search className="w-4 h-4 text-slate-400 absolute right-3.5 top-2.5" />
           </div>
 
-          {/* Cart / Trust Icon */}
-          <div className="flex items-center gap-3">
-            <div className="flex items-center gap-1.5 bg-emerald-50 text-emerald-700 font-bold text-xs px-3 py-1.5 rounded-full border border-emerald-200">
+          {/* Cart / Trust Icon / User Links */}
+          <div className="flex items-center gap-2 sm:gap-4">
+            <Link href="/rastreio" className="flex items-center gap-1 text-slate-500 hover:text-emerald-600 transition-colors text-sm font-semibold">
+              <Package className="w-4 h-4" />
+              <span className="hidden md:inline">Rastrear</span>
+            </Link>
+            <Link href="/cliente/login" className="flex items-center gap-1 text-slate-500 hover:text-emerald-600 transition-colors text-sm font-semibold">
+              <User className="w-4 h-4" />
+              <span className="hidden md:inline">Entrar</span>
+            </Link>
+            <div className="hidden sm:flex items-center gap-1.5 bg-emerald-50 text-emerald-700 font-bold text-xs px-3 py-1.5 rounded-full border border-emerald-200">
               <ShieldCheck className="w-4 h-4 text-emerald-600" />
-              <span className="hidden sm:inline">Loja 100% Segura</span>
+              <span>100% Segura</span>
             </div>
           </div>
         </div>
