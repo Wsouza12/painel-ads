@@ -113,7 +113,7 @@ export async function POST(request: Request) {
       try {
         if (process.env.EFI_CLIENT_ID && process.env.EFI_CERT_BASE64) {
           const token = await getEfiToken();
-          const boleto = await createEfiBoletoCharge(token, product.price, cleanCpf, customer.name);
+          const boleto = await createEfiBoletoCharge(token, product.price, customer);
           boletoUrl = boleto.boletoUrl;
           linhaDigitavel = boleto.linhaDigitavel;
           
@@ -142,12 +142,7 @@ export async function POST(request: Request) {
       try {
         if (process.env.EFI_CLIENT_ID && process.env.EFI_CERT_BASE64) {
           const token = await getEfiToken();
-          const cardResult = await createEfiCardCharge(token, product.price, cardData || {}, {
-            name: customer.name,
-            email: customer.email,
-            cpf: cleanCpf,
-            phone: customer.phone,
-          });
+          const cardResult = await createEfiCardCharge(token, product.price, cardData || {}, customer);
 
           await supabaseAdmin.from("orders").update({ 
             efi_txid: cardResult.txid,

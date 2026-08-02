@@ -56,30 +56,22 @@ function httpsRequest(options: https.RequestOptions, bodyData?: any): Promise<an
 export async function createEfiBoletoCharge(
   token: string,
   valor: string,
-  cpf: string,
-  nome: string
+  customerInfo: { name: string; email: string; cpf: string; phone: string; zipCode: string; address: string; number: string; neighborhood: string; city: string; state: string }
 ): Promise<{ boletoUrl: string; codigoBarras: string; linhaDigitavel: string; txid: string }> {
-  // Gerar txid único
-  const txid = "bol" + Date.now().toString(36) + Math.random().toString(36).substring(2, 8);
   
-  const body = {
-    calendario: { 
-      dataDeVencimento: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split("T")[0], // 3 dias
-      validadeAposVencimento: 30 
-    },
-    valor: { original: Number(valor).toFixed(2) },
-    chave: process.env.EFI_PIX_KEY || "",
-    solicitacaoPagador: "Pagamento do Pedido",
-    devedor: {
-      cpf: cpf,
-      nome: nome.substring(0, 200)
-    }
+  // Passo 1: Criar cobrança
+  const chargeBody = {
+    items: [{
+      name: "Pedido Loja",
+      value: Math.round(Number(valor) * 100),
+      amount: 1
+    }]
   };
 
-  const options: https.RequestOptions = {
-    hostname: EFI_API_URL,
+  const chargeOptions: https.RequestOptions = {
+    hostname: "api.efipay.com.br",
     port: 443,
-    path: `/v2/cob`,
+    path: "/v1/charge",
     method: "POST",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -88,14 +80,60 @@ export async function createEfiBoletoCharge(
     agent: getAgent(),
   };
 
-  const result = await httpsRequest(options, body);
+  const charge = await httpsRequest(chargeOptions, chargeBody);
+  const chargeId = charge?.data?.charge_id;
+
+  if (!chargeId) {
+    throw new Error("Falha ao criar cobrança de boleto no EFI");
+  }
+
+  // Passo 2: Gerar Boleto
+  const payBody = {
+    payment: {
+      banking_billet: {
+        expire_at: new Date(Date.now() + 3 * 24 * 60 * 60 * 1000).toISOString().split("T")[0], // 3 dias
+        customer: {
+          name: customerInfo.name,
+          email: customerInfo.email,
+          cpf: customerInfo.cpf.replace(/\D/g, ""),
+          phone_number: customerInfo.phone.replace(/\D/g, ""),
+          address: {
+            street: customerInfo.address || "Rua",
+            number: customerInfo.number || "0",
+            neighborhood: customerInfo.neighborhood || "Bairro",
+            zipcode: customerInfo.zipCode.replace(/\D/g, "") || "00000000",
+            city: customerInfo.city || "Cidade",
+            state: customerInfo.state || "SP"
+          }
+        }
+      }
+    }
+  };
+
+  const payOptions: https.RequestOptions = {
+    hostname: "api.efipay.com.br",
+    port: 443,
+    path: `/v1/charge/${chargeId}/pay`,
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    agent: getAgent(),
+  };
+
+  const result = await httpsRequest(payOptions, payBody);
   
-  // Retorna dados do boleto
+  const boletoData = result?.data;
+  if (!boletoData || !boletoData.pdf) {
+    throw new Error("Falha ao gerar o boleto bancário");
+  }
+
   return {
-    boletoUrl: result.loc?.location || `https://pix.api.efipay.com.br/v2/cobv/${txid}`,
-    codigoBarras: result.codigoBarras || "",
-    linhaDigitavel: result.linhaDigitavel || "",
-    txid: result.txid || txid
+    boletoUrl: boletoData.pdf.charge || boletoData.link || "",
+    codigoBarras: boletoData.barcode || "",
+    linhaDigitavel: boletoData.barcode || "", // Algumas vezes a API retorna barcode como linha digitável ou tem um campo especifico
+    txid: chargeId.toString()
   };
 }
 
@@ -109,7 +147,7 @@ export async function createEfiCardCharge(
   cardData: {
     paymentToken: string;
   },
-  customerInfo: { name: string; email: string; cpf: string; phone: string }
+  customerInfo: { name: string; email: string; cpf: string; phone: string; zipCode: string; address: string; number: string; neighborhood: string; city: string; state: string }
 ): Promise<{ chargeId: string; status: string; txid: string }> {
   // Na API EFI, primeiro criamos a cobrança, depois associamos o pagamento
   const chargeBody = {
@@ -153,12 +191,12 @@ export async function createEfiCardCharge(
         installments: 1,
         payment_token: cardData.paymentToken, // Token gerado no frontend
         billing_address: {
-          street: "Rua do Cliente",
-          number: "123",
-          neighborhood: "Bairro",
-          zipcode: "01001000",
-          city: "São Paulo",
-          state: "SP"
+          street: customerInfo.address || "Rua do Cliente",
+          number: customerInfo.number || "123",
+          neighborhood: customerInfo.neighborhood || "Bairro",
+          zipcode: customerInfo.zipCode?.replace(/\D/g, "") || "01001000",
+          city: customerInfo.city || "São Paulo",
+          state: customerInfo.state || "SP"
         }
       }
     }

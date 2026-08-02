@@ -422,7 +422,7 @@ export default function CheckoutClient({
                   <button type="button" onClick={() => setStep(1)} className="p-1 hover:bg-slate-100 rounded-full transition-colors"><ArrowLeft className="w-4 h-4 text-slate-600" /></button>
                   <h3 className="font-bold text-lg text-slate-800">Endereço de Entrega</h3>
                 </div>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
                   <div className="space-y-1 md:col-span-1">
                     <label className="text-xs font-semibold text-slate-600">CEP</label>
                     <input required type="text" value={customer.zipCode} onChange={e => setCustomer({...customer, zipCode: maskCep(e.target.value)})} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-shadow" placeholder="00000-000" />
@@ -434,6 +434,18 @@ export default function CheckoutClient({
                   <div className="space-y-1 md:col-span-1">
                     <label className="text-xs font-semibold text-slate-600">Número</label>
                     <input required type="text" value={customer.number} onChange={e => setCustomer({...customer, number: e.target.value})} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-shadow" placeholder="123" />
+                  </div>
+                  <div className="space-y-1 md:col-span-2">
+                    <label className="text-xs font-semibold text-slate-600">Bairro</label>
+                    <input required type="text" value={customer.neighborhood} onChange={e => setCustomer({...customer, neighborhood: e.target.value})} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-shadow" placeholder="Centro" />
+                  </div>
+                  <div className="space-y-1 md:col-span-1">
+                    <label className="text-xs font-semibold text-slate-600">Cidade</label>
+                    <input required type="text" value={customer.city} onChange={e => setCustomer({...customer, city: e.target.value})} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-shadow" placeholder="São Paulo" />
+                  </div>
+                  <div className="space-y-1 md:col-span-1">
+                    <label className="text-xs font-semibold text-slate-600">Estado (UF)</label>
+                    <input required type="text" maxLength={2} value={customer.state} onChange={e => setCustomer({...customer, state: e.target.value.toUpperCase()})} className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-emerald-500 transition-shadow uppercase" placeholder="SP" />
                   </div>
                 </div>
                 
