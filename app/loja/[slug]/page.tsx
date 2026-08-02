@@ -281,13 +281,36 @@ export default async function StorePage({ params }: { params: { slug: string } }
       </section>
 
       {/* Footer */}
-      <footer className="bg-slate-900 text-slate-400 text-xs py-8 px-4 sm:px-6 border-t border-slate-800">
-        <div className="max-w-7xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 text-center sm:text-left">
-          <p>© {new Date().getFullYear()} {storeName}. Todos os direitos reservados.</p>
-          <div className="flex items-center gap-4">
-            <Link href="/politica-de-devolucao" className="hover:text-white transition-colors">Política de Devolução</Link>
+      <footer className="bg-slate-900 text-slate-400 text-xs pt-12 pb-8 px-4 sm:px-6 border-t border-slate-800">
+        <div className="max-w-7xl mx-auto flex flex-col items-center justify-center text-center gap-6">
+          <div className="flex justify-center items-center gap-4 text-slate-500 mb-2 grayscale opacity-50">
+            <div className="h-7 w-10 bg-slate-800 rounded-md flex items-center justify-center text-[11px] font-bold text-slate-300">VISA</div>
+            <div className="h-7 w-10 bg-slate-800 rounded-md flex items-center justify-center text-[11px] font-bold text-slate-300">MC</div>
+            <div className="h-7 w-10 bg-slate-800 rounded-md flex items-center justify-center text-[11px] font-bold text-slate-300">PIX</div>
+            <div className="h-7 w-10 bg-slate-800 rounded-md flex items-center justify-center text-[10px] font-bold text-slate-300">BOLETO</div>
+          </div>
+          
+          <div className="text-[11px] text-slate-500 space-y-2">
+            <p className="font-bold text-slate-300">Sua Loja LTDA - CNPJ: 00.000.000/0001-00</p>
+            <p>Rua Fictícia, 123 - Centro, São Paulo - SP</p>
+            <p>contato@sualoja.com.br | Horário: Seg a Sex 09h às 18h</p>
+          </div>
+
+          <div className="flex items-center justify-center gap-4 text-[11px] font-medium text-emerald-500 mt-2">
+            <Link href="#" className="hover:text-emerald-400 hover:underline transition-all">Políticas de Privacidade</Link>
             <span className="text-slate-700">•</span>
-            <span className="text-emerald-400 font-semibold">Compra 100% Protegida</span>
+            <Link href="#" className="hover:text-emerald-400 hover:underline transition-all">Termos de Uso</Link>
+            <span className="text-slate-700">•</span>
+            <Link href="/politica-de-devolucao" className="hover:text-emerald-400 hover:underline transition-all">Trocas e Devoluções</Link>
+          </div>
+
+          <div className="mt-4 flex items-center justify-center gap-2 text-[10px] text-slate-500">
+            <Lock className="w-3.5 h-3.5" />
+            <span>Site 100% Seguro e Protegido. Em conformidade com a LGPD.</span>
+          </div>
+          
+          <div className="w-full border-t border-slate-800 mt-4 pt-6 text-[10px] text-slate-600">
+            <p>© {new Date().getFullYear()} {storeName}. Todos os direitos reservados.</p>
           </div>
         </div>
       </footer>
