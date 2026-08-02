@@ -48,27 +48,23 @@ export default async function StorePage({ params }: { params: { slug: string } }
     connection = firstConn;
   }
 
-  // 2. Fetch products for this store
+  // 2. Fetch ALL products for the store (no connection_id filter to maximize results)
   let products: any[] = [];
-  if (connection) {
-    const { data } = await supabaseAdmin
+  try {
+    const { data, error } = await supabaseAdmin
       .from("ml_products")
       .select("*")
-      .eq("connection_id", connection.id)
-      .order("created_at", { ascending: false });
-    
-    products = data || [];
-  }
-
-  // Fallback: If no products found for this specific connection_id, fetch all products from the catalog
-  if (!products || products.length === 0) {
-    const { data: allProds } = await supabaseAdmin
-      .from("ml_products")
-      .select("*")
+      .eq("is_active", true)
       .order("created_at", { ascending: false })
       .limit(48);
-
-    products = allProds || [];
+    
+    if (error) {
+      console.error("LOJA ERROR fetching products:", error);
+    }
+    products = data || [];
+    console.log(`LOJA: Found ${products.length} products for slug="${params.slug}"`);
+  } catch (err) {
+    console.error("LOJA CATCH ERROR:", err);
   }
 
   const storeName = connection?.ml_nickname ? `Loja Oficial ${connection.ml_nickname}` : "Loja Oficial Premium";
