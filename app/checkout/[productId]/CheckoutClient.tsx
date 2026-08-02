@@ -209,6 +209,16 @@ export default function CheckoutClient({
     return () => clearInterval(interval);
   }, [checkoutResult]);
 
+  // Efeito para redirecionar após pagamento confirmado
+  useEffect(() => {
+    if (checkoutResult && checkoutResult.status === "pago") {
+      const timeout = setTimeout(() => {
+        router.push("/cliente/login");
+      }, 3000);
+      return () => clearTimeout(timeout);
+    }
+  }, [checkoutResult, router]);
+
   // ========== TELA DE RESULTADO ==========
   if (checkoutResult) {
     return (
@@ -223,9 +233,13 @@ export default function CheckoutClient({
         {checkoutResult.paymentMethod === "pix" && (
           <div className="space-y-4">
             {checkoutResult.status === "pago" ? (
-              <div className="py-8">
+              <div className="py-8 space-y-4">
                 <h3 className="text-xl font-bold text-emerald-600 mb-2">Pagamento Confirmado!</h3>
                 <p className="text-slate-600 text-sm">Recebemos o seu PIX com sucesso. Seu pedido já está sendo preparado.</p>
+                <div className="flex items-center justify-center gap-2 text-emerald-600 font-semibold animate-pulse mt-4">
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  <span>Redirecionando para seus pedidos...</span>
+                </div>
               </div>
             ) : (
               <>
