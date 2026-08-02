@@ -242,5 +242,6 @@ export default function StoreProductClient({
           </button>
         </div>
       </div>
-
-      {/* 1-Click PIX Checkout Modal */}
+    </div>
+  );
+}
