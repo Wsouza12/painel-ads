@@ -22,9 +22,37 @@ export default function ConfigTabs({
 
   const standardFeed = origin ? `${origin}/api/ml/feed/${connection.id}` : connection.feed_url;
   const bridgeFeed = origin ? `${origin}/api/ml/feed/${connection.id}?bridge=true` : `${connection.feed_url}?bridge=true`;
+  const storeSlug = connection.ml_nickname ? connection.ml_nickname.toLowerCase() : connection.id;
+  const storeUrl = origin ? `${origin}/loja/${storeSlug}` : `https://mercadoshops.up.railway.app/loja/${storeSlug}`;
 
   return (
     <div className="pt-6 mt-6 border-t border-white/10">
+      {/* Vitrine Virtual Card */}
+      <div className="mb-6 bg-gradient-to-r from-emerald-900/40 via-teal-900/30 to-emerald-900/40 p-5 rounded-2xl border border-emerald-500/30 shadow-lg shadow-emerald-500/10">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2">
+              <span className="text-xl">🛍️</span>
+              <h3 className="text-lg font-black text-white">Sua Vitrine Virtual (Loja E-Commerce)</h3>
+            </div>
+            <p className="text-xs text-emerald-300/80">Loja profissional gerada automaticamente com seus produtos do Mercado Livre. Checkout PIX em 1 clique.</p>
+          </div>
+          <a
+            href={storeUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-bold text-sm px-6 py-3 rounded-xl shadow-lg shadow-emerald-600/30 hover:scale-105 transition-all whitespace-nowrap"
+          >
+            <span>Abrir Minha Loja</span>
+            <span>↗</span>
+          </a>
+        </div>
+        <div className="mt-3">
+          <code className="block w-full bg-black/40 rounded-lg px-4 py-2.5 break-all text-xs border border-emerald-500/20 select-all text-emerald-400 font-medium">
+            {storeUrl}
+          </code>
+        </div>
+      </div>
       {/* Tab Navigation */}
       <div className="flex gap-2 mb-6 overflow-x-auto hide-scrollbar pb-2">
         <button
