@@ -1,46 +1,49 @@
-# Contexto do Projeto: Painel Ads (Sistema ML -> Meta & Google Ads)
+# Contexto do Projeto: Painel Ads (Sistema ML -> Meta & Google Ads -> E-commerce)
 
-**Para a IA:** Você está atuando no desenvolvimento de um projeto Next.js focado em Páginas Ponte de altíssima conversão, arbitragem com tráfego pago (Meta Ads e Google Ads) e Feeds XML de Catálogo Dinâmico com vídeo para o Mercado Livre. Leia atentamente as informações abaixo antes de propor qualquer mudança.
+**Para a IA:** Você está atuando no desenvolvimento de um projeto Next.js focado em Páginas Ponte de altíssima conversão, arbitragem com tráfego pago (Meta Ads e Google Ads) e agora um **E-commerce Completo** com pagamentos diretos via EFI Bank. Leia atentamente as informações abaixo antes de propor qualquer mudança.
 
 ## Stack e Arquitetura
 - **Framework:** Next.js (App Router, Edge & Node runtimes).
 - **Estilização:** TailwindCSS + Glassmorphism.
-- **Banco de Dados:** Supabase (`ml_products`, `ml_ab_tests`, `pixel_events_log`).
-- **Storage de Vídeos:** Cloudflare R2 (vídeos 9:16, 4:5 e 1:1 de alta conversão).
+- **Banco de Dados:** Supabase (`ml_products`, `ml_ab_tests`, `pixel_events_log`, `customers`, `orders`).
+- **Storage de Vídeos:** Cloudflare R2 (vídeos 9:16, 4:5 e 1:1).
+- **Integração Pagamento:** EFI Bank (PIX mTLS, Cartão, Boleto).
 - **Hospedagem & Deploy:** Railway (`mercadoshops.up.railway.app`). Dual-push simultâneo via Git para os repositórios `Wsouza12/painel-ads` e `Wsouza12/painel-ads-lomZ` no branch `main`.
 
 ## Funcionalidades e Regras de Negócio
 
-### 1. Páginas Ponte & Vídeo Nativo (`app/p/[id]/page.tsx`)
-- Interceptam o cliente antes da chegada ao Mercado Livre, eliminando a exibição de concorrentes antes do clique.
-- **Player de Vídeo MP4 Nativo:** Se o produto possuir `custom_video_url` ou `custom_video_url_square`, a página exibe um player nativo HTML5 (`autoPlay muted loop playsInline controls`) no topo da oferta.
-- **Comportamento do Botão de Compra e Deep Linking Mobile (`BuyButton.tsx`):**
-  - **Efeito Flash (Redirecionamento em 0.8s):** O modal de transição abre em `100ms` e executa o redirecionamento em **`800ms` (0.8s)**, garantindo tempo para o disparo de eventos Pixel/CAPI antes de mudar de app.
-  - **Deep Linking Nativo no Celular (Android/iOS):**
-    - Em dispositivos Android, utiliza o schema **Android Intent** (`intent://...#Intent;scheme=https;package=com.mercadolibre;...;end;`) com fallback para o link oficial.
-    - Em iOS, utiliza o Universal Link (`mercadolibre://item?id=MLB...`).
-    - **Vantagem de Conversão:** O cliente abre direto no **App do Mercado Livre instalado no celular**, onde já está logado, finalizando o checkout sem pedido de senha e sem vitrine de concorrentes.
-  - **No Desktop:** Redireciona para o link de checkout/comprar ou permalink oficial.
+### 1. E-commerce Customizado e Checkout Próprio (`app/checkout/[productId]`)
+- O botão principal de compra redireciona o usuário para um checkout nativo da plataforma.
+- **Checkout Multi-step:** O cliente fornece Identificação, Endereço e seleciona o Método de Pagamento.
+- **Processamento de Pagamento (`/api/checkout/process`):** Salva o cliente e o pedido no Supabase. Para PIX, faz a comunicação em tempo real via mTLS com a API do EFI Bank (`lib/efi.ts`) gerando um QR Code instantâneo.
+- **Áreas Restritas / Portais:**
+  - `/meus-pedidos`: Portal do Cliente (acesso via CPF) para acompanhar o status e o rastreio da compra.
+  - `/dashboard/pedidos`: Painel Administrativo para o lojista verificar métricas (Faturamento, Total) e alterar status (ex: inserir código de rastreio).
 
-### 2. Rastreamento, Atribuição e Meta CAPI (`app/api/pixel/capi/route.ts` e `PixelTracker.tsx`)
-- O sistema possui **Meta Conversions API (CAPI)** server-side com score de **6.1/10 EMQ** (enviando 100% IP, 100% User-Agent, 100% fbp e **97.92% fbc**).
+### 2. Páginas Ponte & Vídeo Nativo (`app/p/[id]/page.tsx`)
+- Interceptam o cliente antes da chegada ao Mercado Livre (se o fluxo for apontado pro ML).
+- **Player de Vídeo MP4 Nativo:** Exibe um player HTML5 (`autoPlay muted loop playsInline controls`).
+- **Deep Linking Nativo no Celular (Android/iOS):**
+  - Utiliza o schema Android Intent (`intent://...#Intent;scheme=https;package=com.mercadolibre;...;end;`) com fallback.
+  - O cliente abre direto no **App do ML**, finalizando compras sem pedido de senha e sem vitrine de concorrentes.
+
+### 3. Rastreamento, Atribuição e Meta CAPI (`app/api/pixel/capi/route.ts`)
+- O sistema possui **Meta Conversions API (CAPI)** server-side com score de **6.1/10 EMQ** (100% IP, User-Agent, fbp e **97.92% fbc**).
 - Extrai e rastreia **UTMs** e códigos de clique pago do Google (`gclid`, `gbraid`, `wbraid`, `gad_source`, `shopping`, `pmax`).
-- **Analytics ao Vivo (`app/dashboard/analytics/`):** Agrupa os eventos em tempo real separando conversões por origem de canal (Meta Ads, Google Ads e Direto).
+- **Analytics ao Vivo (`app/dashboard/analytics/`):** Agrupa os eventos separando conversões por origem de canal (Meta Ads, Google Ads e Direto).
 
-### 3. Google Merchant Center & Google Ads
-- **Domínio Reivindicado e Verificado:** Domínio `mercadoshops.up.railway.app` certificado no Google Merchant Center (ID `5827915218`, Conta `Zayhon`). **31 produtos aprovados sem ressalvas**.
-- Meta tags de verificação presentes em `app/layout.tsx`.
-- **Política de Devolução:** Página oficial em `/politica-de-devolucao` documentando a Compra Garantida de 30 dias do Mercado Livre.
-- **Rastreamento de Conversões Google Ads (`AW-18351203132`):** Tag instalada e validada para cliques de saída e compras.
-- **Campanhas no Ar:** Campanha `Performance Max-1` ativa e qualificada.
+### 4. Google Merchant Center & Google Ads
+- **Domínio Verificado:** Domínio `mercadoshops.up.railway.app` certificado no Merchant Center (ID `5827915218`). **31 produtos aprovados sem ressalvas**.
+- **Política de Devolução:** Em `/politica-de-devolucao`.
+- **Campanhas no Ar:** `Performance Max-1` ativa e qualificada (`AW-18351203132`).
 
-### 4. Feeds XML Dinâmicos de Vídeo (`app/api/ml/feed/[id]/route.ts` e `/api/ml/feed/single/[id]/route.ts`)
-- Geração automática de catálogos XML e CSV para Meta Ads e Google Ads.
-- **Vídeos no Catálogo Dinâmico (Reels/Stories):** As rotas de feed injetam automaticamente as colunas `video_url`, `video` (JSON array), `video[0].url` e `video[1].url` de todos os produtos ou produtos individuais que possuam vídeos cadastrados no banco de dados.
-- **Suporte a Testes A/B:** Injeta Custom Labels diferenciando `Variante A`, `Variante B`, `Normal` e `Teste AB`.
+### 5. Feeds XML Dinâmicos de Vídeo (`/api/ml/feed/[id]`)
+- Geração automática de catálogos XML/CSV para Meta Ads e Google Ads.
+- Injetam automaticamente as colunas de vídeo (`video_url`, `video[0].url`) para suportar **Advantage+ Catalog no Meta Ads** em Reels/Stories.
+- Suporte a Testes A/B injetando Custom Labels (`Variante A`, `Variante B`).
 
 ## Próximas Atualizações e Aprendizados (Guia para IA)
+- Ao manipular a API do **EFI Bank** (`lib/efi.ts`), lembre-se que o certificado foi convertido para Base64 (`EFI_CERT_BASE64`) para compatibilidade com o container do Railway. Qualquer nova rota de API de pagamento deve usar a classe `https.Agent` gerada nessa lib.
 - Sempre utilize `process.env.APP_URL || "https://mercadoshops.up.railway.app"` para gerar links absolutos.
-- Ao atualizar o comportamento de mobile no `BuyButton.tsx`, preserve rigorosamente o `package=com.mercadolibre` para evitar vazamento para web browser não-logado.
-- **Aprendizado - Cobrança e Monetização (Efí Bank / Bolix):** Para cobranças e pagamentos no Brasil, registrar o aprendizado de que a **Efí Bank (antiga Gerencianet)** disponibiliza o **Bolix** (Boleto + Pix no mesmo documento/código) com **Pagamento Automático** (baixa imediata e confirmação automática via Webhook API).
-- Mantenha sempre a documentação em sintonia e faça push para os dois repositórios no branch `main`.
+- Ao atualizar rotas administrativas ou de rastreio, evite APIs que impedem a compilação estática sem motivo (`dynamic-server-error`), prefira ler `searchParams` nativamente e ajustar a rota para `force-dynamic` quando estritamente necessário.
+- Faça push sempre após concluir implementações funcionais fechadas e testadas.
