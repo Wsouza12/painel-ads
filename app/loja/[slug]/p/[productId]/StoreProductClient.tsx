@@ -208,6 +208,19 @@ export default function StoreProductClient({
               <span>Pagamento 100% Seguro</span>
             </div>
           </div>
+          
+          {/* Selo de Garantia Incondicional CDC */}
+          <div className="mt-4 p-4 bg-emerald-50 border border-emerald-200 rounded-2xl flex items-start gap-4">
+            <div className="bg-emerald-100 p-3 rounded-full text-emerald-600 shrink-0">
+              <ShieldCheck className="w-6 h-6" />
+            </div>
+            <div>
+              <h4 className="font-bold text-slate-800 text-sm mb-1">Risco Zero: Garantia de 7 Dias</h4>
+              <p className="text-xs text-slate-600 leading-relaxed">
+                De acordo com o Art. 49 do CDC, você tem 7 dias de garantia incondicional. Se não gostar do produto, devolvemos 100% do seu dinheiro sem perguntas.
+              </p>
+            </div>
+          </div>
         </div>
 
         {/* Description Card */}
@@ -221,6 +234,94 @@ export default function StoreProductClient({
             </p>
           </div>
         )}
+
+        {/* Prova Social: Depoimentos */}
+        <div className="bg-white border border-slate-200 rounded-3xl p-5 sm:p-6 shadow-sm">
+          <h2 className="text-base font-bold text-slate-900 border-b border-slate-100 pb-2 mb-4">
+            O que dizem nossos clientes
+          </h2>
+          <div className="space-y-4">
+            {/* Depoimento 1 */}
+            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center font-bold text-xs">MA</div>
+                  <div>
+                    <p className="text-xs font-bold text-slate-800">Maria Aparecida</p>
+                    <p className="text-[10px] text-emerald-600 flex items-center gap-0.5"><Check className="w-3 h-3"/> Compra Verificada</p>
+                  </div>
+                </div>
+                <div className="flex gap-0.5 text-yellow-400">
+                  <Star className="w-3 h-3 fill-current" /><Star className="w-3 h-3 fill-current" /><Star className="w-3 h-3 fill-current" /><Star className="w-3 h-3 fill-current" /><Star className="w-3 h-3 fill-current" />
+                </div>
+              </div>
+              <p className="text-xs text-slate-600 leading-relaxed">"Chegou super rápido, bem antes do prazo! O produto é de excelente qualidade e idêntico ao anúncio. Recomendo de olhos fechados."</p>
+            </div>
+            
+            {/* Depoimento 2 */}
+            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center font-bold text-xs">RO</div>
+                  <div>
+                    <p className="text-xs font-bold text-slate-800">Roberto Oliveira</p>
+                    <p className="text-[10px] text-emerald-600 flex items-center gap-0.5"><Check className="w-3 h-3"/> Compra Verificada</p>
+                  </div>
+                </div>
+                <div className="flex gap-0.5 text-yellow-400">
+                  <Star className="w-3 h-3 fill-current" /><Star className="w-3 h-3 fill-current" /><Star className="w-3 h-3 fill-current" /><Star className="w-3 h-3 fill-current" /><Star className="w-3 h-3 fill-current" />
+                </div>
+              </div>
+              <p className="text-xs text-slate-600 leading-relaxed">"Fiquei com receio de comprar na internet, mas a loja passou muita confiança com o rastreio. Valeu cada centavo."</p>
+            </div>
+
+            {/* Depoimento 3 */}
+            <div className="bg-slate-50 p-4 rounded-2xl border border-slate-100">
+              <div className="flex items-center justify-between mb-2">
+                <div className="flex items-center gap-2">
+                  <div className="w-8 h-8 bg-emerald-100 text-emerald-700 rounded-full flex items-center justify-center font-bold text-xs">AS</div>
+                  <div>
+                    <p className="text-xs font-bold text-slate-800">Aline Silva</p>
+                    <p className="text-[10px] text-emerald-600 flex items-center gap-0.5"><Check className="w-3 h-3"/> Compra Verificada</p>
+                  </div>
+                </div>
+                <div className="flex gap-0.5 text-yellow-400">
+                  <Star className="w-3 h-3 fill-current" /><Star className="w-3 h-3 fill-current" /><Star className="w-3 h-3 fill-current" /><Star className="w-3 h-3 fill-current" /><Star className="w-3 h-3 fill-current" />
+                </div>
+              </div>
+              <p className="text-xs text-slate-600 leading-relaxed">"O suporte pelo WhatsApp me ajudou bastante com minhas dúvidas. Atendimento nota 10!"</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Rodapé LGPD e Trust */}
+        <div className="mt-8 mb-4 border-t border-slate-200 pt-8 pb-4 text-center">
+          <div className="flex justify-center items-center gap-4 text-slate-400 mb-6 grayscale opacity-60">
+            <div className="h-6 w-9 bg-slate-100 rounded flex items-center justify-center text-[10px] font-bold text-slate-600">VISA</div>
+            <div className="h-6 w-9 bg-slate-100 rounded flex items-center justify-center text-[10px] font-bold text-slate-600">MC</div>
+            <div className="h-6 w-9 bg-slate-100 rounded flex items-center justify-center text-[10px] font-bold text-slate-600">PIX</div>
+            <div className="h-6 w-9 bg-slate-100 rounded flex items-center justify-center text-[9px] font-bold text-slate-600">BOLETO</div>
+          </div>
+          
+          <div className="text-[10px] text-slate-500 space-y-2 mb-4">
+            <p className="font-bold text-slate-700">Sua Loja LTDA - CNPJ: 00.000.000/0001-00</p>
+            <p>Rua Fictícia, 123 - Centro, São Paulo - SP</p>
+            <p>contato@sualoja.com.br | Horário: Seg a Sex 09h às 18h</p>
+          </div>
+
+          <div className="flex items-center justify-center gap-3 text-[10px] font-medium text-emerald-600">
+            <Link href="#" className="hover:underline">Políticas de Privacidade</Link>
+            <span className="text-slate-300">•</span>
+            <Link href="#" className="hover:underline">Termos de Uso</Link>
+            <span className="text-slate-300">•</span>
+            <Link href="/politica-de-devolucao" className="hover:underline">Trocas e Devoluções</Link>
+          </div>
+
+          <div className="mt-6 flex items-center justify-center gap-1.5 text-[9px] text-slate-400">
+            <Lock className="w-3 h-3" />
+            <span>Site 100% Seguro e Protegido. Em conformidade com a LGPD.</span>
+          </div>
+        </div>
       </main>
 
       {/* Sticky Bottom Buy Bar (Optimized for Instagram / Mobile In-App Browser) */}

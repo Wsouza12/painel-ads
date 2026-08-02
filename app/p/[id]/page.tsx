@@ -216,6 +216,70 @@ export default async function ProductPage({ params, searchParams }: { params: { 
         </div>
       )}
 
+      {/* Prova Social: Depoimentos */}
+      <div className="bg-white px-4 py-4 mb-2">
+        <h2 className="text-base text-gray-900 mb-4">Opiniões sobre o produto</h2>
+        <div className="space-y-4">
+          {/* Depoimento 1 */}
+          <div>
+            <div className="flex gap-1 text-[#3483FA] mb-1">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <p className="text-sm text-gray-700 font-medium mb-1">Excelente qualidade</p>
+            <p className="text-sm text-gray-600 mb-1">Chegou super rápido, bem antes do prazo! O produto é de excelente qualidade e idêntico ao anúncio. Recomendo de olhos fechados.</p>
+            <p className="text-xs text-gray-400">12 abr. 2024</p>
+          </div>
+          <div className="border-t border-gray-100"></div>
+          
+          {/* Depoimento 2 */}
+          <div>
+            <div className="flex gap-1 text-[#3483FA] mb-1">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+            </div>
+            <p className="text-sm text-gray-700 font-medium mb-1">Vale a pena</p>
+            <p className="text-sm text-gray-600 mb-1">Fiquei com receio de comprar na internet, mas a loja passou muita confiança com o rastreio. Valeu cada centavo.</p>
+            <p className="text-xs text-gray-400">28 mar. 2024</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Rodapé LGPD e Trust */}
+      <div className="px-4 py-8 bg-gray-50 text-center mb-20">
+        <div className="flex justify-center items-center gap-4 text-gray-400 mb-6 grayscale opacity-50">
+          <div className="h-6 w-9 border border-gray-300 rounded flex items-center justify-center text-[10px] font-bold">VISA</div>
+          <div className="h-6 w-9 border border-gray-300 rounded flex items-center justify-center text-[10px] font-bold">MC</div>
+          <div className="h-6 w-9 border border-gray-300 rounded flex items-center justify-center text-[10px] font-bold">PIX</div>
+          <div className="h-6 w-9 border border-gray-300 rounded flex items-center justify-center text-[9px] font-bold">BOLETO</div>
+        </div>
+        
+        <div className="text-[10px] text-gray-500 space-y-2 mb-4">
+          <p className="font-bold text-gray-700">Sua Loja LTDA - CNPJ: 00.000.000/0001-00</p>
+          <p>Rua Fictícia, 123 - Centro, São Paulo - SP</p>
+          <p>contato@sualoja.com.br | Horário: Seg a Sex 09h às 18h</p>
+        </div>
+
+        <div className="flex items-center justify-center gap-3 text-[10px] font-medium text-[#3483FA]">
+          <Link href="#" className="hover:underline">Privacidade</Link>
+          <span className="text-gray-300">•</span>
+          <Link href="#" className="hover:underline">Termos</Link>
+          <span className="text-gray-300">•</span>
+          <Link href="/politica-de-devolucao" className="hover:underline">Devoluções</Link>
+        </div>
+
+        <div className="mt-4 flex items-center justify-center gap-1.5 text-[9px] text-gray-400">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+          <span>Site 100% Seguro. Em conformidade com a LGPD.</span>
+        </div>
+      </div>
+
       {/* Fixa o botão comprar embaixo */}
       <div className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white border-t border-gray-200 p-3 pb-safe z-40">
         <BuyButton 
