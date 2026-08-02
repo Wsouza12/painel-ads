@@ -29,10 +29,8 @@ export default function BuyButton({
     return () => clearTimeout(timer);
   }, []);
 
-  // Link de Checkout Direto no Mercado Livre para pular a tela de recomendados/concorrentes
-  const directCheckoutUrl = contentId && contentId.startsWith("MLB") 
-    ? `https://www.mercadolivre.com.br/gz/checkout/buy?item_id=${contentId}&quantity=1` 
-    : permalink;
+  // Link Oficial de Destino no Mercado Livre (Deep Link Nativo para abrir o App do ML logado)
+  const directCheckoutUrl = permalink;
 
   useEffect(() => {
     if (!isModalOpen) return;
