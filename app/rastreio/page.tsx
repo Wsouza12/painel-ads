@@ -175,14 +175,16 @@ export default function RastreioPage() {
                     <div className="mt-3 pt-3 border-t border-white/5 flex items-center gap-2">
                       <Truck className="w-4 h-4 text-blue-400" />
                       <span className="text-xs text-slate-400">Código de rastreio:</span>
-                      <span className="font-mono text-xs text-blue-300 font-bold">{order.tracking_code}</span>
+                      <span className="font-mono text-xs text-blue-300 font-bold">
+                        {order.tracking_code.includes('|||') ? order.tracking_code.split('|||')[1] : order.tracking_code}
+                      </span>
                       <a
-                        href={`https://rastreamento.correios.com.br/app/index.php?numero=${order.tracking_code}`}
+                        href={order.tracking_code.includes('|||') && order.tracking_code.split('|||')[0] ? order.tracking_code.split('|||')[0] : `https://rastreamento.correios.com.br/app/index.php?numero=${order.tracking_code.replace(/.*\|\|\|/, '')}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="ml-auto flex items-center gap-1 text-xs text-blue-400 hover:text-blue-300 font-semibold"
                       >
-                        Rastrear nos Correios <ChevronRight className="w-3 h-3" />
+                        {order.tracking_code.includes('|||') && order.tracking_code.split('|||')[0] ? "Acompanhar Entrega" : "Rastrear nos Correios"} <ChevronRight className="w-3 h-3" />
                       </a>
                     </div>
                   )}

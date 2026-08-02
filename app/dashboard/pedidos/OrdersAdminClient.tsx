@@ -107,14 +107,31 @@ export default function OrdersAdminClient({ initialOrders }: { initialOrders: an
                       )}
                       
                       {(order.status === 'pago' || order.status === 'enviado') && (
-                        <div className="space-y-1">
+                        <div className="space-y-2 mt-2">
                           <input 
                             type="text" 
-                            placeholder="Código Rastreio" 
-                            defaultValue={order.tracking_code || ''}
+                            placeholder="Código Rastreio (ex: BR123)" 
+                            defaultValue={order.tracking_code?.includes('|||') ? order.tracking_code.split('|||')[1] : (order.tracking_code || '')}
                             onBlur={(e) => {
-                              if (e.target.value !== order.tracking_code) {
-                                handleUpdateStatus(order.id, 'enviado', e.target.value);
+                              const currentUrl = order.tracking_code?.includes('|||') ? order.tracking_code.split('|||')[0] : '';
+                              const newCode = e.target.value;
+                              const newVal = currentUrl ? `${currentUrl}|||${newCode}` : newCode;
+                              if (newVal !== order.tracking_code) {
+                                handleUpdateStatus(order.id, 'enviado', newVal);
+                              }
+                            }}
+                            className="w-full text-xs px-2 py-1.5 border border-slate-200 rounded focus:ring-1 focus:ring-emerald-500 focus:outline-none"
+                          />
+                          <input 
+                            type="text" 
+                            placeholder="URL Transportadora (Opcional)" 
+                            defaultValue={order.tracking_code?.includes('|||') ? order.tracking_code.split('|||')[0] : ''}
+                            onBlur={(e) => {
+                              const currentCode = order.tracking_code?.includes('|||') ? order.tracking_code.split('|||')[1] : (order.tracking_code || '');
+                              const newUrl = e.target.value;
+                              const newVal = newUrl ? `${newUrl}|||${currentCode}` : currentCode;
+                              if (newVal !== order.tracking_code) {
+                                handleUpdateStatus(order.id, 'enviado', newVal);
                               }
                             }}
                             className="w-full text-xs px-2 py-1.5 border border-slate-200 rounded focus:ring-1 focus:ring-emerald-500 focus:outline-none"
