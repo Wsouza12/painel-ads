@@ -66,24 +66,24 @@ export default function RastreioPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 text-white">
+    <div className="min-h-screen bg-slate-50 text-slate-900">
       {/* Header */}
-      <div className="border-b border-white/5 bg-black/20 backdrop-blur-sm">
+      <div className="border-b border-slate-200 bg-white">
         <div className="max-w-4xl mx-auto px-4 py-5 flex items-center gap-3">
           <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-lg shadow-emerald-500/20">
             <Package className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h1 className="font-bold text-lg leading-tight">Rastreamento de Pedidos</h1>
-            <p className="text-xs text-slate-400">Acompanhe o status das suas compras</p>
+            <h1 className="font-bold text-lg leading-tight text-slate-900">Rastreamento de Pedidos</h1>
+            <p className="text-xs text-slate-500">Acompanhe o status das suas compras</p>
           </div>
         </div>
       </div>
 
       <div className="max-w-4xl mx-auto px-4 py-10">
         {/* Search Card */}
-        <div className="bg-white/5 border border-white/10 rounded-2xl p-6 mb-8 backdrop-blur-sm">
-          <p className="text-sm text-slate-300 mb-4 font-medium">Digite seu CPF para ver todos os seus pedidos:</p>
+        <div className="bg-white border border-slate-200 rounded-2xl p-6 mb-8 shadow-sm">
+          <p className="text-sm text-slate-500 mb-4 font-medium">Digite seu CPF para ver todos os seus pedidos:</p>
           <form onSubmit={handleSearch} className="flex gap-3">
             <div className="flex-1 relative">
               <input
@@ -91,14 +91,14 @@ export default function RastreioPage() {
                 value={cpf}
                 onChange={e => setCpf(maskCpf(e.target.value))}
                 placeholder="000.000.000-00"
-                className="w-full bg-black/30 border border-white/10 rounded-xl px-4 py-3.5 text-white placeholder:text-slate-600 focus:outline-none focus:border-emerald-500/50 focus:ring-1 focus:ring-emerald-500/30 transition-all font-mono text-base"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-4 py-3.5 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all font-mono text-base"
                 maxLength={14}
               />
             </div>
             <button
               type="submit"
               disabled={loading}
-              className="bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed px-6 py-3.5 rounded-xl font-bold flex items-center gap-2 transition-all active:scale-95 shadow-lg shadow-emerald-600/20"
+              className="bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed px-6 py-3.5 rounded-xl font-bold flex items-center gap-2 transition-all active:scale-95 shadow-lg shadow-emerald-600/20 text-white"
             >
               {loading ? (
                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
@@ -109,7 +109,7 @@ export default function RastreioPage() {
             </button>
           </form>
           {error && (
-            <div className="mt-3 text-sm text-red-400 bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3">
+            <div className="mt-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3 font-medium">
               {error}
             </div>
           )}
@@ -117,27 +117,27 @@ export default function RastreioPage() {
 
         {/* Results */}
         {searched && orders.length === 0 && (
-          <div className="text-center py-16">
-            <ShoppingBag className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-            <p className="text-slate-400 text-lg font-medium">Nenhum pedido encontrado</p>
-            <p className="text-slate-600 text-sm mt-1">Verifique se o CPF está correto</p>
+          <div className="text-center py-16 bg-white border border-slate-200 rounded-2xl shadow-sm">
+            <ShoppingBag className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+            <p className="text-slate-500 text-lg font-medium">Nenhum pedido encontrado</p>
+            <p className="text-slate-400 text-sm mt-1">Verifique se o CPF está correto</p>
           </div>
         )}
 
         {orders.length > 0 && (
           <div className="space-y-4">
-            <p className="text-sm text-slate-400 font-medium">{orders.length} pedido{orders.length > 1 ? "s" : ""} encontrado{orders.length > 1 ? "s" : ""}:</p>
+            <p className="text-sm text-slate-500 font-medium">{orders.length} pedido{orders.length > 1 ? "s" : ""} encontrado{orders.length > 1 ? "s" : ""}:</p>
             {orders.map((order: any) => {
               const status = statusConfig[order.status] ?? statusConfig["aguardando_pagamento"];
               const StatusIcon = status.icon;
               const PayIcon = paymentIcon[order.payment_method] ?? Package;
               return (
-                <div key={order.id} className="bg-white/5 border border-white/10 rounded-2xl p-5 hover:border-white/20 transition-all backdrop-blur-sm">
+                <div key={order.id} className="bg-white border border-slate-200 rounded-2xl p-5 hover:border-slate-300 transition-all shadow-sm">
                   <div className="flex flex-wrap items-start justify-between gap-3 mb-4">
                     {/* Order ID + Date */}
                     <div>
-                      <p className="font-mono text-xs text-slate-500 mb-1">Pedido #{order.id?.substring(0, 8).toUpperCase()}</p>
-                      <p className="text-sm text-slate-300">
+                      <p className="font-mono text-xs text-slate-400 mb-1">Pedido #{order.id?.substring(0, 8).toUpperCase()}</p>
+                      <p className="text-sm font-medium text-slate-700">
                         {new Date(order.created_at).toLocaleDateString("pt-BR", { day: "2-digit", month: "long", year: "numeric" })}
                       </p>
                     </div>
@@ -150,21 +150,21 @@ export default function RastreioPage() {
 
                   {/* Product */}
                   {order.product_title && (
-                    <div className="flex items-center gap-3 bg-black/20 rounded-xl p-3 mb-4">
+                    <div className="flex items-center gap-3 bg-slate-50 rounded-xl p-3 mb-4 border border-slate-100">
                       <Package className="w-5 h-5 text-slate-400 shrink-0" />
-                      <p className="text-sm text-slate-200 flex-1 line-clamp-1">{order.product_title}</p>
+                      <p className="text-sm text-slate-600 flex-1 line-clamp-1">{order.product_title}</p>
                     </div>
                   )}
 
-                  <div className="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-white/5">
+                  <div className="flex flex-wrap items-center justify-between gap-2 pt-3 border-t border-slate-100">
                     {/* Payment method */}
-                    <div className="flex items-center gap-2 text-slate-400 text-sm">
+                    <div className="flex items-center gap-2 text-slate-500 text-sm font-medium">
                       <PayIcon className="w-4 h-4" />
                       <span>{paymentLabel[order.payment_method] ?? order.payment_method}</span>
                     </div>
                     {/* Amount */}
                     <div className="text-right">
-                      <span className="text-lg font-bold text-white">
+                      <span className="text-lg font-bold text-slate-900">
                         R$ {Number(order.amount ?? 0).toFixed(2).replace(".", ",")}
                       </span>
                     </div>
@@ -172,17 +172,17 @@ export default function RastreioPage() {
 
                   {/* Tracking code if exists */}
                   {order.tracking_code && (
-                    <div className="mt-3 pt-3 border-t border-white/5 flex items-center gap-2">
-                      <Truck className="w-4 h-4 text-blue-400" />
-                      <span className="text-xs text-slate-400">Código de rastreio:</span>
-                      <span className="font-mono text-xs text-blue-300 font-bold">
+                    <div className="mt-4 pt-4 border-t border-slate-100 flex items-center gap-2">
+                      <Truck className="w-4 h-4 text-emerald-500" />
+                      <span className="text-xs text-slate-500 font-medium">Código de rastreio:</span>
+                      <span className="font-mono text-xs text-emerald-600 font-bold bg-emerald-50 px-2 py-1 rounded">
                         {order.tracking_code.includes('|||') ? order.tracking_code.split('|||')[1] : order.tracking_code}
                       </span>
                       <a
                         href={order.tracking_code.includes('|||') && order.tracking_code.split('|||')[0] ? order.tracking_code.split('|||')[0] : `https://rastreamento.correios.com.br/app/index.php?numero=${order.tracking_code.replace(/.*\|\|\|/, '')}`}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="ml-auto flex items-center gap-1 text-xs text-blue-400 hover:text-blue-300 font-semibold"
+                        className="ml-auto flex items-center gap-1 text-xs text-emerald-600 hover:text-emerald-500 font-bold"
                       >
                         {order.tracking_code.includes('|||') && order.tracking_code.split('|||')[0] ? "Acompanhar Entrega" : "Rastrear nos Correios"} <ChevronRight className="w-3 h-3" />
                       </a>

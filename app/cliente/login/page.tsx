@@ -76,22 +76,17 @@ export default function ClienteLoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 flex items-center justify-center p-4">
-      {/* Glow decorativo */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[300px] bg-emerald-500/5 blur-[100px] rounded-full" />
-      </div>
-
+    <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
       <div className="relative w-full max-w-md">
         {/* Card */}
-        <div className="bg-white/5 border border-white/10 rounded-3xl p-8 backdrop-blur-xl shadow-2xl">
+        <div className="bg-white border border-slate-200 rounded-3xl p-8 shadow-xl">
           {/* Logo / Icon */}
           <div className="text-center mb-8">
             <div className="w-16 h-16 mx-auto rounded-2xl bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center shadow-xl shadow-emerald-500/20 mb-4">
               <Package className="w-8 h-8 text-white" />
             </div>
-            <h1 className="text-2xl font-bold text-white">Minha Conta</h1>
-            <p className="text-slate-400 text-sm mt-1">
+            <h1 className="text-2xl font-bold text-slate-900">Minha Conta</h1>
+            <p className="text-slate-500 text-sm mt-1">
               Acesse seus pedidos usando CPF e telefone
             </p>
           </div>
@@ -99,15 +94,15 @@ export default function ClienteLoginPage() {
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* CPF */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">CPF</label>
+              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider ml-1">CPF</label>
               <div className="relative">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                <Search className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   value={cpf}
                   onChange={e => setCpf(maskCpf(e.target.value))}
                   placeholder="000.000.000-00"
-                  className="w-full bg-black/30 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-white placeholder:text-slate-600 focus:outline-none focus:border-emerald-500/60 focus:ring-1 focus:ring-emerald-500/30 transition-all font-mono"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-11 pr-4 py-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all font-mono"
                   maxLength={14}
                   required
                 />
@@ -116,57 +111,51 @@ export default function ClienteLoginPage() {
 
             {/* Telefone */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Telefone / WhatsApp</label>
+              <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider ml-1">Telefone / WhatsApp</label>
               <div className="relative">
-                <Phone className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+                <Phone className="w-4 h-4 text-slate-400 absolute left-4 top-1/2 -translate-y-1/2" />
                 <input
-                  type="text"
+                  type="tel"
                   value={phone}
                   onChange={e => setPhone(maskPhone(e.target.value))}
                   placeholder="(11) 99999-9999"
-                  className="w-full bg-black/30 border border-white/10 rounded-xl pl-11 pr-4 py-3.5 text-white placeholder:text-slate-600 focus:outline-none focus:border-emerald-500/60 focus:ring-1 focus:ring-emerald-500/30 transition-all"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-11 pr-4 py-3 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition-all font-mono"
                   maxLength={15}
+                  required
                 />
               </div>
             </div>
 
-            {/* Erro */}
             {error && (
-              <div className="bg-red-500/10 border border-red-500/20 text-red-400 text-sm rounded-xl px-4 py-3 text-center">
+              <div className="text-sm text-red-600 bg-red-50 border border-red-200 rounded-xl px-4 py-3 font-medium">
                 {error}
               </div>
             )}
 
-            {/* Botão */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-emerald-600 hover:bg-emerald-500 disabled:opacity-50 disabled:cursor-not-allowed py-4 rounded-xl font-bold text-white flex items-center justify-center gap-2 transition-all active:scale-[0.98] shadow-lg shadow-emerald-600/20 mt-2"
+              className="w-full bg-emerald-600 hover:bg-emerald-500 text-white disabled:opacity-50 disabled:cursor-not-allowed px-6 py-3.5 rounded-xl font-bold flex items-center justify-center gap-2 transition-all active:scale-95 shadow-lg shadow-emerald-600/20 mt-6"
             >
               {loading ? (
-                <>
-                  <Loader2 className="w-5 h-5 animate-spin" />
-                  Verificando...
-                </>
+                <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
-                <>
-                  <Package className="w-5 h-5" />
-                  Ver Meus Pedidos
-                </>
+                <Package className="w-5 h-5" />
               )}
+              {loading ? "Buscando..." : "Ver Meus Pedidos"}
             </button>
           </form>
 
           {/* Segurança */}
-          <div className="mt-6 pt-5 border-t border-white/5 flex items-center justify-center gap-2 text-xs text-slate-500">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
-            Acesso seguro. Seus dados são protegidos.
+          <div className="mt-6 pt-6 border-t border-slate-100 flex items-center justify-center gap-2 text-slate-400">
+            <ShieldCheck className="w-4 h-4 text-emerald-500" />
+            <p className="text-xs">Acesso seguro. Seus dados são protegidos.</p>
           </div>
         </div>
 
         {/* Links extras */}
-        <div className="text-center mt-6 space-y-2">
-          <a href="/rastreio" className="block text-sm text-slate-400 hover:text-emerald-400 transition-colors">
+        <div className="mt-8 text-center">
+          <a href="/rastreio" className="text-sm text-slate-500 hover:text-slate-900 transition-colors">
             Rastrear pedido sem conta →
           </a>
         </div>
